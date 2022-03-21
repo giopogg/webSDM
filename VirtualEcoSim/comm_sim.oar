@@ -1,0 +1,17 @@
+#!/bin/bash
+## OAR instructions ##
+#OAR -n Rmd_chapter
+#OAR --project teembio
+#OAR -l core=1,walltime=96:00:00
+#OAR -O Rscript.%jobid%.stdout
+#OAR -t besteffort
+#OAR -E Rscript.%jobid%.stderr
+#OAR -p network_address='luke9'
+## define some bash options
+set -e ## exit the script as soon as a function return an error
+## load ciment environment and required modules
+source /applis/site/nix_nur.sh
+R CMD BATCH "--arg $1" Community_simulations.R
+## quit the script
+exit $?
+
