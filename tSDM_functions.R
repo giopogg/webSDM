@@ -1,53 +1,93 @@
 
-plotDistributions <- function (SIM, plotprey=FALSE,plotpred=FALSE,FN=F,RN=F,main="",filename=NULL){
-  realizedNiche = SIM$prob
-  nEnv = nrow(SIM$X)/(nRep*trainFraction)
+plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=FALSE, RN=T,
+                               main="", filename=NULL){
+  
+  nEnv = nrow(SIM$X)/(nRep*nbMerge)
   envs = SIM$X[1:nEnv, ifelse(intercept, -1, -(K+1))]
-  FN <- ifelse(is.null(SIM$fundNiche), FALSE, FN)
+  if(is.null(SIM$fundNiche) & !RN) stop("No theoretical fundamental niche available")
   
   proba = list()
-  if (!is.null(SIM$table_no_err_pr_prob_bin)) {
-    proba$pred = SIM$p.mean.stan_bin
-    #proba$est.02 = matrix(SIM$table_no_err_pr_prob_bin$est.02, ncol=S)[1:51,]
-    #proba$est.97 = matrix(SIM$table_no_err_pr_prob_bin$est.97, ncol=S)[1:51,]
-  }
-  if (!is.null(SIM$SDM.table_no_err_pr_prob_bin)) {
-    proba$SDM.pred = SIM$SDM.p.mean.stan_bin
-    #proba$SDM.est.02 = matrix(SIM$SDM.table_no_err_pr_prob_bin$est.02, ncol=S)[1:51,]
-    #proba$SDM.est.97 = matrix(SIM$SDM.table_no_err_pr_prob_bin$est.97, ncol=S)[1:51,]
-  }
-  
-  coeff = list()
-  if (length(grep("brmsfit",class(SIM$m_stan$model[[1]])))>0) {  # brms package
-    coeff$abiotic = sapply(SIM$m_stan$model, function(sp) posterior_summary(sp)[1:(intercept+K*(2-linear)), "Estimate", drop=FALSE])
-    coeff$biotic = sapply(SIM$m_stan$model, function(sp) posterior_summary(sp)[-c(1:(intercept+K*(2-linear)), nrow(posterior_summary(sp))), "Estimate", drop=FALSE])
-  }else {  # rstan package
-    coeff$abiotic = sapply(SIM$m_stan$model, function(sp) coef(sp)[1:(intercept+K*(2-linear))])
-    coeff$biotic = sapply(SIM$m_stan$model, function(sp) coef(sp)[-(1:(intercept+K*(2-linear)))])
-  }
-  if (!is.null(SIM$SDM_stan)) {
-    coeff$SDM.abiotic = sapply(SIM$SDM_stan$model, function(sp) coef(sp)[1:(intercept+K*(2-linear))])
-    coeff$SDM.biotic = sapply(SIM$SDM_stan$model, function(sp) coef(sp)[-(1:(intercept+K*(2-linear)))])
-  }
-  if(fitPreds){
-    coeff$true.preds.sum = colSums(IntMat*t(PredMat))
-    coeff$infered.preds.sum = sapply(1:S, function(s) sum(coeff$biotic[[paste0("Y", s)]][which(gsub(".*_", "", rownames(coeff$biotic[[paste0("Y", s)]])) %in% names(neighbors(G,paste0("Y", s),mode=c("in"))))], na.rm=T))
-  }
-  coeff$true.preys.sum = colSums(IntMat*PredMat)
-  if(fitPreds){coeff$infered.preys.sum = sapply(1:S, function(s) sum(coeff$biotic[[paste0("Y", s)]][which(gsub(".*_", "", rownames(coeff$biotic[[paste0("Y", s)]])) %in% names(neighbors(G,paste0("Y", s),mode=c("out"))))], na.rm=T))
-  }else{coeff$infered.preys.sum = sapply(1:S, function(s) sum(coeff$biotic[[paste0("Y", s)]], na.rm=T))}
-  
-  
-  if(RN==T){
-    # build realized niche table
-    RNtable=data.frame(env=envs,rbind(data.frame(stack(realizedNiche),type=rep("True",nrow(stack(realizedNiche)))),
-                                      data.frame(stack(as.data.frame(proba$pred)),type=rep("tSDM",nrow(stack(realizedNiche)))),
-                                      data.frame(stack(as.data.frame(proba$SDM.pred)),type=rep("SDM",nrow(stack(realizedNiche))))))
+
+  if(CV){
+    # if realised niche
+    if(RN){
+    #tSDM
+    if(prob.cov){
+
+        proba$pred = SIM$pCV.mean.stan_prob
+        proba$est.02 = SIM$pCV.qinf.stan_prob
+        proba$est.97 = SIM$pCV.qsup.stan_prob
+      
+    }else{
     
-    if(plotprey){
-      Preys=data.frame()
-      for(s in 1:S){
-        for (prey in community$trophic.links[community$trophic.links$consumer == spNames[nameOrder[s]],]$resource){
+      proba$pred = SIM$pCV.mean.stan_bin
+      proba$est.02 = SIM$pCV.qinf.stan_bin
+      proba$est.97 = SIM$pCV.qsup.stan_bin
+      
+    }
+    }else{#if FN
+      
+      proba$pred = SIM$pFundCV.mean.stan
+      proba$est.02 = SIM$pFundCV.qinf.stan
+      proba$est.97 = SIM$pFundCV.qsup.stan
+      
+    }
+    #SDMs (realised or fundamental niche is the same!)
+      proba$SDM.pred = SIM$SDM.pCV.mean.stan
+      proba$SDM.est.02 = SIM$SDM.pCV.qinf.stan
+      proba$SDM.est.97 = SIM$SDM.pCV.qsup.stan
+      
+  }else{#if not CV
+    
+    # if realised niche
+    if(RN){
+      #tSDM
+      if(prob.cov){
+        
+        proba$pred = SIM$p.mean.stan_prob
+        proba$est.02 = SIM$p.qinf.stan_prob
+        proba$est.97 = SIM$p.qsup.stan_prob
+        
+      }else{
+        
+        proba$pred = SIM$p.mean.stan_bin
+        proba$est.02 = SIM$p.qinf.stan_bin
+        proba$est.97 = SIM$p.qsup.stan_bin
+        
+      }
+    }else{#if FN
+      
+      proba$pred = SIM$pFund.mean.stan
+      proba$est.02 = SIM$pFund.qinf.stan
+      proba$est.97 = SIM$pFund.qsup.stan
+      
+    }
+    #SDMs (realised or fundamental niche is the same!)
+    proba$SDM.pred = SIM$SDM.p.mean.stan
+    proba$SDM.est.02 = SIM$SDM.p.qinf.stan
+    proba$SDM.est.97 = SIM$SDM.p.qsup.stan
+    
+  }
+    
+    
+  realizedNiche = SIM$prob
+  
+  if(RN){
+  Niche = SIM$prob
+  }else{
+  Niche = SIM$fundNiche
+  }
+  
+
+  # build niche table
+  table=data.frame(env=envs,rbind(data.frame(stack(Niche),type=rep("True",nrow(stack(Niche)))),
+                                      data.frame(stack(as.data.frame(proba$pred)),type=rep("tSDM",nrow(stack(Niche)))),
+                                      data.frame(stack(as.data.frame(proba$SDM.pred)),type=rep("SDM",nrow(stack(Niche))))))
+    
+  if(plotprey){
+    Preys=data.frame()
+    for(s in 1:S){
+      for (prey in community$trophic.links[community$trophic.links$consumer == spNames[nameOrder[s]],]$resource){
           intStrength = abs(IntMat[prey,spNames[nameOrder[s]]])/(strengthBI*2)  # strength of the biotic interaction
           Preys = rbind(Preys, data.frame(focal=paste0("Y", gsub("Sp|\\..*", "", spNames[nameOrder[s]])),env=envs,
                                           value=realizedNiche[,paste0("Y", gsub("Sp|\\..*", "", prey))]*intStrength,
@@ -56,10 +96,10 @@ plotDistributions <- function (SIM, plotprey=FALSE,plotpred=FALSE,FN=F,RN=F,main
         }
       }
     }
-    if(plotpred){
-      Pred=data.frame()
-      for(s in 1:S){
-        for (pred in community$trophic.links[community$trophic.links$ressource == spNames[nameOrder[s]],]$consumer) {
+  if(plotpred){
+    Pred=data.frame()
+    for(s in 1:S){
+      for (pred in community$trophic.links[community$trophic.links$ressource == spNames[nameOrder[s]],]$consumer) {
           intStrength = abs(IntMat[prey,spNames[nameOrder[s]]])/(strengthBI*2)  # strength of the biotic interaction
           Pred = rbind(Pred, data.frame(focal=paste0("Y", gsub("Sp|\\..*", "", spNames[nameOrder[s]])),env=envs,
                                         value=realizedNiche[,paste0("Y", gsub("Sp|\\..*", "", prey))]*intStrength,
@@ -70,16 +110,23 @@ plotDistributions <- function (SIM, plotprey=FALSE,plotpred=FALSE,FN=F,RN=F,main
       
     }
     
-    for(s in 1:S){
-      assign(paste0("tableFoc",s), RNtable[which(RNtable$ind==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
-      assign(paste0("tablePrey",s), Preys[which(Preys$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
+  for(s in 1:S){
+      assign(paste0("tableFoc",s), table[which(table$ind==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
+      if(plotprey){  
+        assign(paste0("tablePrey",s), Preys[which(Preys$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
+      }
       if(plotpred){
         assign(paste0("tablePrey",s), Pred[which(Pred$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
       }
+      if(RN){
+        cols = c("grey75",alpha("mediumorchid",1),"darkblue")
+      }else{
+        cols = c(alpha("royalblue1",0.5),"plum4","darkblue")
+      }
       assign(paste0("p",s),ggplot() +
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="True",],aes(x=env,y=values),lwd=3, col="grey75")+
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="tSDM",],aes(x=env,y=values),lwd=2, lty=1, col=alpha("mediumorchid",1))+
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="SDM",],aes(x=env,y=values),lwd=1, lty=2, col="darkblue") +
+               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="True",],aes(x=env,y=values),lwd=3, col=cols[1])+
+               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="tSDM",],aes(x=env,y=values),lwd=2, lty=1, col=cols[2])+
+               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="SDM",],aes(x=env,y=values),lwd=1, lty=2, col=cols[3]) +
                theme_classic()+ggtitle(spNames[s]) + geom_vline(xintercept = SIM$B[paste0("Y", gsub("Sp|\\..*", "", spNames[s])),2],lty=2,col="red",lwd=1,alpha=0.2) +
                xlab("Env") + ylab("Probability of presence")
       )
@@ -95,54 +142,11 @@ plotDistributions <- function (SIM, plotprey=FALSE,plotpred=FALSE,FN=F,RN=F,main
     }
     
     #p=eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-    eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-    eval(parse(text=paste0("p=arrangeGrob(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-    if(!is.null(filename)) ggsave(filename = filename,p,width=20,height=10, dpi = 150, units = "in")
-  }
-  
-  
-  
-  
-  if(FN==T){
-    Fundtable=data.frame()
-    for(s in 1:S){
-      if (!is.null(coeff$abiotic)) {
-        a.tSDM = coeff$abiotic[3,s]
-        b.tSDM = coeff$abiotic[2,s]
-        c.tSDM = coeff$abiotic[1,s]
-      }
-      
-      if (!is.null(coeff$SDM.abiotic)) {
-        a.SDM = coeff$SDM.abiotic[3,s]
-        b.SDM = coeff$SDM.abiotic[2,s]
-        c.SDM = coeff$SDM.abiotic[1,s]
-      }
-      
-      Fundtable=rbind(Fundtable,data.frame(env=envs,type="True",value=SIM$fundNiche[,s],focal=spNewNames[s]))
-      Fundtable=rbind(Fundtable,data.frame(env=envs,type="tSDM",value= plogis(a.tSDM*envs^2 + b.tSDM*envs + c.tSDM + sum(coeff$infered.preys.sum[[s]])),focal=spNewNames[s]))
-      Fundtable=rbind(Fundtable,data.frame(env=envs,type="SDM",value=plogis(a.SDM*envs^2 + b.SDM*envs + c.SDM),focal=spNewNames[s]))
-      
-    }
-    
-    
-    for(s in 1:S){
-      assign(paste0("tableFoc",s), Fundtable[which(Fundtable$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
-      
-      assign(paste0("p",s),ggplot() +
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="True",],aes(x=env,y=value),lwd=4, col=alpha("royalblue1",0.5))+
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="tSDM",],aes(x=env,y=value),lwd=2, lty=1, col="plum4")+
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="SDM",],aes(x=env,y=value),  lwd=1, lty=2, col="darkblue") +
-               theme_classic()+ggtitle( spNames[s]) +
-               xlab("Env") + ylab("Probability of presence")
-      )
-    }
-    
-    eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-    eval(parse(text=paste0("p=arrangeGrob(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-    if(!is.null(filename)) ggsave(filename = filename,p,width=25,height = 15)
-  }
-  
-  return(p)
+  eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
+  eval(parse(text=paste0("p=arrangeGrob(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
+  if(!is.null(filename)) ggsave(filename = filename,p,width=20,height=10, dpi = 150, units = "in")
+
+  #return(p)
 }
 
 
@@ -187,7 +191,7 @@ compute_TL_laplacian <- function(G){
 # fitPreds : logical. Should predators be included as covariates?
 # iter : the number of MCMC samples (if bayesian approach)
 
-trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL,method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=T){
+trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL,method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=T,chains=2,verbose=T){
   
   # checks & errors
   if(!is_igraph(G)) stop("G is not an igraph object")
@@ -204,12 +208,12 @@ trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,pena
   # core part: loop on the species to fit their distribution
   if(run.parallel){
     m=mclapply(1:vcount(G),FUN = function(j){
-    print(paste("--- Species", names(sortedV[j]), "---"))
+    if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
     
     # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
     temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula, sp.partition,
                       formula.foc=paste(as.character(formulas[[names(sortedV[j])]]),collapse=" "),
-                      method=method, penal=penal, family=family, fitPreds=fitPreds, iter=iter)
+                      method=method, penal=penal, family=family, fitPreds=fitPreds, iter=iter,verbose=verbose,chains=chains)
     
     # assign models and formulas (that now includes biotic variables too)
     temp.mod
@@ -224,12 +228,12 @@ trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,pena
   
   
   for(j in 1:vcount(G)){
-    print(paste("--- Species", names(sortedV[j]), "---"))
+    if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
     
     # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
     temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula, sp.partition,
                       formula.foc=paste(as.character(formulas[[names(sortedV[j])]]),collapse=" "),
-                      method=method, penal=penal, family=family, fitPreds=fitPreds, iter=iter)
+                      method=method, penal=penal, family=family, fitPreds=fitPreds, chains=chains,iter=iter,verbose=verbose)
 
     # assign models and formulas (that now includes biotic variables too)
     m[[names(sortedV[j])]]=temp.mod$m
@@ -250,7 +254,7 @@ trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,pena
 
 # nice stuff about formulas https://www.datacamp.com/community/tutorials/r-formula-tutorial
 
-SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,fitPreds=FALSE,iter=iter){
+SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,fitPreds=FALSE,iter=1000,chains=2,verbose=T){
   
   # for the particular case of the stan_glm model with "coeff.signs" constraint
   # another stan-for-R package is used (brsm) and formulas have to be adapted
@@ -351,13 +355,16 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
   
   ### stan_glm
   if(method=="stan_glm"){
+    refresh=ifelse(verbose,1000,0)
+    
     if(is.null(penal)){
-      m = stan_glm(form.all, data=data, family=family, iter=iter, prior=normal(0,10),chains=2)
+      m = stan_glm(form.all, data=data, family=family, iter=iter, prior=normal(0,10),chains=chains,refresh=refresh)
     }else{
       if(penal=="elasticnet")  stop("Elastic net is not stan_glm")
       if(penal=="horshoe"){
         HS_prior = hs(df = 1, global_df = 1, global_scale = 0.01, slab_df = 4, slab_scale = 2.5)
-        m = stan_glm(form.all, data = data, family = family, prior = HS_prior, iter=iter,chains=2)
+        m = stan_glm(form.all, data = data, family = family, prior = HS_prior,
+                     iter=iter,chains=chains, refresh = refresh)
       }
       if(penal=="coeff.signs"){
         # constrain the signs of trophic interaction coefficients to remain positive (preys->preds) or negative (preds->preys)
@@ -381,7 +388,7 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
         if(fitPreds & length(preds)>0) form.all = form.all + lf(form.preds.brms)[[1]]
         if(fitPreds && length(predsANDpreys)>0) form.all = form.all + lf(form.predsANDpreys.brms)[[1]]
         
-        print(c(Formula=form.all))
+        if(verbose) print(c(Formula=form.all))
         
         m = brm(form.all, data=data, family=family, iter=iter, prior=priors, control=list(adapt_delta = 0.9))
       }
@@ -493,7 +500,7 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
 #                     If greater than one, we sample pred.sample/error_prop_sample of the predictive distribution of each species (N.B. carefully to guarantee that the samples are consistent across them),
 #                     and then for each of the selected samples, we draw error_prop_sample from the predictive distribution of the focal species, for each selected sample of the predictors.
 
-trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pred_samples=1000,error_prop_sample=10){
+trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pred_samples=1000,error_prop_sample=10,verbose=T){
   
   # checks & errors
   if(m$method=="glm" & (pred_samples != 1 | error_prop_sample != 1)){stop("glm requires pred_sample and error_prop_sample both =1")}
@@ -517,7 +524,7 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pre
     
     # core loop on species (as in trophicSDM)
     for(j in 1:vcount(G)){
-      print(paste("--- Species", names(sortedV[j]), "---")); print(m$model[[names(sortedV[j])]]$formula)
+      if(verbose) {print(paste("--- Species", names(sortedV[j]), "---")); print(m$model[[names(sortedV[j])]]$formula)}
       #warning("", call.=F)
       
       # neighbor species
@@ -745,7 +752,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,pred_s
     X = m$data$X[train,]
     
     m_K = trophicSDM(Y=Y,X=X,G=m$G,formulas=m$form.env,penal=m$penal,method=m$method,
-                     family=m$family,fitPreds=fitPreds,iter=iter,run.parallel = TRUE)
+                     family=m$family,fitPreds=fitPreds,iter=iter,run.parallel = TRUE,chains=2)
     
     pred_K = trophicSDM_predict(m=m_K,Xnew = m$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
@@ -814,10 +821,10 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,pred_s
 
 tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
                          pred_samples, error_prop_sample = 10,
-                         fitPreds = F,run.parallel = F, nEnv){
+                         fitPreds = F,run.parallel = F, nEnv, verbose=T, chains=2){
   
   X = mod$data$X[1:nEnv,"X1"]
-
+  
   partition = rep(1:K,each = round(nEnv/K))
   S = length(mod$model)
   
@@ -836,24 +843,24 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
   if(fundNiche){ predsFund = array(dim=c(nEnv,pred_samples,S))}
   
   for(i in 1:K){
-    
+
     train = which(index_all != i)
     test = which(partition == i)
 
     m_K = trophicSDM(Y=mod$data$Y[train,],X=mod$data$X[train,],G=mod$G,formulas=mod$form.env,penal=mod$penal,method=mod$method,
-                     family=mod$family,fitPreds=fitPreds,iter=iter,run.parallel = run.parallel)
+                     family=mod$family,fitPreds=fitPreds,iter=iter,run.parallel = run.parallel,verbose=F,chains=chains)
     
 
     pred_K = trophicSDM_predict(m=m_K,Xnew = mod$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
                                 mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,
-                                error_prop_sample=error_prop_sample)
+                                error_prop_sample=error_prop_sample, verbose = F)
+    
     preds[test,,] = abind(lapply(pred_K$sp.prediction,function(x) x$predictions.prob),along=3)
     
     if(fundNiche){
       
       for(s in 1:S){
-        
         sp_mod = mod$model[[s]]
         
         
@@ -862,7 +869,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
                          data.frame(matrix(1,nrow=length(test),ncol=ncol(mod$data$Y),
                                            dimnames= list(NULL,colnames(mod$data$Y))))
         )
-        pred_temp = SDMpredict(m=SIM$m_stan,focal=names(mod$model)[[s]],newdata = newdata,
+        pred_temp = SDMpredict(m=m_K,focal=names(mod$model)[[s]],newdata = newdata,
                                pred_samples = pred_samples, binary.resp = F,prob.cov = prob.cov)
         
         predsFund[test,,s] = pred_temp$predictions.prob
@@ -880,8 +887,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
   Pred025 = apply(preds, quantile, MARGIN=c(1,3),0.025)
   
   colnames( meanPred ) = colnames(Pred975) = colnames(Pred025) = names(pred_K$sp.prediction)
-  # Compute Joint TSS and AUC
-  
+
   
   if(fundNiche){
     
@@ -890,9 +896,12 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
     FN.Pred025 = apply(predsFund, quantile, MARGIN=c(1,3),0.025)
     colnames( FN.meanPred ) = colnames(FN.Pred975) = colnames(FN.Pred025) = names(pred_K$sp.prediction)
     
+  }else{
+    FN.meanPred = FN.Pred975 =  FN.Pred025 = NULL
   }
   
-  list(meanPred = meanPred, Pred975 = Pred975, Pred025 = Pred025, partition.env = partition, index_all=index_all,fundNiche = list(FN.meanPred, FN.Pred975, FN.Pred025))
+  list(meanPred = meanPred, Pred975 = Pred975, Pred025 = Pred025, partition.env = partition, index_all=index_all,
+       fundNiche = list(FN.meanPred = FN.meanPred, FN.Pred975 = FN.Pred975, FN.Pred025 = FN.Pred025))
 
 }
 

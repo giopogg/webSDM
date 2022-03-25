@@ -3,6 +3,7 @@ rm(list=ls())
 library(igraph)
 library(Matrix)
 library(cheddar)
+library(cowplot)
 library(igraph)
 library(GGally)
 library(intergraph)
@@ -10,6 +11,7 @@ library(gridExtra)
 library(dismo)
 library(coda)
 library(cheddar)
+library(transport)
 library(dplyr)
 library(rstan)
 library(rstanarm)
@@ -52,6 +54,8 @@ iter=200
 pred_samples=200
 
 figPath=paste0(simPath,"Fig/")
+if(!dir.exists(figPath)) dir.create(figPath)
+
 # Gather outputs in a single list
 SIMlist = list()
 
@@ -362,7 +366,8 @@ if ("glm" %in% algos){
     # Basic GLM + constraint on coefficients signs (+ for preys->predators and - for predators->preys)
     SIMlist[[i]]$m_glm = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, formulas=env.form, sp.formula=sp.formula, 
                                     sp.partition=sp.partition, penal="coeff.signs", method="glm", 
-                                    family=binomial(link="logit"), fitPreds=fitPreds, iter=iter)
+                                    family=binomial(link="logit"), fitPreds=fitPreds, iter=iter,
+                                    chains=2, verbose = F)
   }
 }
 
@@ -378,25 +383,28 @@ if ("stan" %in% algos){
     # STAN GLM
     if(!horsh){
     SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,formulas=env.form,penal=NULL,method="stan_glm",
-                                     family=binomial(link = "logit"),fitPreds=fitPreds,iter=iter,run.parallel = F)
+                                     family=binomial(link = "logit"),fitPreds=fitPreds,
+                                     iter=iter,run.parallel = F, verbose = F,chains=2)
     }else{
       SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,formulas=env.form,penal="horshoe",method="stan_glm",
-                                       family=binomial(link = "logit"),fitPreds=fitPreds,iter=iter,run.parallel = TRUE)
+                                       family=binomial(link = "logit"),fitPreds=fitPreds,
+                                       iter=iter,run.parallel = TRUE, verbose = F, chains=2)
       
     }
     # STAN GLM + constraint on coefficients signs (+ for preys->predators and - for predators->preys)
     #SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, formulas=env.form, sp.formula=sp.formula,
                                      #sp.partition=sp.partition, penal="coeff.signs", method="stan_glm",
-                                     #family=bernoulli(link = "logit"), fitPreds=fitPreds, iter=iter)
+                                     #family=bernoulli(link = "logit"), fitPreds=fitPreds, iter=iter, chains = 2)
   }
 }
 
-#save(SIMlist,file = paste0(figPath,"model.RData"))
 
 ##################################################################################################
-### Check model convergence (here done only with one species from the stan model and GLV GR)
+### Check model convergence 
 
 for (i in 1:length(SIMlist)){
+  
+  if(!dir.exists(paste0(figPath, names(SIMlist[i])))) dir.create(paste0(figPath, names(SIMlist[i])))
   print(names(SIMlist[i]))
   SIM = SIMlist[[i]]
   Rhats = unlist(lapply(1:S, function(s){
@@ -416,7 +424,7 @@ for (i in 1:length(SIMlist)){
     scale_color_discrete(name="Biotic or abiotic",labels=c("Abiotic","Biotic")) +
     theme_classic() + ggtitle(names(SIMlist[i])) + facet_wrap(.~type,scale="free")
   
-  ggsave(filename = paste0(figPath, names(SIMlist[i]),"_Convergence.pdf"))
+  ggsave(filename = paste0(figPath, names(SIMlist[i]),"/",names(SIMlist[i]),"_Convergence.pdf"))
   
 }
 
@@ -687,7 +695,8 @@ if(S>=20){
 ################################################
 ### With probcov=F
 
-# Compute mean and 95%CI predictions, R2, calibration (% of samples inside the CI)
+
+# Compute mean and 95%CI predictions
 for (i in 1:length(SIMlist)){
   print(names(SIMlist[i]))
 
@@ -700,7 +709,9 @@ for (i in 1:length(SIMlist)){
   colnames(SIMlist[[i]]$prob) = paste0("Y", 1:S)
 
   # run predictions
-  SIMlist[[i]]$pred_stan_bin=trophicSDM_predict(m=SIMlist[[i]]$m_stan,Xnew=Xnew,binary.resp=F,prob.cov=F,mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,error_prop_sample=error_prop_sample)
+  SIMlist[[i]]$pred_stan_bin=trophicSDM_predict(m=SIMlist[[i]]$m_stan,Xnew=Xnew,binary.resp=F,prob.cov=F,
+                                                mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,
+                                                error_prop_sample=error_prop_sample,verbose = F)
 
   # reorder the columns of prob to be sure that we are comparing the same things
   SIMlist[[i]]$prob = SIMlist[[i]]$prob[,spNewNames]
@@ -711,16 +722,7 @@ for (i in 1:length(SIMlist)){
   SIMlist[[i]]$p.qinf.stan_bin = do.call(cbind,lapply(SIMlist[[i]]$pred_stan_bin$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.025)))
   SIMlist[[i]]$p.qsup.stan_bin = do.call(cbind,lapply(SIMlist[[i]]$pred_stan_bin$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.975)))
   
-  
-  # Compute R2 and calibration
-  R2_bin=sapply(spNewNames,function(x){cor(SIMlist[[i]]$p.mean.stan_bin[,x],SIMlist[[i]]$prob[,x])^2})
-  SIMlist[[i]]$R2_bin = R2_bin
-  
-  SIMlist[[i]]$calibration_bin = apply(sapply(spNewNames, function(name){
-    sapply(1:nEnv,function(x) ifelse(SIMlist[[i]]$prob[x,name] < SIMlist[[i]]$p.qsup.stan_bin[x,name] & SIMlist[[i]]$prob[x,name]>SIMlist[[i]]$p.qinf.stan_bin[x,name], 1, 0))
-  }
-  ),FUN=mean,MARGIN=2)
-  
+
 }
 
 
@@ -755,22 +757,15 @@ ggsave(filename = paste0(figPath, "Presence_probability_predictions_Binary", rou
 for (i in 1:length(SIMlist)){
   print(names(SIMlist[i]))
   
-  SIMlist[[i]]$pred_stan_prob=trophicSDM_predict(m=SIMlist[[i]]$m_stan,Xnew=Xnew,binary.resp=F,prob.cov=T,mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,error_prop_sample=error_prop_sample)
+  SIMlist[[i]]$pred_stan_prob=trophicSDM_predict(m=SIMlist[[i]]$m_stan,Xnew=Xnew,binary.resp=F,
+                                                 prob.cov=T,mode=ifelse(fitPreds,"all","out"),
+                                                 pred_samples=pred_samples,
+                                                 error_prop_sample=error_prop_sample, verbose=F)
   
   p.mean.stan.temp=lapply(SIMlist[[i]]$pred_stan_prob$sp.prediction,FUN=function(x) apply(x$predictions.prob,mean, MARGIN = 1))
   SIMlist[[i]]$p.mean.stan_prob=do.call(cbind, p.mean.stan.temp)
   SIMlist[[i]]$p.qinf.stan_prob = do.call(cbind,lapply(SIMlist[[i]]$pred_stan_prob$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.025)))
   SIMlist[[i]]$p.qsup.stan_prob = do.call(cbind,lapply(SIMlist[[i]]$pred_stan_prob$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.975)))
-  
-  
-  R2_prob=sapply(spNewNames,function(x){cor( SIMlist[[i]]$p.mean.stan_prob[,x], SIMlist[[i]]$prob[,x])^2})
-  SIMlist[[i]]$R2_prob = R2_prob
-
-  SIMlist[[i]]$calibration_prob = apply(sapply(spNewNames, function(name){
-    sapply(1:nEnv,function(x) ifelse(SIMlist[[i]]$prob[x,name] < SIMlist[[i]]$p.qsup.stan_prob[x,name] & SIMlist[[i]]$prob[x,name]>SIMlist[[i]]$p.qinf.stan_prob[x,name], 1, 0))
-   }
-  ),FUN=mean,MARGIN=2)
-  
   
   SIMlist[[i]]$corr_prob_bin = sapply(spNewNames,function(x){cor( SIMlist[[i]]$p.mean.stan_prob[,x], SIMlist[[i]]$p.mean.stan_bin[,x])^2})
 
@@ -803,33 +798,6 @@ p <- grid.arrange(arrangeGrob(grobs=lapply(SIMlist, function(SIM)SIM$p.predictio
 ggsave(filename = paste0(figPath, "Presence_probability_predictions_Prob", round(nRep*nbMerge), ".pdf"), p, height=7, width=12)
 
 
-
-
-#### Compare the results``
-
-
-options(repr.plot.width = 12, repr.plot.height = 5, repr.plot.res = 150)
-predAccuracy = do.call(rbind, lapply(SIMlist, function(SIM)reshape::melt(rbind(bin=SIM$R2_bin,prob=SIM$R2_prob), varnames=c("Prediction.Quality", "Species"))))
-
-
-predAccuracy$simMethod <- gsub("\\..*", "", rownames(predAccuracy))
-predAccuracy$Data.type <- gsub(".*_", "", predAccuracy$Prediction.Quality)
-predAccuracy$Metrics <- gsub("_.*", "", predAccuracy$Prediction.Quality)
-predAccuracy$trophL <- as.factor(trophL[as.numeric(gsub("Y", "", predAccuracy$Species))])
-
-p <- ggplot(predAccuracy, aes(x=trophL, y=value, fill=Data.type)) +
-  #geom_point() +
-  #geom_violin() +
-  geom_boxplot() +
-  facet_wrap(.~simMethod, nrow=2) + theme(legend.position="bottom") +
-  ggtitle("R2 comparison between prediction methods, relative to actual presence probabilities")
-p
-ggsave(paste0(figPath,"R2_tSDM.pdf"))
-
-
-
-
-
 ################################################################################################
 ##### Fit Classical SDM
 ################################################################################################
@@ -844,7 +812,9 @@ if ("glm" %in% algos){
   for (i in 1:length(SIMlist)){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
-    SIMlist[[i]]$SDM_glm = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,method="glm",family=binomial(link = "logit"),iter=iter)
+    SIMlist[[i]]$SDM_glm = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,
+                                      method="glm",family=binomial(link = "logit"),iter=iter,
+                                      verbose=F, chains=2)
   }
 }
 
@@ -854,7 +824,8 @@ if ("stan" %in% algos){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
     SIMlist[[i]]$SDM_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,method="stan_glm",
-                                       family=binomial(link = "logit"),iter=iter,run.parallel = F)
+                                       family=binomial(link = "logit"),iter=iter,run.parallel = F,
+                                       verbose = F, chains=2)
   }
 }
 
@@ -863,14 +834,14 @@ if ("bayes" %in% algos){
   for (i in 1:length(SIMlist)){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
-    SIMlist[[i]]$SDM_bayes = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,method="bayesglm",
-                                        family=binomial(link = "logit"),iter=iter)
+    SIMlist[[i]]$SDM_bayes = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,
+                                        method="bayesglm",family=binomial(link = "logit"),
+                                        iter=iter, verbose = F, chains = 2)
   }
 }
 
 ###########################################
 ## Analyse results
-
 
 
 for (i in 1:length(SIMlist)){
@@ -953,8 +924,6 @@ for (i in 1:length(SIMlist)){
 }
 
 
-
-
 ggplotEstimates <- function(SIM, algos=c("stan", "glm", "bayes"), shapeLegend=FALSE, colorLegend=FALSE, wrap.type=TRUE, wrap.trophL=TRUE, onlyBio=FALSE, onlyAbio=FALSE){
   # Remove intercepts, for which there is no true value to compare to
   intercepts=abs(SIM[[paste0("estimates_",algos[1])]]$true)==1
@@ -1031,7 +1000,7 @@ ggplotEstimates <- function(SIM, algos=c("stan", "glm", "bayes"), shapeLegend=FA
 
 # Compute the correlation coefficients
 if (S>=20){
-  SDM.R2_bin = sapply(SIMlist,function(SIM){
+  SDM.R2 = sapply(SIMlist,function(SIM){
     cond = SIM$SDM.estimates_stan$type=="abiotic" & abs(SIM$SDM.estimates_stan$true)!=1
     TL = as.numeric(sub("Trophic level ", "", SIM$SDM.estimates_stan$sp.trophL))
     return(list(TL1 = ifelse(var(SIM$SDM.estimates_stan$p.est[cond & TL==1])!=0, cor(SIM$SDM.estimates_stan$p.est[cond & TL==1],SIM$SDM.estimates_stan$true[cond & TL==1], method="spearman"),NA),
@@ -1039,7 +1008,7 @@ if (S>=20){
                 TL3 = ifelse(var(SIM$SDM.estimates_stan$p.est[cond & TL==3])!=0, cor(SIM$SDM.estimates_stan$p.est[cond & TL==3],SIM$SDM.estimates_stan$true[cond & TL==3], method="spearman"),NA)))
     
   })
-  SDM.R2_bin_pVal = sapply(SIMlist,function(SIM){
+  SDM.R2_pVal = sapply(SIMlist,function(SIM){
     cond = SIM$SDM.estimates_stan$type=="abiotic" & abs(SIM$SDM.estimates_stan$true)!=1
     TL = as.numeric(sub("Trophic level ", "", SIM$SDM.estimates_stan$sp.trophL))
     return(list(TL1 = ifelse(var(SIM$SDM.estimates_stan$p.est[cond & TL==1])!=0, cor.test(SIM$SDM.estimates_stan$p.est[cond & TL==1],SIM$SDM.estimates_stan$true[cond & TL==1], method="spearman",exact=FALSE)$p.value,NA),
@@ -1049,7 +1018,7 @@ if (S>=20){
      })
   
   options(repr.plot.width = 12, repr.plot.height = 3, repr.plot.res = 150)
-  df <- cbind(type=rownames(SDM.R2_bin),stack(as.data.frame(SDM.R2_bin)),stack(as.data.frame(SDM.R2_bin_pVal))$values)
+  df <- cbind(type=rownames(SDM.R2),stack(as.data.frame(SDM.R2)),stack(as.data.frame(SDM.R2_pVal))$values)
   names(df) <- c("Trophic.level", "Correlation.coef", "Simulation.model", "p.value")
   p.max = 0.2
   p <- ggplot(df, aes(Simulation.model, Trophic.level)) + 
@@ -1078,23 +1047,16 @@ for (i in 1:length(SIMlist)){
   pred_samples=pred_samples
   
   #run predictions
-  SIMlist[[i]]$SDM.pred_stan_bin=trophicSDM_predict(m=SIMlist[[i]]$SDM_stan,Xnew=Xnew,binary.resp=F,prob.cov=F,pred_samples=pred_samples,error_prop_sample=error_prop_sample)
+  SIMlist[[i]]$SDM.pred_stan=trophicSDM_predict(m=SIMlist[[i]]$SDM_stan,Xnew=Xnew,binary.resp=F,
+                                                prob.cov=F,pred_samples=pred_samples,
+                                                error_prop_sample=error_prop_sample, verbose = F)
   
-  p.mean.stan.temp=lapply(SIMlist[[i]]$SDM.pred_stan_bin$sp.prediction,FUN=function(x) apply(x$predictions.prob,mean, MARGIN = 1))
-  SIMlist[[i]]$SDM.p.mean.stan_bin=do.call(cbind, p.mean.stan.temp)
+  p.mean.stan.temp=lapply(SIMlist[[i]]$SDM.pred_stan$sp.prediction,FUN=function(x) apply(x$predictions.prob,mean, MARGIN = 1))
+  SIMlist[[i]]$SDM.p.mean.stan=do.call(cbind, p.mean.stan.temp)
   
   # Compute CI
-  SIMlist[[i]]$SDM.p.qinf.stan_bin = do.call(cbind,lapply(SIMlist[[i]]$SDM.pred_stan_bin$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.025)))
-  SIMlist[[i]]$SDM.p.qsup.stan_bin = do.call(cbind,lapply(SIMlist[[i]]$SDM.pred_stan_bin$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.975)))
-  
-  # Compute R2
-  R2_bin=sapply(spNewNames,function(x){cor(SIMlist[[i]]$SDM.p.mean.stan_bin[,x],SIMlist[[i]]$prob[,x])^2})
-  SIMlist[[i]]$SDM.R2_bin = R2_bin
-  
-  SIMlist[[i]]$SDM.calibration_bin = apply(sapply(spNewNames, function(name){
-    sapply(1:nEnv,function(x) ifelse(SIMlist[[i]]$prob[x,name] < SIMlist[[i]]$SDM.p.qsup.stan_bin[x,name] & SIMlist[[i]]$prob[x,name]>SIMlist[[i]]$SDM.p.qinf.stan_bin[x,name], 1, 0))
-  }
-  ),FUN=mean,MARGIN=2)
+  SIMlist[[i]]$SDM.p.qinf.stan = do.call(cbind,lapply(SIMlist[[i]]$SDM.pred_stan$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.025)))
+  SIMlist[[i]]$SDM.p.qsup.stan = do.call(cbind,lapply(SIMlist[[i]]$SDM.pred_stan$sp.prediction,FUN=function(x) apply(x$predictions.prob,quantile, MARGIN = 1,probs=0.975)))
   
 }
 
@@ -1103,13 +1065,13 @@ for (i in 1:length(SIMlist)){
   
   SIM = SIMlist[[i]]
  
-  SIMlist[[i]]$SDM.table_pred_bin=data.frame(obs=as.vector(as.matrix(SIM$prob)), pred=as.vector(as.matrix(SIM$SDM.p.mean.stan_bin)),
-                                                       est.02=as.vector(as.matrix(SIMlist[[i]]$SDM.p.qinf.stan_bin)), est.97=as.vector(as.matrix(SIMlist[[i]]$SDM.p.qsup.stan_bin)),
+  SIMlist[[i]]$SDM.table_pred=data.frame(obs=as.vector(as.matrix(SIM$prob)), pred=as.vector(as.matrix(SIM$SDM.p.mean.stan)),
+                                                       est.02=as.vector(as.matrix(SIMlist[[i]]$SDM.p.qinf.stan)), est.97=as.vector(as.matrix(SIMlist[[i]]$SDM.p.qsup.stan)),
                                                        sp.name=rep(colnames(SIM$prob),each=nrow(SIM$prob)),
                                                        trophL=trophL[as.numeric(sub("Y", "", rep(colnames(SIM$prob),each=nrow(SIM$prob))))])
   
   #plot predicted vs true probabilities of presence                                             
-  SIMlist[[i]]$SDM.p.predictions_bin <- ggplot(data=SIMlist[[i]]$SDM.table_pred_bin,mapping=aes(x=obs,y=pred,col=factor(sp.name, levels=unique(sp.name)))) + 
+  SIMlist[[i]]$SDM.p.predictions <- ggplot(data=SIMlist[[i]]$SDM.table_pred,mapping=aes(x=obs,y=pred,col=factor(sp.name, levels=unique(sp.name)))) + 
     geom_abline(slope=1,intercept = 0) + guides(col=guide_legend(title=NULL, nrow=10)) +
     geom_point(alpha=0.5) + geom_linerange(mapping=aes(ymin=est.02, ymax=est.97), alpha=0.5) +
     ggtitle(paste0("Stan-GLM predictions for ", names(SIMlist)[i], " simulations"))+
@@ -1120,13 +1082,9 @@ for (i in 1:length(SIMlist)){
 
 #plot predicted vs true probabilities of presence 
 options(repr.plot.width = 12, repr.plot.height = 8, repr.plot.res = 150)
-p <- grid.arrange(arrangeGrob(grobs=lapply(SIMlist, function(SIM)SIM$SDM.p.predictions_bin)))
+p <- grid.arrange(arrangeGrob(grobs=lapply(SIMlist, function(SIM)SIM$SDM.p.predictions)))
 ggsave(filename = paste0(figPath, "Presence_probability_predictions_SDM_nTrain", round(nRep*nbMerge), ".png"), p, height=7, width=12)
 
-
-## Check AUS TSS
-#We compute AUC and TSS in predictions the AUC and TSS of the simulated data (are probabilities of presence well separated from presence/absences)
-figPath=simPath
 
 SIMlist = lapply(SIMlist, function(SIM){SIM[!grepl("m_glm|m_bayes|SDM_glm|SDM_bayes|pEstim", names(SIM))]})
 #lapply(SIMlist$GLV_abioticGR, function(SIM)pryr::object_size(SIM))
@@ -1188,41 +1146,740 @@ for(i in 1:length(SIMlist)){
 }
   
 
-### Compute CV fundamental & realized for both prob and bin
+### Compute CV fundamental & realized for both prob and bin and SDM
 for(i in 1:length(SIMlist)){
   
   SIM=SIMlist[[i]]
+  print(names(SIMlist[i]))
   
+  # CV tSDM predictions prob & fundamental niche (notice fund niche does not depend on prob)
   probCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K = 5, fundNiche = T, prob.cov = T, iter = SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample = error_prop_sample,
-                        fitPreds=F,run.parallel=F, nEnv = nEnv)
+                        fitPreds=F,run.parallel=T, nEnv = nEnv)
   
   SIMlist[[i]]$pCV.mean.stan_prob = probCV$meanPred
-  SIMlist[[i]]$pCV.qinf.stan_prob = probCV$Pred975
-  SIMlist[[i]]$pCV.qsup.stan_prob = probCV$Pred025
+  SIMlist[[i]]$pCV.qsup.stan_prob = probCV$Pred975
+  SIMlist[[i]]$pCV.qinf.stan_prob = probCV$Pred025
   
   SIMlist[[i]]$pFundCV.mean.stan = probCV$fundNiche$FN.meanPred
-  SIMlist[[i]]$pFundCV.qinf.stan = probCV$fundNiche$FN.meanPred
-  SIMlist[[i]]$pFundCV.qsup.stan = probCV$fundNiche$FN.meanPred
+  SIMlist[[i]]$pFundCV.qsup.stan = probCV$fundNiche$FN.Pred975
+  SIMlist[[i]]$pFundCV.qinf.stan = probCV$fundNiche$FN.Pred025
   
-  binCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K=5, fundNiche=T, prob.cov=F,iter=SIM$m_stan$iter,
+  # CV tSDM binary predictions
+  binCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
                          pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
                         run.parallel=F, nEnv = nEnv)
   
   SIMlist[[i]]$pCV.mean.stan_bin = binCV$meanPred
-  SIMlist[[i]]$pCV.qinf.stan_bin = binCV$Pred975
-  SIMlist[[i]]$pCV.qsup.stan_bin = binCV$Pred025
+  SIMlist[[i]]$pCV.qsup.stan_bin = binCV$Pred975
+  SIMlist[[i]]$pCV.qinf.stan_bin = binCV$Pred025
+  
+  #CV SDMs
+  sdmCV = tSDM_CV_SIMUL(mod = SIM$SDM_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
+                        pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
+                        run.parallel=F, nEnv = nEnv)
+  
+  SIMlist[[i]]$SDM.pCV.mean.stan = sdmCV$meanPred
+  SIMlist[[i]]$SDM.pCV.qsup.stan = sdmCV$Pred975
+  SIMlist[[i]]$SDM.pCV.qinf.stan = sdmCV$Pred025
+  
   
 }
 
     
-
-    
-plot(SIMlist[[i]]$pCV.mean.stan_bin,  SIMlist[[i]]$pCV.mean.stan_prob)
-    
-    
-    
 nameOrder = cumsum(table(spNewNames)[spNewNames])[paste0("Y", 1:S)]  # table to alternate between name ordering
 
-plotDistributions(SIMlist$GLV_abioticGR, plotprey=T, RN=T, main="Predicted and observed species distribution: GLV Growth Rates",filename=paste0(figPath,"RealizedNicheLV_GR.pdf"))
+for(i in 1:length(SIMlist)){
+  
+  if(!dir.exists(paste0(figPath,names(SIMlist)[i]))) dir.create(paste0(figPath,names(SIMlist)[i]))
+  
+  cat(paste0("### Simul ", i, " ### \n"))
+  SIM = SIMlist[[i]]
+  
+  cat(paste0("### plot ", 1, " ### \n"))
+  
+  try(plotDistributions(SIM, CV=T, RN=T, prob.cov=T,
+                    plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_CV_Realised_prob"),
+                    filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_CV_Realised_prob.pdf")))
+  
+  cat(paste0("### plot ", 2, " ### \n"))
+  
+  try(plotDistributions(SIM, CV=F, RN=T, prob.cov=T,
+                    plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_Realised_prob"),
+                    filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_Realised_prob.pdf")))
+  
+  cat(paste0("### plot ", 3, " ### \n"))
+  
+  try(plotDistributions(SIM, CV=T, RN=T, prob.cov=F,
+                    plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_CV_Realised_bin"),
+                    filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_CV_Realised_bin.pdf")))
+  
+  cat(paste0("### plot ", 4, " ### \n"))
+  
+  try(plotDistributions(SIM, CV=F, RN=T, prob.cov=F,
+                    plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_Realised_bin"),
+                    filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_Realised_bin.pdf")))
+
+  if(!is.null(SIM$fundNiche)){
+  
+    
+  cat(paste0("### plot ", 5, " ### \n"))
+    
+  try(plotDistributions(SIM, CV=T, RN=F, prob.cov=F,
+                    plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_CV_Fund"),
+                    filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_CV_Fund.pdf")))
+  
+  cat(paste0("### plot ", 6, " ### \n"))
+  
+  try(plotDistributions(SIM, CV=F, RN=F, prob.cov=F,
+                    plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_Fund"),
+                    filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_Fund.pdf")))
+  
+  }
+  
+}
+
+
+#####################################################################################################################
+######## Compute goodness of fit metrics:
+# waic, R2, calibration, wasserstein, TSS, AUC, 
+# for both fundamental and realised niche
+
+
+#### Realised
+for(i in 1:length(SIMlist)){
+  
+  SIM = SIMlist[[i]]
+  
+  ###### waic
+  
+  #tSDM
+  waic = unlist(lapply(SIM$m_stan$model,function(x) waic(x)$estimates["waic","Estimate"]))
+  
+  #SDM
+  waic.SDM = unlist(lapply(SIM$SDM_stan$model,function(x) waic(x)$estimates["waic","Estimate"]))
+  
+  ###### R2
+  
+  # R2 bin realized
+  R2.bin=sapply(spNewNames,function(x){cor(SIM$p.mean.stan_bin[,x],SIM$prob[,x])^2})
+  
+  # R2 bin CV
+  R2.CV.bin=sapply(spNewNames,function(x){cor(SIM$pCV.mean.stan_bin[,x],SIM$prob[,x])^2})
+  
+  # R2 prob realized
+  R2.prob=sapply(spNewNames,function(x){cor(SIM$p.mean.stan_prob[,x],SIM$prob[,x])^2})
+  
+  # R2 prob CV
+  R2.CV.prob=sapply(spNewNames,function(x){cor(SIM$pCV.mean.stan_prob[,x],SIM$prob[,x])^2})
+  
+  #SDM realised
+  SDM.R2 = sapply(spNewNames,function(x){cor(SIM$SDM.p.mean.stan[,x],SIM$prob[,x])^2})
+  
+  #SDM realised CV
+  SDM.CV.R2 = sapply(spNewNames,function(x){cor(SIM$SDM.pCV.mean.stan[,x],SIM$prob[,x])^2})
+
+  ##### Calibration
+  
+  # realised bin
+  calibration.bin = apply(sapply(spNewNames, function(name){
+                                  sapply(1:nEnv,function(x) 
+                                    ifelse(SIM$prob[x,name] < SIM$p.qsup.stan_bin[x,name] & 
+                                             SIM$prob[x,name]>SIM$p.qinf.stan_bin[x,name], 1, 0))}),
+                          FUN=mean,MARGIN=2)
+  # realised bin CV
+  calibration.CV.bin = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$prob[x,name] < SIM$pCV.qsup.stan_bin[x,name] & 
+               SIM$prob[x,name]>SIM$pCV.qinf.stan_bin[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  # realised prob
+  calibration.prob = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$prob[x,name] < SIM$p.qsup.stan_prob[x,name] & 
+               SIM$prob[x,name]>SIM$p.qinf.stan_prob[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  # realised prob CV
+  calibration.CV.prob = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$prob[x,name] < SIM$pCV.qsup.stan_prob[x,name] & 
+               SIM$prob[x,name]>SIM$pCV.qinf.stan_prob[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  
+  # SDM
+  SDM.calibration = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$prob[x,name] < SIM$SDM.p.qsup.stan[x,name] & 
+               SIM$prob[x,name]>SIM$SDM.p.qinf.stan[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  #SDM CV
+  SDM.CV.calibration = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$prob[x,name] < SIM$SDM.pCV.qsup.stan[x,name] & 
+               SIM$prob[x,name]>SIM$SDM.pCV.qinf.stan[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  
+  ####### Wasserstein distance
+  
+  # bin realized
+  wass.bin = sapply(1:S,
+                    function(s)transport::wasserstein1d(SIM$prob[,s], SIM$p.mean.stan_bin[,s]))
+
+  # bin CV
+  wass.CV.bin = sapply(1:S,
+                      function(s)transport::wasserstein1d(SIM$prob[,s], SIM$pCV.mean.stan_bin[,s]))
+  
+  # prob realized
+  wass.prob = sapply(1:S,
+                     function(s)transport::wasserstein1d(SIM$prob[,s], SIM$p.mean.stan_prob[,s]))
+  
+  # prob CV
+  wass.CV.prob = sapply(1:S,
+                        function(s)transport::wasserstein1d(SIM$prob[,s], SIM$pCV.mean.stan_prob[,s]))
+  
+
+  #SDM realised
+  SDM.wass = sapply(1:S,
+                        function(s)transport::wasserstein1d(SIM$prob[,s], SIM$SDM.p.mean.stan[,s]))
+  
+  #SDM realised CV
+  SDM.CV.wass= sapply(1:S,
+                        function(s)transport::wasserstein1d(SIM$prob[,s], SIM$SDM.pCV.mean.stan[,s]))
+  
+  
+  
+  ####### AUC & TSS
+  
+  # bin
+  e_joint = sapply(spNewNames, function(j) 
+                              evaluate(p = slice(as.data.frame(SIM$p.mean.stan_bin),rep(row_number(), nRep))[which(SIM$Y[,j]==1),j], 
+                                        a = slice(as.data.frame(SIM$p.mean.stan_bin),rep(row_number(), nRep))[which(SIM$Y[,j]==0),j]))
+  
+  AUC.bin = unlist(lapply(e_joint,function(x) x@auc))
+  TSS.bin = unlist(lapply(e_joint, function(x) max(x@TPR+x@TNR-1)))
+
+  # bin CV
+  e_joint = sapply(spNewNames, function(j) 
+    evaluate(p = slice(as.data.frame(SIM$pCV.mean.stan_bin),rep(row_number(), nRep))[which(SIM$Y[,j]==1),j], 
+             a = slice(as.data.frame(SIM$pCV.mean.stan_bin),rep(row_number(), nRep))[which(SIM$Y[,j]==0),j]))
+  
+  AUC.CV.bin = unlist(lapply(e_joint,function(x) x@auc))
+  TSS.CV.bin = unlist(lapply(e_joint, function(x) max(x@TPR+x@TNR-1)))
+  
+  # prob
+  e_joint = sapply(spNewNames, function(j) 
+    evaluate(p = slice(as.data.frame(SIM$p.mean.stan_prob),rep(row_number(), nRep))[which(SIM$Y[,j]==1),j], 
+             a = slice(as.data.frame(SIM$p.mean.stan_prob),rep(row_number(), nRep))[which(SIM$Y[,j]==0),j]))
+  
+  AUC.prob = unlist(lapply(e_joint,function(x) x@auc))
+  TSS.prob = unlist(lapply(e_joint, function(x) max(x@TPR+x@TNR-1)))
+  
+  # prob CV
+  e_joint = sapply(spNewNames, function(j) 
+    evaluate(p = slice(as.data.frame(SIM$pCV.mean.stan_prob),rep(row_number(), nRep))[which(SIM$Y[,j]==1),j], 
+             a = slice(as.data.frame(SIM$pCV.mean.stan_prob),rep(row_number(), nRep))[which(SIM$Y[,j]==0),j]))
+  
+  AUC.CV.prob = unlist(lapply(e_joint,function(x) x@auc))
+  TSS.CV.prob = unlist(lapply(e_joint, function(x) max(x@TPR+x@TNR-1)))
+  
+  #SDM
+  e_joint = sapply(spNewNames, function(j) 
+    evaluate(p = slice(as.data.frame(SIM$SDM.p.mean.stan),rep(row_number(), nRep))[which(SIM$Y[,j]==1),j], 
+             a = slice(as.data.frame(SIM$SDM.p.mean.stan),rep(row_number(), nRep))[which(SIM$Y[,j]==0),j]))
+  
+  SDM.AUC = unlist(lapply(e_joint,function(x) x@auc))
+  SDM.TSS = unlist(lapply(e_joint, function(x) max(x@TPR+x@TNR-1)))
+  
+  
+  #SDM CV
+  e_joint = sapply(spNewNames, function(j) 
+    evaluate(p = slice(as.data.frame(SIM$SDM.pCV.mean.stan),rep(row_number(), nRep))[which(SIM$Y[,j]==1),j], 
+             a = slice(as.data.frame(SIM$SDM.pCV.mean.stan),rep(row_number(), nRep))[which(SIM$Y[,j]==0),j]))
+  
+  SDM.CV.AUC = unlist(lapply(e_joint,function(x) x@auc))
+  SDM.CV.TSS = unlist(lapply(e_joint, function(x) max(x@TPR+x@TNR-1)))
+  
+  
+  # Merge in a table
+  eval.table = reshape::melt(rbind(waic=waic, waic.SDM=waic.SDM,
+                                 R2.bin=R2.bin,R2.CV.bin=R2.CV.bin,
+                                 R2.prob=R2.prob,R2.CV.prob=R2.CV.prob,
+                                 SDM.R2=SDM.R2,SDM.CV.R2=SDM.CV.R2,
+                                 calibration.bin=calibration.bin,calibration.CV.bin=calibration.CV.bin,
+                                 calibration.prob=calibration.prob,calibration.CV.prob=calibration.CV.prob,
+                                 SDM.calibration=SDM.calibration,SDM.CV.calibration=SDM.CV.calibration,
+                                 wass.bin=wass.bin,wass.CV.bin=wass.CV.bin,
+                                 wass.prob=wass.prob,wass.CV.prob=wass.CV.prob,
+                                 SDM.wass=SDM.wass,SDM.CV.wass=SDM.CV.wass,
+                                 AUC.bin=AUC.bin,AUC.CV.bin=AUC.CV.bin,
+                                 AUC.prob=AUC.prob,AUC.CV.prob=AUC.CV.prob,
+                                 SDM.AUC=SDM.AUC,SDM.CV.AUC=SDM.CV.AUC,
+                                 TSS.bin=TSS.bin,TSS.CV.bin=TSS.CV.bin,
+                                 TSS.prob=TSS.prob,TSS.CV.prob=TSS.CV.prob,
+                                 SDM.TSS=SDM.TSS,SDM.CV.TSS=SDM.CV.TSS),varnames=c("model","species"))
+  
+  eval.table$type = vector(length=nrow(eval.table))
+  eval.table$type[grep("bin",eval.table$model)] = "bin"
+  eval.table$type[grep("prob",eval.table$model)] = "prob"
+  #eval.table$type[which(eval.table$type==FALSE)] = "SDM"
+  
+  eval.table$CV = sapply(1:nrow(eval.table), function(x) ifelse(grepl("CV",eval.table$model[x]),"CV","train"))
+  
+  eval.table$metric = vector(length=nrow(eval.table))
+  eval.table$metric[grep("waic",eval.table$model)] = "waic"
+  eval.table$metric[grep("R2",eval.table$model)] = "R2"
+  eval.table$metric[grep("calibration",eval.table$model)] = "calibration"
+  eval.table$metric[grep("wass",eval.table$model)] = "wasserstein"
+  eval.table$metric[grep("TSS",eval.table$model)] = "TSS"
+  eval.table$metric[grep("AUC",eval.table$model)] = "AUC"
+  
+  eval.table$TL = trophL[as.numeric(sub("Y","",eval.table$species))]
+  
+  eval.table$species = spNames[as.numeric(sub("Y","",eval.table$species))]
+  eval.table$species = factor(eval.table$species, levels=spNames)
+  
+  eval.table$model =  ifelse(grepl("SDM",eval.table$model),"SDM","tSDM")
+  
+  SIMlist[[i]]$eval.realised = eval.table
+  
+  
+}
+
+
+
+# Fundamental niche metrics
+knownFundNiche = sapply(SIMlist, function(X)"fundNiche" %in% names(X))
+
+for(i in which(knownFundNiche)){
+  
+  SIM = SIMlist[[i]]
+  
+  # R2 
+  R2.fund = sapply(spNewNames,function(x){cor(SIM$pFund.mean.stan[,x],SIM$fundNiche[,x])^2})
+  
+  # R2 CV
+  R2.CV.fund = sapply(spNewNames,function(x){cor(SIM$pFundCV.mean.stan[,x],SIM$fundNiche[,x])^2})
+  
+  #SDM
+  SDM.R2 = sapply(spNewNames,function(x){cor(SIM$SDM.p.mean.stan[,x],SIM$fundNiche[,x])^2})
+  #SDM
+  SDM.CV.R2 = sapply(spNewNames,function(x){cor(SIM$SDM.pCV.mean.stan[,x],SIM$fundNiche[,x])^2})
+  
+  #tSDM
+  calibration = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$fundNiche[x,name] < SIM$pFund.qsup.stan[x,name] & 
+               SIM$fundNiche[x,name]>SIM$pFund.qinf.stan[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  # tSDM CV
+  calibration.CV = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$fundNiche[x,name] < SIM$pFundCV.qsup.stan[x,name] & 
+               SIM$fundNiche[x,name]>SIM$pFundCV.qinf.stan[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  # SDM
+  SDM.calibration = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$fundNiche[x,name] < SIM$SDM.p.qsup.stan[x,name] & 
+               SIM$fundNiche[x,name]>SIM$SDM.p.qinf.stan[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  #SDM CV
+  SDM.CV.calibration = apply(sapply(spNewNames, function(name){
+    sapply(1:nEnv,function(x) 
+      ifelse(SIM$fundNiche[x,name] < SIM$SDM.pCV.qsup.stan[x,name] & 
+               SIM$fundNiche[x,name]>SIM$SDM.pCV.qinf.stan[x,name], 1, 0))}),
+    FUN=mean,MARGIN=2)
+  
+  
+  # wass tSDM
+  wass.fund = sapply(1:S,
+                     function(s)transport::wasserstein1d(SIM$fundNiche[,s], SIM$pFund.mean.stan[,s]))
+  
+  # wass tSDM CV
+  wass.CV.fund = sapply(1:S,
+                        function(s)transport::wasserstein1d(SIM$fundNiche[,s], SIM$pFundCV.mean.stan[,s]))
+  
+  #SDM realised
+  SDM.wass.fund = sapply(1:S,
+                         function(s)transport::wasserstein1d(SIM$fundNiche[,s], SIM$SDM.p.mean.stan[,s]))
+  
+  #SDM realised CV
+  SDM.wass.fund.CV = sapply(1:S,
+                            function(s)transport::wasserstein1d(SIM$fundNiche[,s], SIM$SDM.pCV.mean.stan[,s]))
+  
+  
+  eval.fund.table = reshape::melt(rbind(R2.fund = R2.fund, R2.CV.fund = R2.CV.fund,
+                                   SDM.R2 = SDM.R2, SDM.CV.R2 = SDM.CV.R2,
+                                   calibration = calibration, calibration.CV = calibration.CV,
+                                   SDM.calibration = SDM.calibration, SDM.CV.calibration = SDM.CV.calibration,
+                                   wass.fund = wass.fund, wass.CV.fund = wass.CV.fund,
+                                   SDM.wass.fund = SDM.wass.fund, SDM.wass.fund.CV = SDM.wass.fund.CV),
+                             varnames=c("model","species"))
+  
+  eval.fund.table$CV = sapply(1:nrow(eval.fund.table), function(x) ifelse(grepl("CV",eval.fund.table$model[x]),"CV","train"))
+  
+  eval.fund.table$metric = vector(length=nrow(eval.fund.table))
+  eval.fund.table$metric[grep("R2",eval.fund.table$model)]= "R2"
+  eval.fund.table$metric[grep("calibration",eval.fund.table$model)]= "calibration"
+  eval.fund.table$metric[grep("wass",eval.fund.table$model)]= "wasserstein"
+
+  eval.fund.table$TL = trophL[as.numeric(sub("Y","",eval.fund.table$species))]
+  
+  eval.fund.table$species = spNames[as.numeric(sub("Y","",eval.fund.table$species))]
+  eval.fund.table$species = factor(eval.fund.table$species, levels=spNames)
+  
+  eval.fund.table$model =  ifelse(grepl("SDM",eval.fund.table$model),"SDM","tSDM")
+  
+  SIMlist[[i]]$eval.fund = eval.fund.table
+  
+}
+
+
+
+#####################################################################################################################
+######## Plot metrics
+
+
+######## Realised
+for(i in 1:length(SIMlist)){
+  
+  SIM = SIMlist[[i]]
+
+  eval.table = SIM$eval.realised
+  
+  
+  ### Plot WAIC
+  
+  # binary no CV
+  p1 = ggplot(data=eval.table[which(eval.table$metric=="waic"),]) +
+       geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+       geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+       ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+                                                                    axis.text.x= element_text(angle=45,vjust=0.5),
+                                                                    axis.title=element_text(size=16,face="bold"),
+                                                                    legend.title = element_text(size=16,face="bold"),
+                                                                    legend.text = element_text(size=16,face="bold"),
+    )
+  
+  p2 = ggplot(data=eval.table[which(eval.table$metric=="waic" &
+                                      eval.table$TL!=1),]) +
+       geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+                                                                   axis.title=element_text(size=16,face="bold"),
+                                                                   legend.title = element_text(size=16,face="bold"),
+                                                                   legend.text = element_text(size=16,face="bold"))
+  
+  ggarrange(p1,p2,align="h",widths = c(3,1))
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_waic.pdf"),
+         width=20,height=10, dpi = 150, units = "in")
+  
+  
+  ### Plot Wassersetin distances
+  
+  # binary no CV
+  p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                    eval.table$type %in% c("bin",FALSE) &
+                                    eval.table$CV=="train"),]) +
+      geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+      geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+      ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+                                                                      axis.text.x= element_text(angle=45,vjust=0.5),
+                                                                      axis.title=element_text(size=16,face="bold"),
+                                                                      legend.title = element_text(size=16,face="bold"),
+                                                                      legend.text = element_text(size=16,face="bold"),
+                                                                      )
+  
+  p2 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                     eval.table$type %in% c("bin",FALSE) &
+                                     eval.table$CV=="train" &
+                                      eval.table$TL!=1),]) +
+      geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+                                                                     axis.title=element_text(size=16,face="bold"),
+                                                                     legend.title = element_text(size=16,face="bold"),
+                                                                     legend.text = element_text(size=16,face="bold"))
+  ggarrange(p1,p2,align="h",widths = c(3,1))
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_wass_train_bin.pdf"),
+         width=20,height=10, dpi = 150, units = "in")
+  
+  
+  # prob no CV
+  p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$type %in% c("prob",FALSE) &
+                                      eval.table$CV=="train"),]) +
+    geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+    geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+    ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+                                                                    axis.text.x= element_text(angle=45,vjust=0.5),
+                                                                    axis.title=element_text(size=16,face="bold"),
+                                                                    legend.title = element_text(size=16,face="bold"),
+                                                                    legend.text = element_text(size=16,face="bold"),
+    )
+  
+  p2 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$type %in% c("prob",FALSE) &
+                                      eval.table$CV=="train" &
+                                      eval.table$TL!=1),]) +
+    geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+                                                                   axis.title=element_text(size=16,face="bold"),
+                                                                   legend.title = element_text(size=16,face="bold"),
+                                                                   legend.text = element_text(size=16,face="bold"))
+  ggarrange(p1,p2,align="h",widths = c(3,1))
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_wass_train_prob.pdf"),
+         width=20,height=10, dpi = 150, units = "in")
+  
+  
+  
+  
+  # bin CV
+  p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$type %in% c("bin",FALSE) &
+                                      eval.table$CV=="CV"),]) +
+    geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+    geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+    ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+                                                                    axis.text.x= element_text(angle=45,vjust=0.5),
+                                                                    axis.title=element_text(size=16,face="bold"),
+                                                                    legend.title = element_text(size=16,face="bold"),
+                                                                    legend.text = element_text(size=16,face="bold"),
+    )
+  
+  p2 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$type %in% c("bin",FALSE) &
+                                      eval.table$CV=="CV" &
+                                      eval.table$TL!=1),]) +
+    geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+                                                                   axis.title=element_text(size=16,face="bold"),
+                                                                   legend.title = element_text(size=16,face="bold"),
+                                                                   legend.text = element_text(size=16,face="bold"))
+  ggarrange(p1,p2,align="h",widths = c(3,1))
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_wass_CV_bin.pdf"),
+         width=20,height=10, dpi = 150, units = "in")
+  
+  
+  # prob CV
+  p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$type %in% c("prob",FALSE) &
+                                      eval.table$CV=="CV"),]) +
+    geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+    geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+    ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+                                                                    axis.text.x= element_text(angle=45,vjust=0.5),
+                                                                    axis.title=element_text(size=16,face="bold"),
+                                                                    legend.title = element_text(size=16,face="bold"),
+                                                                    legend.text = element_text(size=16,face="bold"),
+    )
+  
+  p2 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$type %in% c("prob",FALSE) &
+                                      eval.table$CV=="CV" &
+                                      eval.table$TL!=1),]) +
+    geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+                                                                   axis.title=element_text(size=16,face="bold"),
+                                                                   legend.title = element_text(size=16,face="bold"),
+                                                                   legend.text = element_text(size=16,face="bold"))
+  ggarrange(p1,p2,align="h",widths = c(3,1))
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_wass_CV_prob.pdf"),
+         width=20,height=10, dpi = 150, units = "in")
+  
+  
+  ###### All together
+  
+  p = ggplot(eval.table[which(eval.table$TL != 1),]) +
+      geom_boxplot(aes(y = value, col = model, x = model, fill = type),alpha=0.5) +
+      facet_grid(metric~CV, scale="free")
+
+  
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_all_metrics.pdf"),
+         width=10,height=15, dpi = 150, units = "in")
+  
+  
+  ##### Interaction force versus quality of predictions
+  # 
+  # delta_R2 = eval.table[which(eval.table$model=="tSDM" & eval.table$metric == "R2" & eval.table$type == "bin"  & eval.table$TL != 1),"value"] - eval.table[which(eval.table$model=="SDM" & eval.table$metric == "R2" & eval.table$TL != 1),"value"]
+  # names(delta_R2) = eval.table[which(eval.table$model=="SDM" & eval.table$metric == "R2" & eval.table$TL != 1),"species"]
+  # delta_wass = eval.table[which(eval.table$model=="tSDM" & eval.table$metric == "wasserstein" & eval.table$type == "bin" & eval.table$TL != 1),"value"] - eval.table[which(eval.table$model=="SDM" & eval.table$metric == "wasserstein" & eval.table$TL != 1),"value"]
+  # names(delta_wass) = eval.table[which(eval.table$model=="SDM" & eval.table$metric == "R2" & eval.table$TL != 1),"species"]
+  # delta_TSS = eval.table[which(eval.table$model=="tSDM" & eval.table$metric == "TSS" & eval.table$type == "bin" & eval.table$TL != 1),"value"] - eval.table[which(eval.table$model=="SDM" & eval.table$metric == "TSS" & eval.table$TL != 1),"value"]
+  # names(delta_TSS) = eval.table[which(eval.table$model=="SDM" & eval.table$metric == "R2" & eval.table$TL != 1),"species"]
+  #
+  # IntMat2=IntMat;IntMat2[lower.tri(PredMat, diag=TRUE)] <- 0
+  # 
+  # BioticPress = colSums(IntMat2)[which(trophL[nameOrder]!=1)]
+  # BioticPress = rep(BioticPress,each=2)
+  # BioticPress = BioticPress[names(delta_R2)]
+  # 
+  # cor.test(delta_R2,BioticPress)
+  # cor.test(delta_TSS,BioticPress)
+  # cor.test(delta_wass,BioticPress)
+  # 
+  # 
+  # if(!is.null(SIM$fundNiche)){
+  # BioticPress2 = sapply(spNewNames,
+  #                       function(spNewNames) transport::wasserstein1d(SIM$prob[,spNewNames],SIM$fundNiche[,spNewNames]))
+  # BioticPress2 = BioticPress2[nameOrder]
+  # names(BioticPress2) = spNames
+  # BioticPress2 = BioticPress2[which(trophL !=1)]
+  # BioticPress2 = rep(BioticPress2,each=2)
+  # BioticPress2 = BioticPress2[names(delta_R2)]
+  # 
+  # cor.test(delta_R2,BioticPress2) 
+  # 
+  # cor.test(delta_wass,BioticPress2) 
+  # 
+  # cor.test(delta_TSS,BioticPress2)
+  # 
+  # }
+  # 
+  
+}
+
+
+#### Random plots if you want to check something in particular
+# 
+# 
+# # prob CV
+# p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+#                                     eval.table$type %in% c("bin",FALSE) &
+#                                     eval.table$CV=="train"),]) +
+#   geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+#   geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+#   ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+#                                                                   axis.text.x= element_text(angle=45,vjust=0.5),
+#                                                                   axis.title=element_text(size=16,face="bold"),
+#                                                                   legend.title = element_text(size=16,face="bold"),
+#                                                                   legend.text = element_text(size=16,face="bold"),
+#   )
+# 
+# p2 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+#                                     eval.table$type %in% c("bin",FALSE) &
+#                                     !eval.table$CV &
+#                                     eval.table$TL!=1),]) +
+#   geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+#                                                                  axis.title=element_text(size=16,face="bold"),
+#                                                                  legend.title = element_text(size=16,face="bold"),
+#                                                                  legend.text = element_text(size=16,face="bold"))
+# ggarrange(p1,p2,align="h",widths = c(3,1))
+# 
+
+
+######## Fundamental 
+
+for(i in which(knownFundNiche)){
+  
+  SIM = SIMlist[[i]]
+  
+  eval.table = SIM$eval.fund
+  
+  
+  ### Plot Wassersetin distances
+  
+  # no CV
+  p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$CV=="train"),]) +
+    geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+    geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+    ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+                                                                    axis.text.x= element_text(angle=45,vjust=0.5),
+                                                                    axis.title=element_text(size=16,face="bold"),
+                                                                    legend.title = element_text(size=16,face="bold"),
+                                                                    legend.text = element_text(size=16,face="bold"),
+    )
+  
+  p2 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein"  &
+                                      eval.table$CV=="train" &
+                                      eval.table$TL!=1),]) +
+    geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+                                                                   axis.title=element_text(size=16,face="bold"),
+                                                                   legend.title = element_text(size=16,face="bold"),
+                                                                   legend.text = element_text(size=16,face="bold"))
+  
+  ggarrange(p1,p2,align="h",widths = c(3,1))
+  
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_wass_fund_train.pdf"),
+         width=20,height=10, dpi = 150, units = "in")
+  
+  
+  
+  # CV
+  p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$CV=="CV"),]) +
+    geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
+    geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
+    ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
+                                                                    axis.text.x= element_text(angle=45,vjust=0.5),
+                                                                    axis.title=element_text(size=16,face="bold"),
+                                                                    legend.title = element_text(size=16,face="bold"),
+                                                                    legend.text = element_text(size=16,face="bold"),
+    )
+  
+  p2 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
+                                      eval.table$CV=="CV" &
+                                      eval.table$TL!=1),]) +
+    geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
+                                                                   axis.title=element_text(size=16,face="bold"),
+                                                                   legend.title = element_text(size=16,face="bold"),
+                                                                   legend.text = element_text(size=16,face="bold"))
+  
+  ggarrange(p1,p2,align="h",widths = c(3,1))
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_wass_CV_bin.pdf"),
+         width=20,height=10, dpi = 150, units = "in")
+  
+  ###### All together
+  
+  p = ggplot(eval.table[which(eval.table$TL != 1),]) +
+    geom_boxplot(aes(y=value, col = model)) + facet_grid(metric~CV, scale="free")  +
+    scale_fill_discrete(name="Type of covariates",
+                        labels=c("binary","probability"),
+                        type = c("#404040","#FFFFFF","#A0A0A0"),
+                        breaks = c("bin","prob"))
+  
+  ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_all_metrics_fund.pdf"),
+         width=10,height=15, dpi = 150, units = "in")
+  
+  ##### Interaction force versus quality of predictions
+  # 
+  # delta_R2 = eval.table[which(eval.table$model=="tSDM" & eval.table$metric == "R2"  & eval.table$TL != 1),"value"] - eval.table[which(eval.table$model=="SDM" & eval.table$metric == "R2" & eval.table$TL != 1),"value"]
+  # names(delta_R2) = eval.table[which(eval.table$model=="SDM" & eval.table$metric == "R2" & eval.table$TL != 1),"species"]
+  # delta_wass = eval.table[which(eval.table$model=="tSDM" & eval.table$metric == "wasserstein" & eval.table$TL != 1),"value"] - eval.table[which(eval.table$model=="SDM" & eval.table$metric == "wasserstein" & eval.table$TL != 1),"value"]
+  # names(delta_wass) = eval.table[which(eval.table$model=="SDM"  & eval.table$TL != 1),"species"]
+  # delta_TSS = eval.table[which(eval.table$model=="tSDM" & eval.table$metric == "TSS" & eval.table$TL != 1),"value"] - eval.table[which(eval.table$model=="SDM" & eval.table$metric == "TSS" & eval.table$TL != 1),"value"]
+  # names(delta_TSS) = eval.table[which(eval.table$model=="SDM" & eval.table$metric == "R2" & eval.table$TL != 1),"species"]
+  # 
+  # IntMat2=IntMat;IntMat2[lower.tri(PredMat, diag=TRUE)] <- 0
+  # 
+  # BioticPress = colSums(IntMat2)[which(trophL[nameOrder]!=1)]
+  # BioticPress = rep(BioticPress,each=2)
+  # BioticPress = BioticPress[names(delta_R2)]
+  # 
+  # cor.test(delta_R2,BioticPress)
+  # cor.test(delta_TSS,BioticPress)
+  # cor.test(delta_wass,BioticPress)
+  # 
+  # 
+  # if(!is.null(SIM$fundNiche)){
+  #   BioticPress2 = sapply(spNewNames,
+  #                         function(spNewNames) transport::wasserstein1d(SIM$prob[,spNewNames],SIM$fundNiche[,spNewNames]))
+  #   BioticPress2 = BioticPress2[nameOrder]
+  #   names(BioticPress2) = spNames
+  #   BioticPress2 = BioticPress2[which(trophL !=1)]
+  #   BioticPress2 = rep(BioticPress2,each=2)
+  #   BioticPress2 = BioticPress2[names(delta_R2)]
+  #   
+  #   cor.test(delta_R2,BioticPress2) 
+  #   
+  #   cor.test(delta_wass,BioticPress2) 
+  #   
+  #   cor.test(delta_TSS,BioticPress2)
+  #   
+  # }
+  # 
+  
+}
 

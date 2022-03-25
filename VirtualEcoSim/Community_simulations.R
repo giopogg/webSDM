@@ -1,8 +1,8 @@
 rm(list=ls())
-
+.libPaths( c( .libPaths(), "~/my_r_libraries/") )   
 # Choose wether to simulate or simply load already simulated datasets
 loadSim = FALSE
-#setwd("~/Documents/Phd/Futureweb/Code/MY_SCRIPTS/SIM_JEREMY_old")
+setwd("~/Documents/GitHub/trophicSDM/VirtualEcoSim")
 
 args= commandArgs(trailingOnly = TRUE)
 job=args[1]
@@ -18,7 +18,7 @@ if (!loadSim){
     niche_breadth_Kbasal=0.05
     niche_breadthVC=0.3 
     # Name the directory in which to store the simulations
-    simPath = paste0("Simulations_S",S,"L",L,"_nEnv",nEnv,"_nRep",nRep,"_maxBI",maxBI,"_job",job,"/")
+    simPath = paste0("Simulations_S",S,"L",L,"_nEnv",nEnv,"_nRep",nRep,"_maxBI",maxBI,"_",job,"/")
     dir.create(simPath, showWarnings = FALSE)
 }else{
     # Choose the main simulation parameter values
@@ -39,19 +39,7 @@ if (!loadSim){
 }
 
 
-# In order to the code on the cluster, some packages have to be installed locally.
-# library2 <- function(package){
-#     if (!suppressWarnings(suppressMessages(require(package, character.only=T)))){
-#         # Package not installed globally
-#         if (!suppressWarnings(suppressWarnings(require(package, lib.loc="../local_packages", character.only=T)))){
-#             # Package not installed locally
-#             install.packages(package, lib = "../local_packages", )
-#             suppressMessages(library(package, lib.loc="../local_packages", character.only=T))
-#         }
-#     }
-# }
-
-library("plot.matrix")
+#library("plot.matrix")
 library("igraph")
 library("gtools")
 library("cheddar")
@@ -64,8 +52,6 @@ library("purrr")
 library("readr")
 library("matrixcalc")
 library("vegan")
-#install_github('nathanvan/parallelsugar')
-library("parallelsugar")
 library("parallel")
 source("Sim_functions.R")
 library("truncnorm")
@@ -239,7 +225,7 @@ if (loadSim){
 
     glv.finalStates.abioticKbasal <- mclapply(1:nRep, function(x){
         final_state=sapply(envs, function(e){
-            glv.out.abioticKbasal <- simGLV(Stroph, IntMat, spNames, reduceK = TRUE, env=e, niche_breadth_Kbasal=niche_breadth_Kbasal, niche_optima=niche_optima)
+            glv.out.abioticKbasal <- simGLV(Stroph, IntMat, spNames, reduceK = TRUE, env=e, niche_breadth = niche_breadth_Kbasal, niche_optima=niche_optima)
             final_state <- t(data.frame(PA=as.numeric(glv.out.abioticKbasal[,ncol(glv.out.abioticKbasal)]>0)))
             final_abundance <- t(data.frame(AB=glv.out.abioticKbasal[,ncol(glv.out.abioticKbasal)]))
             return(list(PA=final_state,AB=final_abundance))})
@@ -459,7 +445,7 @@ write.csv2(glv.fundNicheTh.abioticGR, paste0(simPath,"glv.fundNicheTh.abioticGR.
 
 niche_breadth_Kbasal=niche_breadth_Kbasal
 
-glv.fundNicheTh.abioticKbasal = t(sapply(envs, function(e)1-ptruncnorm(1e-10*exp((e-niche_optima)**2/(2*niche_breadth**2))*(trophL==1) - glv.meanAbundances.abioticKbasal %*% (IntMat*PredMat), 
+glv.fundNicheTh.abioticKbasal = t(sapply(envs, function(e)1-ptruncnorm(1e-10*exp((e-niche_optima)**2/(2*niche_breadth_Kbasal**2))*(trophL==1) - glv.meanAbundances.abioticKbasal %*% (IntMat*PredMat), 
                                                                        mean = Reduce('+', b.fundNiche[-1])+(trophL==1), sd=Reduce('+', sd_noise.fundNiche[-1]), 
                                                                        a = ifelse(trophL==1,-Inf,-Inf), b = ifelse(trophL>1,0,Inf))))
 #glv.fundNicheTh.abioticKbasal[,trophL==1] <- t(sapply(envs, function(e) -diag(IntMat.fundNiche$TL1)*exp(-(e-niche_optima)**2/(2*niche_breadth**2))) > 1e-10)[,trophL==1]

@@ -319,6 +319,7 @@ ggsave(paste0(figPath,"AUC_TSS_Comparison.pdf"))
 
 knownFundNiche = sapply(SIMlist, function(X)"fundNiche" %in% names(X))
 for (i in which(knownFundNiche)){
+  
   SIM = SIMlist[[i]]
   envs = SIM$X[1:nEnv,ifelse(intercept,-1,-(K+1))]
   
