@@ -731,9 +731,7 @@ SDMpredict=function(m,focal=focal,newdata,pred_samples,binary.resp,prob.cov){
 # K: the number of folds. can be NULL if index is specified
 # index: a vector containing the fold assigned to each of the sites
 
-tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
-                   pred_samples=m$iter,run.parallel,verbose=F,
-                   error_prop_sample=10,fitPreds=F){
+tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,pred_samples=m$iter,error_prop_sample=10,fitPreds=F){
   
   n = nrow(m$data$X)
   S = length(m$model)
@@ -754,9 +752,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
     X = m$data$X[train,]
     
     m_K = trophicSDM(Y=Y,X=X,G=m$G,formulas=m$form.env,penal=m$penal,method=m$method,
-                     family=m$family,fitPreds=fitPreds,iter=iter,
-                     run.parallel = run.parallel, verbose = verbose,
-                     chains=2)
+                     family=m$family,fitPreds=fitPreds,iter=iter,run.parallel = TRUE,chains=2)
     
     pred_K = trophicSDM_predict(m=m_K,Xnew = m$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
@@ -787,7 +783,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
       
     }
     
-    print(paste0("Fold ", i, " out of ", K,"\n"))
+    cat("Fold ", i, " out of ", K,"\n")
     
   }
   
@@ -825,7 +821,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
 
 tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
                          pred_samples, error_prop_sample = 10,
-                         fitPreds = F,run.parallel = T, nEnv, verbose=F, chains=2){
+                         fitPreds = F,run.parallel = F, nEnv, verbose=T, chains=2){
   
   X = mod$data$X[1:nEnv,"X1"]
   
@@ -852,13 +848,13 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
     test = which(partition == i)
 
     m_K = trophicSDM(Y=mod$data$Y[train,],X=mod$data$X[train,],G=mod$G,formulas=mod$form.env,penal=mod$penal,method=mod$method,
-                     family=mod$family,fitPreds=fitPreds,iter=iter,run.parallel = run.parallel,verbose=verbose,chains=chains)
+                     family=mod$family,fitPreds=fitPreds,iter=iter,run.parallel = run.parallel,verbose=F,chains=chains)
     
 
     pred_K = trophicSDM_predict(m=m_K,Xnew = mod$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
                                 mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,
-                                error_prop_sample=error_prop_sample, verbose = verbose)
+                                error_prop_sample=error_prop_sample, verbose = F)
     
     preds[test,,] = abind(lapply(pred_K$sp.prediction,function(x) x$predictions.prob),along=3)
     
@@ -882,7 +878,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
       
     }
     
-    print(paste0("Fold ", i, " out of ", K,"\n"))
+    cat("Fold ", i, " out of ", K,"\n")
     
   }
   

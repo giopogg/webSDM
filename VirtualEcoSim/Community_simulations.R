@@ -6,6 +6,9 @@ setwd("~/Documents/GitHub/trophicSDM/VirtualEcoSim")
 
 args= commandArgs(trailingOnly = TRUE)
 job=args[1]
+
+#set.seed(as.numeric(gsub("job_", "", job))*100)
+
 # Parameters
 if (!loadSim){
     # Choose the main simulation parameter values

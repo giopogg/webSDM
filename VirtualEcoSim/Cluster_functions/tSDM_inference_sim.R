@@ -1,13 +1,12 @@
 ####### Jeremy: test of tSDM and SDMs on simulation data
 rm(list=ls())
+.libPaths( c( .libPaths(), "~/my_r_libraries/") )   
+
 library(igraph)
 library(Matrix)
-library(cheddar)
-library(cowplot)
 library(GGally)
 library(intergraph)
 library(gridExtra)
-library(ggpubr)
 library(dismo)
 library(coda)
 library(transport)
@@ -23,24 +22,26 @@ library(stringr)
 library(bayesplot)
 library(parallel)
 
-root= "/Users/poggiatg/Documents/GitHub/trophicSDM/VirtualEcoSim/"
+#root= "/Users/poggiatg/Documents/GitHub/trophicSDM/VirtualEcoSim/"
+#root= "/Users/poggiatg/Documents/GitHub/trophicSDM/VirtualEcoSim/"
+#setwd(root)
 
-setwd(root)
-
-source("../tSDM_functions.R")
+source("tSDM_functions.R")
   
 #################################################################################################
 #### Test on simulated data
 ################################################################################################
 
-#job=args[1]
-#job=NA
-simPath = "Simulations_S20L3_nEnv51_nRep50_strengthBI5_asy/"   # directory from which to load the simulations
+args= commandArgs(trailingOnly = TRUE)
+
+job=args[1]
+simPath = paste0("Simulations_S20L3_nEnv51_nRep50_maxBI5_",job,"/")
+#simPath = "Simulations_S20L3_nEnv51_nRep50_strengthBI5_asy/"   # directory from which to load the simulations
 S = as.numeric(gsub(".*S|L.*", "", simPath))                       # number of species
 L = as.numeric(gsub(".*L|_nEnv.*", "", simPath))                   # number of trophic levels
 nEnv = as.numeric(gsub(".*nEnv|_nRep.*", "", simPath))             # number of environments
-nRep = as.numeric(gsub(".*nRep|_strengthBI.*", "", simPath))         # number of replicates
-strengthBI = as.numeric(gsub(".*strengthBI|_asy.*", "", simPath)) # strength of biotic interactions
+nRep = as.numeric(gsub(".*nRep|_maxBI.*", "", simPath))         # number of replicates
+strengthBI = as.numeric(gsub(".*maxBI|_job.*", "", simPath)) # strength of biotic interactions
 mergeReplicates = TRUE   # whether to merge the simulation replicates to train the models
 nbMerge = 1                              # between 0 and 1, ratio of replicate to keep for fitting
 linear = F                               # whether to include a quadratic term for X
@@ -148,7 +149,7 @@ save(spNewNames, file = paste0(simPath,"spNewNames.R"))
 niche_optima <- read.csv2(paste0(simPath, "niche_optima.csv"))[[1]]
 names(niche_optima) = paste0("Y", 1:S)
 niche_optima = niche_optima[spNewNames]
-niche_optima
+#niche_optima
 
 
 K = ifelse(is.vector(niche_optima), 1, ncol(niche_optima))    # number of environmental variables
@@ -387,7 +388,7 @@ if ("stan" %in% algos){
     }else{
       SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,formulas=env.form,penal="horshoe",method="stan_glm",
                                        family=binomial(link = "logit"),fitPreds=fitPreds,
-                                       iter=iter,run.parallel = TRUE, verbose = F, chains=2)
+                                       iter=iter,run.parallel = F, verbose = F, chains=2)
       
     }
     # STAN GLM + constraint on coefficients signs (+ for preys->predators and - for predators->preys)
@@ -434,7 +435,7 @@ for (i in 1:length(SIMlist)){
 
 # p estimate finds the intercept, the niche optima and the biotic variables
 for (i in 1:length(SIMlist)){
-  print(names(SIMlist[i]))
+  #print(names(SIMlist[i]))
   SIM = SIMlist[[i]]
   
   estimates_stan=estimates_glm=estimates_bayes=data.frame( p.est=double(),
@@ -458,13 +459,13 @@ for (i in 1:length(SIMlist)){
       print("glm")
       model_j = SIM$m_glm$model[[paste0("Y",j)]]
       post_j = coef(model_j)
-      print(list(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])], post_j[grepl("Y", row.names(post_j))]),
-                 est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], warning=function(cond){message(paste0("Warning GLM Y",j));return(NA)}, error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
-                 est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], warning=function(cond)return(NA), error=function(cond)return(NA)) else NA,
-                 true=c(SIM$B[paste0("Y",j),],IntMat[neigh.sp,j]),
-                 type=as.factor(c(rep("abiotic",K+1),rep("biotic",length(neigh.sp)))),
-                 sp.id=as.factor(j),
-                 sp.trophL=paste("Trophic level", trophL[j])))
+      # print(list(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])], post_j[grepl("Y", row.names(post_j))]),
+      #            est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], warning=function(cond){message(paste0("Warning GLM Y",j));return(NA)}, error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
+      #            est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], warning=function(cond)return(NA), error=function(cond)return(NA)) else NA,
+      #            true=c(SIM$B[paste0("Y",j),],IntMat[neigh.sp,j]),
+      #            type=as.factor(c(rep("abiotic",K+1),rep("biotic",length(neigh.sp)))),
+      #            sp.id=as.factor(j),
+      #            sp.trophL=paste("Trophic level", trophL[j])))
       estimates_glm=rbind(estimates_glm,data.frame(#p.est=if(linear)post_j else c(post_j[1], -(post_j[2])/(2*post_j[3]), post_j[-(1:3)]),
         #p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])], post_j[which(suppressWarnings(as.numeric(gsub("Y","",rownames(post_j)), drop = T))<j)]),
         p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])], post_j[grepl("Y", row.names(post_j))]),
@@ -844,7 +845,7 @@ if ("bayes" %in% algos){
 
 
 for (i in 1:length(SIMlist)){
-  print(names(SIMlist[i]))
+  #print(names(SIMlist[i]))
   SIM = SIMlist[[i]]
   
   SDM.estimates_stan=SDM.estimates_glm=SDM.estimates_bayes=data.frame( p.est=double(),
@@ -860,13 +861,13 @@ for (i in 1:length(SIMlist)){
       print("glm")
       model_j = SIM$SDM_glm$model[[paste0("Y",j)]]
       post_j = coef(model_j)
-      print(list(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])], post_j[grepl("Y", row.names(post_j))]),
-                 est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], warning=function(cond){message(paste0("Warning GLM Y",j));return(NA)}, error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
-                 est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], warning=function(cond)return(NA), error=function(cond)return(NA)) else NA,
-                 true=SIM$B[paste0("Y",j),],
-                 type=as.factor(rep("abiotic",K)),
-                 sp.id=as.factor(j),
-                 sp.trophL=paste("Trophic level", trophL[j])))
+      # print(list(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])], post_j[grepl("Y", row.names(post_j))]),
+      #            est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], warning=function(cond){message(paste0("Warning GLM Y",j));return(NA)}, error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
+      #            est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], warning=function(cond)return(NA), error=function(cond)return(NA)) else NA,
+      #            true=SIM$B[paste0("Y",j),],
+      #            type=as.factor(rep("abiotic",K)),
+      #            sp.id=as.factor(j),
+      #            sp.trophL=paste("Trophic level", trophL[j])))
       SDM.estimates_glm=rbind(SDM.estimates_glm,data.frame(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])], post_j[grepl("Y", row.names(post_j))]),
                                                            est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], warning=function(cond){message(paste0("Warning GLM Y",j));return(NA)}, error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
                                                            est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], warning=function(cond)return(NA), error=function(cond)return(NA)) else NA,
@@ -1154,7 +1155,7 @@ for(i in 1:length(SIMlist)){
   # CV tSDM predictions prob & fundamental niche (notice fund niche does not depend on prob)
   probCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K = 5, fundNiche = T, prob.cov = T, iter = SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample = error_prop_sample,
-                        fitPreds=F,run.parallel=T, nEnv = nEnv, verbose = F)
+                        fitPreds=F,run.parallel=F, verbose = F, nEnv = nEnv)
   
   SIMlist[[i]]$pCV.mean.stan_prob = probCV$meanPred
   SIMlist[[i]]$pCV.qsup.stan_prob = probCV$Pred975
@@ -1167,7 +1168,7 @@ for(i in 1:length(SIMlist)){
   # CV tSDM binary predictions
   binCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
                          pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
-                        run.parallel=T, nEnv = nEnv)
+                        run.parallel=F, verbose = F, nEnv = nEnv)
   
   SIMlist[[i]]$pCV.mean.stan_bin = binCV$meanPred
   SIMlist[[i]]$pCV.qsup.stan_bin = binCV$Pred975
@@ -1176,7 +1177,7 @@ for(i in 1:length(SIMlist)){
   #CV SDMs
   sdmCV = tSDM_CV_SIMUL(mod = SIM$SDM_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
-                        run.parallel=F, nEnv = nEnv)
+                        run.parallel=F, verbose = F, nEnv = nEnv)
   
   SIMlist[[i]]$SDM.pCV.mean.stan = sdmCV$meanPred
   SIMlist[[i]]$SDM.pCV.qsup.stan = sdmCV$Pred975
@@ -1192,28 +1193,28 @@ for(i in 1:length(SIMlist)){
   
   if(!dir.exists(paste0(figPath,names(SIMlist)[i]))) dir.create(paste0(figPath,names(SIMlist)[i]))
   
-  cat(paste0("### Simul ", i, " ### \n"))
+  print(paste0("### Simul ", i, " ### \n"))
   SIM = SIMlist[[i]]
   
-  cat(paste0("### plot ", 1, " ### \n"))
+  print(paste0("### plot ", 1, " ### \n"))
   
   try(plotDistributions(SIM, CV=T, RN=T, prob.cov=T,
                     plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_CV_Realised_prob"),
                     filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_CV_Realised_prob.pdf")))
   
-  cat(paste0("### plot ", 2, " ### \n"))
+  print(paste0("### plot ", 2, " ### \n"))
   
   try(plotDistributions(SIM, CV=F, RN=T, prob.cov=T,
                     plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_Realised_prob"),
                     filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_Realised_prob.pdf")))
   
-  cat(paste0("### plot ", 3, " ### \n"))
+  print(paste0("### plot ", 3, " ### \n"))
   
   try(plotDistributions(SIM, CV=T, RN=T, prob.cov=F,
                     plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_CV_Realised_bin"),
                     filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_CV_Realised_bin.pdf")))
   
-  cat(paste0("### plot ", 4, " ### \n"))
+  print(paste0("### plot ", 4, " ### \n"))
   
   try(plotDistributions(SIM, CV=F, RN=T, prob.cov=F,
                     plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_Realised_bin"),
@@ -1222,13 +1223,13 @@ for(i in 1:length(SIMlist)){
   if(!is.null(SIM$fundNiche)){
   
     
-  cat(paste0("### plot ", 5, " ### \n"))
+  print(paste0("### plot ", 5, " ### \n"))
     
   try(plotDistributions(SIM, CV=T, RN=F, prob.cov=F,
                     plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_CV_Fund"),
                     filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_CV_Fund.pdf")))
   
-  cat(paste0("### plot ", 6, " ### \n"))
+  print(paste0("### plot ", 6, " ### \n"))
   
   try(plotDistributions(SIM, CV=F, RN=F, prob.cov=F,
                     plotprey=T, plotpred=FALSE, main=paste0(names(SIMlist)[i],"_Fund"),
@@ -1257,7 +1258,9 @@ for(i in 1:length(SIMlist)){
   
   #SDM
   waic.SDM = unlist(lapply(SIM$SDM_stan$model,function(x) waic(x)$estimates["waic","Estimate"]))
-
+  
+  ##### loo
+  
   #tSDM
   loo.m = unlist(lapply(SIM$m_stan$model,function(x) loo(x)$estimates["elpd_loo","Estimate"]))
   
@@ -1271,6 +1274,8 @@ for(i in 1:length(SIMlist)){
   
   # R2 bin CV
   R2.CV.bin=sapply(spNewNames,function(x){cor(SIM$pCV.mean.stan_bin[,x],SIM$prob[,x])^2})
+  
+  
   
   # R2 prob realized
   R2.prob=sapply(spNewNames,function(x){cor(SIM$p.mean.stan_prob[,x],SIM$prob[,x])^2})
@@ -1565,10 +1570,11 @@ for(i in 1:length(SIMlist)){
   
   ### Plot WAIC
   
+  # binary no CV
   p1 = ggplot(data=eval.table[which(eval.table$metric=="waic"),]) +
        geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
        geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
-       ylab("WAIC") + theme_classic() + theme(legend.position="top", 
+       ylab("Wass. distance from the niche") + theme_classic() + theme(legend.position="top", 
                                                                     axis.text.x= element_text(angle=45,vjust=0.5),
                                                                     axis.title=element_text(size=16,face="bold"),
                                                                     legend.title = element_text(size=16,face="bold"),
@@ -1577,7 +1583,7 @@ for(i in 1:length(SIMlist)){
   
   p2 = ggplot(data=eval.table[which(eval.table$metric=="waic" &
                                       eval.table$TL!=1),]) +
-       geom_boxplot(aes(y=value,col=model)) + theme_classic() +ylab("WAIC") + theme(legend.position = "top",
+       geom_boxplot(aes(y=value,col=model)) + theme_classic() + theme(legend.position = "top",
                                                                    axis.title=element_text(size=16,face="bold"),
                                                                    legend.title = element_text(size=16,face="bold"),
                                                                    legend.text = element_text(size=16,face="bold"))
@@ -1586,29 +1592,29 @@ for(i in 1:length(SIMlist)){
   ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_waic.pdf"),
          width=20,height=10, dpi = 150, units = "in")
   
-  
   ### Plot LOO
   
   p1 = ggplot(data=eval.table[which(eval.table$metric=="loo"),]) +
     geom_point(aes(x=species,y=value,col=model,shape=model),size=4)+
     geom_line(aes(x=species,y=value),arrow = arrow(length=unit(0.1,"cm"), ends="first", type = "closed"))+
     ylab("LOO") + theme_classic() + theme(legend.position="top", 
-                                                                    axis.text.x= element_text(angle=45,vjust=0.5),
-                                                                    axis.title=element_text(size=16,face="bold"),
-                                                                    legend.title = element_text(size=16,face="bold"),
-                                                                    legend.text = element_text(size=16,face="bold"),
+                                          axis.text.x= element_text(angle=45,vjust=0.5),
+                                          axis.title=element_text(size=16,face="bold"),
+                                          legend.title = element_text(size=16,face="bold"),
+                                          legend.text = element_text(size=16,face="bold"),
     )
   
   p2 = ggplot(data=eval.table[which(eval.table$metric=="loo" &
                                       eval.table$TL!=1),]) +
     geom_boxplot(aes(y=value,col=model)) + theme_classic() +  ylab("LOO") +theme(legend.position = "top",
-                                                                   axis.title=element_text(size=16,face="bold"),
-                                                                   legend.title = element_text(size=16,face="bold"),
-                                                                   legend.text = element_text(size=16,face="bold"))
+                                                                                 axis.title=element_text(size=16,face="bold"),
+                                                                                 legend.title = element_text(size=16,face="bold"),
+                                                                                 legend.text = element_text(size=16,face="bold"))
   
   ggarrange(p1,p2,align="h",widths = c(3,1))
   ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_loo.pdf"),
          width=20,height=10, dpi = 150, units = "in")
+  
   
   
   ### Plot Wassersetin distances
@@ -1723,11 +1729,7 @@ for(i in 1:length(SIMlist)){
   
   p = ggplot(eval.table[which(eval.table$TL != 1),]) +
       geom_boxplot(aes(y = value, col = model, x = model, fill = type),alpha=0.5) +
-      facet_grid(metric~CV, scale="free") +
-      scale_fill_discrete(name="Type of covariates",
-                        labels=c("binary","probability"),
-                        type = c("#404040","#FFFFFF","#A0A0A0"),
-                        breaks = c("bin","prob"))
+      facet_grid(metric~CV, scale="free")
 
   
   ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_all_metrics.pdf"),
@@ -1840,6 +1842,7 @@ for(i in which(knownFundNiche)){
          width=20,height=10, dpi = 150, units = "in")
   
   
+  
   # CV
   p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
                                       eval.table$CV=="CV"),]) +
@@ -1867,7 +1870,11 @@ for(i in which(knownFundNiche)){
   ###### All together
   
   p = ggplot(eval.table[which(eval.table$TL != 1),]) +
-    geom_boxplot(aes(y=value, col = model)) + facet_grid(metric~CV, scale="free") 
+    geom_boxplot(aes(y=value, col = model)) + facet_grid(metric~CV, scale="free")  +
+    scale_fill_discrete(name="Type of covariates",
+                        labels=c("binary","probability"),
+                        type = c("#404040","#FFFFFF","#A0A0A0"),
+                        breaks = c("bin","prob"))
   
   ggsave(filename=paste0(figPath,names(SIMlist)[i],"/",names(SIMlist)[i],"_all_metrics_fund.pdf"),
          width=10,height=15, dpi = 150, units = "in")
@@ -1912,5 +1919,5 @@ for(i in which(knownFundNiche)){
   
 }
 
-save(SIMlist,file=paste0(simPath,"SIMlist_",job,".RData"))
 
+save(SIMlist,file=paste0(simPath,"SIMlist_",job,".RData"))
