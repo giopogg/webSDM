@@ -191,7 +191,7 @@ compute_TL_laplacian <- function(G){
 # fitPreds : logical. Should predators be included as covariates?
 # iter : the number of MCMC samples (if bayesian approach)
 
-trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL,method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=T,chains=2,verbose=T){
+trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL,method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=T,chains=2,verbose=F){
   
   # checks & errors
   if(!is_igraph(G)) stop("G is not an igraph object")
@@ -500,7 +500,7 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
 #                     If greater than one, we sample pred.sample/error_prop_sample of the predictive distribution of each species (N.B. carefully to guarantee that the samples are consistent across them),
 #                     and then for each of the selected samples, we draw error_prop_sample from the predictive distribution of the focal species, for each selected sample of the predictors.
 
-trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pred_samples=1000,error_prop_sample=10,verbose=T){
+trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pred_samples=1000,error_prop_sample=10,verbose=F){
   
   # checks & errors
   if(m$method=="glm" & (pred_samples != 1 | error_prop_sample != 1)){stop("glm requires pred_sample and error_prop_sample both =1")}
@@ -524,7 +524,7 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pre
     
     # core loop on species (as in trophicSDM)
     for(j in 1:vcount(G)){
-      if(verbose) {print(paste("--- Species", names(sortedV[j]), "---")); print(m$model[[names(sortedV[j])]]$formula)}
+      if(verbose){print(paste("--- Species", names(sortedV[j]), "---")); print(m$model[[names(sortedV[j])]]$formula)}
       #warning("", call.=F)
       
       # neighbor species
@@ -825,15 +825,18 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
 
 tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
                          pred_samples, error_prop_sample = 10,
-                         fitPreds = F,run.parallel = T, nEnv, verbose=F, chains=2){
+                         fitPreds = F,run.parallel = T, nEnv, verbose=F, envCV=F, chains=2){
   
   X = mod$data$X[1:nEnv,"X1"]
-  
-  partition = rep(1:K,each = round(nEnv/K))
   S = length(mod$model)
   
-  if(length(partition)<nEnv) partition = c(partition, rep(K,nEnv-length(partition)))
+  if(envCV){
+  partition = rep(1:K,each = round(nEnv/K))
   
+  if(length(partition)<nEnv) partition = c(partition, rep(K,nEnv-length(partition)))
+  }else{
+    partition = sample(1:K,size=nEnv,replace=T)
+  }
   index_all = vector(length=nrow(mod$data$X))
   
   for(i in 1:K){

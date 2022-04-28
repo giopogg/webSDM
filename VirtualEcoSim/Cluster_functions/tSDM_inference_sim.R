@@ -21,6 +21,7 @@ library(brms)
 library(stringr)
 library(bayesplot)
 library(parallel)
+library(cheddar)
 
 #root= "/Users/poggiatg/Documents/GitHub/trophicSDM/VirtualEcoSim/"
 #root= "/Users/poggiatg/Documents/GitHub/trophicSDM/VirtualEcoSim/"
@@ -899,16 +900,16 @@ for (i in 1:length(SIMlist)){
       ))}
     
     if ("bayes" %in% algos){
-      print("bayes")
+      #print("bayes")
       model_j = SIM$SDM_bayes$model[[paste0("Y",j)]]
       post_j = coef(model_j)
-      print(list(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])]),
-                 est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
-                 est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], error=function(cond)return(NA)) else NA,
-                 true=SIM$B[paste0("Y",j),],
-                 type=as.factor(rep("abiotic",K)),
-                 sp.id=as.factor(j),
-                 sp.trophL=paste("Trophic level", trophL[j])))
+      # print(list(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])]),
+      #            est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
+      #            est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], error=function(cond)return(NA)) else NA,
+      #            true=SIM$B[paste0("Y",j),],
+      #            type=as.factor(rep("abiotic",K)),
+      #            sp.id=as.factor(j),
+      #            sp.trophL=paste("Trophic level", trophL[j])))
       SDM.estimates_bayes=rbind(SDM.estimates_bayes,data.frame(p.est=if(linear)post_j else c(post_j[1], (0:100/100)[which.max(post_j[3]*(0:100/100)**2 + post_j[2]*0:100/100 + post_j[1])]),
                                                                est.02=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,1], error=function(cond){message(paste0("Error bayes Y",j));return(NA)}) else NA,
                                                                est.97=if(linear)tryCatch(confint(profile(model_j),prob = 0.95)[,2], error=function(cond)return(NA)) else NA,
@@ -1155,7 +1156,7 @@ for(i in 1:length(SIMlist)){
   # CV tSDM predictions prob & fundamental niche (notice fund niche does not depend on prob)
   probCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K = 5, fundNiche = T, prob.cov = T, iter = SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample = error_prop_sample,
-                        fitPreds=F,run.parallel=F, verbose = F, nEnv = nEnv)
+                        fitPreds=F,run.parallel=F, verbose = F, nEnv = nEnv, envCV = F)
   
   SIMlist[[i]]$pCV.mean.stan_prob = probCV$meanPred
   SIMlist[[i]]$pCV.qsup.stan_prob = probCV$Pred975
@@ -1168,7 +1169,7 @@ for(i in 1:length(SIMlist)){
   # CV tSDM binary predictions
   binCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
                          pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
-                        run.parallel=F, verbose = F, nEnv = nEnv)
+                        run.parallel=F, verbose = F, nEnv = nEnv, envCV = F)
   
   SIMlist[[i]]$pCV.mean.stan_bin = binCV$meanPred
   SIMlist[[i]]$pCV.qsup.stan_bin = binCV$Pred975
@@ -1177,7 +1178,7 @@ for(i in 1:length(SIMlist)){
   #CV SDMs
   sdmCV = tSDM_CV_SIMUL(mod = SIM$SDM_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
-                        run.parallel=F, verbose = F, nEnv = nEnv)
+                        run.parallel=F, verbose = F, nEnv = nEnv, envCV = F)
   
   SIMlist[[i]]$SDM.pCV.mean.stan = sdmCV$meanPred
   SIMlist[[i]]$SDM.pCV.qsup.stan = sdmCV$Pred975

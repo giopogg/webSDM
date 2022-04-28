@@ -49,8 +49,8 @@ if(!linear) poly=F                       # if yes, whether to take a raw polynom
 
 horsh=F
 
-iter=5000
-pred_samples=1000
+iter=200
+pred_samples=200
 
 figPath=paste0(simPath,"Fig/")
 if(!dir.exists(figPath)) dir.create(figPath)
@@ -378,18 +378,19 @@ if ("stan" %in% algos){
   for (i in 1:length(SIMlist)){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
-    
+    tic=Sys.time()
     # STAN GLM
     if(!horsh){
     SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,formulas=env.form,penal=NULL,method="stan_glm",
                                      family=binomial(link = "logit"),fitPreds=fitPreds,
-                                     iter=iter,run.parallel = F, verbose = F,chains=2)
+                                     iter=iter,run.parallel = T, verbose = F,chains=2)
     }else{
       SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,formulas=env.form,penal="horshoe",method="stan_glm",
                                        family=binomial(link = "logit"),fitPreds=fitPreds,
                                        iter=iter,run.parallel = TRUE, verbose = F, chains=2)
       
     }
+    Sys.time()-tic
     # STAN GLM + constraint on coefficients signs (+ for preys->predators and - for predators->preys)
     #SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, formulas=env.form, sp.formula=sp.formula,
                                      #sp.partition=sp.partition, penal="coeff.signs", method="stan_glm",
@@ -823,7 +824,7 @@ if ("stan" %in% algos){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
     SIMlist[[i]]$SDM_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,method="stan_glm",
-                                       family=binomial(link = "logit"),iter=iter,run.parallel = F,
+                                       family=binomial(link = "logit"),iter=iter,run.parallel = T,
                                        verbose = F, chains=2)
   }
 }
@@ -1154,7 +1155,7 @@ for(i in 1:length(SIMlist)){
   # CV tSDM predictions prob & fundamental niche (notice fund niche does not depend on prob)
   probCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K = 5, fundNiche = T, prob.cov = T, iter = SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample = error_prop_sample,
-                        fitPreds=F,run.parallel=T, nEnv = nEnv, verbose = F)
+                        fitPreds=F,run.parallel=T, nEnv = nEnv, verbose = F, envCV = F)
   
   SIMlist[[i]]$pCV.mean.stan_prob = probCV$meanPred
   SIMlist[[i]]$pCV.qsup.stan_prob = probCV$Pred975
@@ -1167,7 +1168,7 @@ for(i in 1:length(SIMlist)){
   # CV tSDM binary predictions
   binCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
                          pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
-                        run.parallel=T, nEnv = nEnv)
+                        run.parallel=T, nEnv = nEnv, envCV = F)
   
   SIMlist[[i]]$pCV.mean.stan_bin = binCV$meanPred
   SIMlist[[i]]$pCV.qsup.stan_bin = binCV$Pred975
@@ -1176,7 +1177,7 @@ for(i in 1:length(SIMlist)){
   #CV SDMs
   sdmCV = tSDM_CV_SIMUL(mod = SIM$SDM_stan, K=5, fundNiche=F, prob.cov=F,iter=SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample=error_prop_sample, fitPreds=F,
-                        run.parallel=F, nEnv = nEnv)
+                        run.parallel=T, nEnv = nEnv, envCV = F)
   
   SIMlist[[i]]$SDM.pCV.mean.stan = sdmCV$meanPred
   SIMlist[[i]]$SDM.pCV.qsup.stan = sdmCV$Pred975
