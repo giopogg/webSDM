@@ -273,11 +273,11 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
   ## Build final formula
   preys = names(neighbors(G,focal,mode=c("out")))
   preds = names(neighbors(G,focal,mode=c("in")))
+  predsANDpreys = intersect(preds, preys)
   
   if (fitPreds){
     # define a separate category for pairs of species that predate each other (2-species loop),
     # as they must only be included once in the regression
-    predsANDpreys = intersect(preds, preys)
     preds = setdiff(preds, predsANDpreys)
     preys = setdiff(preys, predsANDpreys)
   }
@@ -331,23 +331,26 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
                    lambda=cv.glmnet(y=y,x=x,family=family$family)$lambda.1se)
       }
       if(penal=="coeff.signs"){
-        # Constrain the signs of trophic interaction coefficients to remain positive (preys->preds) or negative (preds->preys)
-        # species that are at the same time preys and predators are not constrained
-        y = as.matrix(model.frame(form.all,data=data)$y)
-        x = as.matrix(model.frame(form.all,data=data)[,-1])
+        stop("coeff.signs not available for glm")
+        #solution below is ok but only when environmental variables are named X and biotic variables Y
         
-        # Extract the regression variables and set lower and upper limits
-        variables = sapply(str_extract_all(form.all, "X[0-9]*|Y[0-9]*|I\\(([^()]*|\\(([^()]*|\\([^()]*\\))*\\))*\\)")[[1]],
-                           function(x)str_extract(x,"X[0-9]*|Y[0-9]*")[[1]])
-        lower.limits <- sapply(variables, function(VAR){if (VAR %in% preys) return(0)
-          if (grepl("X", VAR) | VAR %in% c(preds,predsANDpreys)) return(-Inf)
-          warning(paste("Variable", VAR, "not present in any category"), call.=F)})
-        upper.limits <- sapply(variables, function(VAR){if (VAR %in% preds) return(0)
-          if (grepl("X", VAR) | VAR %in% c(preys,predsANDpreys)) return(Inf)
-          warning(paste("Variable", VAR, "not present in any category"), call.=F)})
-        
-        m = glmnet(y=y,x=x,family=family$family, lambda=0, thres = 1E-10, 
-                   lower.limits=lower.limits, upper.limits=upper.limits)
+        # # Constrain the signs of trophic interaction coefficients to remain positive (preys->preds) or negative (preds->preys)
+        # # species that are at the same time preys and predators are not constrained
+        # y = as.matrix(model.frame(form.all,data=data)$y)
+        # x = as.matrix(model.frame(form.all,data=data)[,-1])
+        # 
+        # # Extract the regression variables and set lower and upper limits
+        # variables = sapply(str_extract_all(form.all, "X[0-9]*|Y[0-9]*|I\\(([^()]*|\\(([^()]*|\\([^()]*\\))*\\))*\\)")[[1]],
+        #                    function(x)str_extract(x,"X[0-9]*|Y[0-9]*")[[1]])
+        # lower.limits <- sapply(variables, function(VAR){if (VAR %in% preys) return(0)
+        #   if (grepl("X", VAR) | VAR %in% c(preds,predsANDpreys)) return(-Inf)
+        #   warning(paste("Variable", VAR, "not present in any category"), call.=F)})
+        # upper.limits <- sapply(variables, function(VAR){if (VAR %in% preds) return(0)
+        #   if (grepl("X", VAR) | VAR %in% c(preys,predsANDpreys)) return(Inf)
+        #   warning(paste("Variable", VAR, "not present in any category"), call.=F)})
+        # 
+        # m = glmnet(y=y,x=x,family=family$family, lambda=0, thres = 1E-10, 
+        #            lower.limits=lower.limits, upper.limits=upper.limits)
       }
     }
   }
@@ -368,7 +371,7 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
       }
       if(penal=="coeff.signs"){
         # constrain the signs of trophic interaction coefficients to remain positive (preys->preds) or negative (preds->preys)
-        variables = strsplit(as.character(form.all), "y ~ | \\+ ")[[1]][-1]
+        variables = strsplit(as.character(form.all), "y ~ |\\+")[[1]][-1]
         # choose priors depending on the nature of the variables
         priors = Reduce(rbind, lapply(variables, function(VAR){
           VAR <- gsub("\\^", "E", gsub('\\(|\\)', "", VAR))  # correct name for polynomial terms
@@ -403,7 +406,6 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
 
 
 ## Build formula function
-
 
 buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition=NULL, useBRMS){
   #if no composite variables are used
