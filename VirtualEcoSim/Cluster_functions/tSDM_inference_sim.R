@@ -155,7 +155,7 @@ niche_optima = niche_optima[spNewNames]
 
 K = ifelse(is.vector(niche_optima), 1, ncol(niche_optima))    # number of environmental variables
 
-# Create formulas for the environmental part of each species
+# Create env.formula for the environmental part of each species
 if(linear){
   env.form=as.list(rep("~X1",S))
 }else{
@@ -360,12 +360,12 @@ if ("glm" %in% algos){
     SIM = SIMlist[[i]]
     
     # Basic GLM
-    #SIMlist[[i]]$m_glm = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, formulas=env.form, sp.formula=sp.formula, 
+    #SIMlist[[i]]$m_glm = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, env.formula=env.form, sp.formula=sp.formula, 
     #                                sp.partition=sp.partition, penal=NULL, method="glm", 
     #                                family=binomial(link="logit"), fitPreds=fitPreds, iter=iter)
     
     # Basic GLM + constraint on coefficients signs (+ for preys->predators and - for predators->preys)
-    SIMlist[[i]]$m_glm = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, formulas=env.form, sp.formula=sp.formula, 
+    SIMlist[[i]]$m_glm = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, env.formula=env.form, sp.formula=sp.formula, 
                                     sp.partition=sp.partition, penal="coeff.signs", method="glm", 
                                     family=binomial(link="logit"), fitPreds=fitPreds, iter=iter,
                                     chains=2, verbose = F)
@@ -383,17 +383,17 @@ if ("stan" %in% algos){
     
     # STAN GLM
     if(!horsh){
-    SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,formulas=env.form,penal=NULL,method="stan_glm",
+    SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,env.formula=env.form,penal=NULL,method="stan_glm",
                                      family=binomial(link = "logit"),fitPreds=fitPreds,
                                      iter=iter,run.parallel = F, verbose = F,chains=2)
     }else{
-      SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,formulas=env.form,penal="horshoe",method="stan_glm",
+      SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G,env.formula=env.form,penal="horshoe",method="stan_glm",
                                        family=binomial(link = "logit"),fitPreds=fitPreds,
                                        iter=iter,run.parallel = F, verbose = F, chains=2)
       
     }
     # STAN GLM + constraint on coefficients signs (+ for preys->predators and - for predators->preys)
-    #SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, formulas=env.form, sp.formula=sp.formula,
+    #SIMlist[[i]]$m_stan = trophicSDM(Y=SIM$Y, X=SIM$X, G=G, env.formula=env.form, sp.formula=sp.formula,
                                      #sp.partition=sp.partition, penal="coeff.signs", method="stan_glm",
                                      #family=bernoulli(link = "logit"), fitPreds=fitPreds, iter=iter, chains = 2)
   }
@@ -813,7 +813,7 @@ if ("glm" %in% algos){
   for (i in 1:length(SIMlist)){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
-    SIMlist[[i]]$SDM_glm = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,
+    SIMlist[[i]]$SDM_glm = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,env.formula=env.form,penal=NULL,
                                       method="glm",family=binomial(link = "logit"),iter=iter,
                                       verbose=F, chains=2)
   }
@@ -824,7 +824,7 @@ if ("stan" %in% algos){
   for (i in 1:length(SIMlist)){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
-    SIMlist[[i]]$SDM_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,method="stan_glm",
+    SIMlist[[i]]$SDM_stan = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,env.formula=env.form,penal=NULL,method="stan_glm",
                                        family=binomial(link = "logit"),iter=iter,run.parallel = F,
                                        verbose = F, chains=2)
   }
@@ -835,7 +835,7 @@ if ("bayes" %in% algos){
   for (i in 1:length(SIMlist)){
     print(names(SIMlist[i]))
     SIM = SIMlist[[i]]
-    SIMlist[[i]]$SDM_bayes = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,formulas=env.form,penal=NULL,
+    SIMlist[[i]]$SDM_bayes = trophicSDM(Y=SIM$Y,X=SIM$X,G=G_null,env.formula=env.form,penal=NULL,
                                         method="bayesglm",family=binomial(link = "logit"),
                                         iter=iter, verbose = F, chains = 2)
   }

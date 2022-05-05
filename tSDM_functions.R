@@ -1,188 +1,9 @@
-
-plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=FALSE, RN=T,
-                               main="", filename=NULL){
-  
-  nEnv = nrow(SIM$X)/(nRep*nbMerge)
-  envs = SIM$X[1:nEnv, ifelse(intercept, -1, -(K+1))]
-  if(is.null(SIM$fundNiche) & !RN) stop("No theoretical fundamental niche available")
-  
-  proba = list()
-
-  if(CV){
-    # if realised niche
-    if(RN){
-    #tSDM
-    if(prob.cov){
-
-        proba$pred = SIM$pCV.mean.stan_prob
-        proba$est.02 = SIM$pCV.qinf.stan_prob
-        proba$est.97 = SIM$pCV.qsup.stan_prob
-      
-    }else{
-    
-      proba$pred = SIM$pCV.mean.stan_bin
-      proba$est.02 = SIM$pCV.qinf.stan_bin
-      proba$est.97 = SIM$pCV.qsup.stan_bin
-      
-    }
-    }else{#if FN
-      
-      proba$pred = SIM$pFundCV.mean.stan
-      proba$est.02 = SIM$pFundCV.qinf.stan
-      proba$est.97 = SIM$pFundCV.qsup.stan
-      
-    }
-    #SDMs (realised or fundamental niche is the same!)
-      proba$SDM.pred = SIM$SDM.pCV.mean.stan
-      proba$SDM.est.02 = SIM$SDM.pCV.qinf.stan
-      proba$SDM.est.97 = SIM$SDM.pCV.qsup.stan
-      
-  }else{#if not CV
-    
-    # if realised niche
-    if(RN){
-      #tSDM
-      if(prob.cov){
-        
-        proba$pred = SIM$p.mean.stan_prob
-        proba$est.02 = SIM$p.qinf.stan_prob
-        proba$est.97 = SIM$p.qsup.stan_prob
-        
-      }else{
-        
-        proba$pred = SIM$p.mean.stan_bin
-        proba$est.02 = SIM$p.qinf.stan_bin
-        proba$est.97 = SIM$p.qsup.stan_bin
-        
-      }
-    }else{#if FN
-      
-      proba$pred = SIM$pFund.mean.stan
-      proba$est.02 = SIM$pFund.qinf.stan
-      proba$est.97 = SIM$pFund.qsup.stan
-      
-    }
-    #SDMs (realised or fundamental niche is the same!)
-    proba$SDM.pred = SIM$SDM.p.mean.stan
-    proba$SDM.est.02 = SIM$SDM.p.qinf.stan
-    proba$SDM.est.97 = SIM$SDM.p.qsup.stan
-    
-  }
-    
-    
-  realizedNiche = SIM$prob
-  
-  if(RN){
-  Niche = SIM$prob
-  }else{
-  Niche = SIM$fundNiche
-  }
-  
-
-  # build niche table
-  table=data.frame(env=envs,rbind(data.frame(stack(Niche),type=rep("True",nrow(stack(Niche)))),
-                                      data.frame(stack(as.data.frame(proba$pred)),type=rep("tSDM",nrow(stack(Niche)))),
-                                      data.frame(stack(as.data.frame(proba$SDM.pred)),type=rep("SDM",nrow(stack(Niche))))))
-    
-  if(plotprey){
-    Preys=data.frame()
-    for(s in 1:S){
-      for (prey in community$trophic.links[community$trophic.links$consumer == spNames[nameOrder[s]],]$resource){
-          intStrength = abs(IntMat[prey,spNames[nameOrder[s]]])/(strengthBI*2)  # strength of the biotic interaction
-          Preys = rbind(Preys, data.frame(focal=paste0("Y", gsub("Sp|\\..*", "", spNames[nameOrder[s]])),env=envs,
-                                          value=realizedNiche[,paste0("Y", gsub("Sp|\\..*", "", prey))]*intStrength,
-                                          predprey=paste0("Y", gsub("Sp|\\..*", "", prey))))
-          
-        }
-      }
-    }
-  if(plotpred){
-    Pred=data.frame()
-    for(s in 1:S){
-      for (pred in community$trophic.links[community$trophic.links$ressource == spNames[nameOrder[s]],]$consumer) {
-          intStrength = abs(IntMat[prey,spNames[nameOrder[s]]])/(strengthBI*2)  # strength of the biotic interaction
-          Pred = rbind(Pred, data.frame(focal=paste0("Y", gsub("Sp|\\..*", "", spNames[nameOrder[s]])),env=envs,
-                                        value=realizedNiche[,paste0("Y", gsub("Sp|\\..*", "", prey))]*intStrength,
-                                        predprey=paste0("Y", gsub("Sp|\\..*", "", prey))))
-          
-        }
-      }
-      
-    }
-    
-  for(s in 1:S){
-      assign(paste0("tableFoc",s), table[which(table$ind==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
-      if(plotprey){  
-        assign(paste0("tablePrey",s), Preys[which(Preys$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
-      }
-      if(plotpred){
-        assign(paste0("tablePrey",s), Pred[which(Pred$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
-      }
-      if(RN){
-        cols = c("grey75",alpha("mediumorchid",1),"darkblue")
-      }else{
-        cols = c(alpha("royalblue1",0.5),"plum4","darkblue")
-      }
-      assign(paste0("p",s),ggplot() +
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="True",],aes(x=env,y=values),lwd=3, col=cols[1])+
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="tSDM",],aes(x=env,y=values),lwd=2, lty=1, col=cols[2])+
-               geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="SDM",],aes(x=env,y=values),lwd=1, lty=2, col=cols[3]) +
-               theme_classic()+ggtitle(spNames[s]) + geom_vline(xintercept = SIM$B[paste0("Y", gsub("Sp|\\..*", "", spNames[s])),2],lty=2,col="red",lwd=1,alpha=0.2) +
-               xlab("Env") + ylab("Probability of presence")
-      )
-      
-      if(plotprey){
-        assign(paste0("p",s), get(paste0("p",s)) + geom_line(data=get(paste0("tablePrey",s)), aes(x=env,y=value, group=predprey),color="green",linetype=2,alpha=0.8))
-      }
-      if(plotpred){
-        assign(paste0("p",s), get(paste0("p",s)) + geom_line(data=get(paste0("tablePred",s)), aes(x=env,y=value, group=predprey),color="red",linetype=2,alpha=0.8))
-        
-      }
-      
-    }
-    
-    #p=eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-  eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-  eval(parse(text=paste0("p=arrangeGrob(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
-  if(!is.null(filename)) ggsave(filename = filename,p,width=20,height=10, dpi = 150, units = "in")
-
-  #return(p)
-}
-
-
-
-
-compute_TL_laplacian <- function(G){
-  # recursive function on connected components of G
-  if (igraph::vcount(G) == 1) return(setNames(0, igraph::V(G)$name))
-  A = as.matrix(igraph::get.adjacency(G))
-  names_loc = rownames(A)
-  u  = igraph::degree(G)
-  v =  igraph::degree(G,mode ='in') - igraph::degree(G,mode = 'out')
-  
-  A = A[-1,-1]
-  u = u[-1]
-  v = v[-1]
-  L = diag(u, ncol=length(u)) - A - t(A) # matrix is made symmetric!
-  
-  TL_vec = Matrix::solve(L,v)
-  TL_vec = c(0,TL_vec)
-  TL_vec = TL_vec - min(TL_vec)
-  names(TL_vec) = igraph::V(G)$name
-  return(TL_vec)
-}
-
-
-
-
-
-
 # Trophic SDM
 ## Parameters:
 # Y : Community data must be a sites x species matrix
 # X : Environmental data must be a sites x predictor matrix
 # G : Trophic network, igraph
-# formulas : list (names of each element are the name of vertices) of one-hand formulas whose names are the same as in X. 
+# env.formula : list (names of each element are the name of vertices) of one-hand formulas whose names are the same as in X. 
 # sp.formula : formula for composite variable. It HAS TO BE a string but written as the rhs of a formula. It can include quadratic terms as formula (also poly works). Be careful ONLY "richness". For example, you could set sp.formula="richness" or sp.formula="richness+richness^2" or sp.formula="sin(richness^2)" (no, you won't) 
 # sp.partition : list where the edges (i.e. their name as string) are grouped. Each element of the list is a group. E.g. sp.partition = list(c("Y_1","Y_2"),"Y_3",c("Y_4","Y_5","Y_6"))
 # penalisation: how to penalise the likelihood to reduce the dimension. Each SDM method has its own penalisation type, some SDM method have no available penalisation approach. For now, we have "horshoe" for stan_glm, "elasticnet" for glm and  "coeff.signs" (positive prey interactions and negative predator interactions) for glm and stan_glm
@@ -191,13 +12,20 @@ compute_TL_laplacian <- function(G){
 # fitPreds : logical. Should predators be included as covariates?
 # iter : the number of MCMC samples (if bayesian approach)
 
-trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL,method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=T,chains=2,verbose=F){
-  
+trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL,method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=TRUE,chains=2,verbose=F){
+
   # checks & errors
   if(!is_igraph(G)) stop("G is not an igraph object")
   if(!method %in% c("glm","stan_glm","bayesglm")) stop("the selected method has not yet been implemented or it has been misspelled")
   if(!(is.null(penal) || penal %in% c("horshoe","elasticnet","coeff.signs"))) stop("the selected penalisation has not yet been implemented or it has been misspelled")
+  if(!is.null(sp.formula) & length(sp.formula)>1){
+    #did the user specified a custom sp.formula?
+    custom.formula = T
+    message("We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.")
+    if(!identical(names(sp.formula),colnames(Y))) stop("sp.formula has to be either NULL, richness, or a list whose name equals species names (i.e. colnames(Y))")
+    }
   
+
   # laplacian sorting of the graph (component by component)
   sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
   
@@ -210,12 +38,18 @@ trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,pena
     m=mclapply(1:vcount(G),FUN = function(j){
     if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
     
+    if(custom.formula){
+      sp.form = sp.formula[[names(sortedV[j])]]
+    }else{
+        sp.form = sp.formula
+    }
+      
     # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
-    temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula, sp.partition,
-                      formula.foc=paste(as.character(formulas[[names(sortedV[j])]]),collapse=" "),
+    temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula = sp.form, sp.partition,
+                      formula.foc=paste(as.character(env.formula[[names(sortedV[j])]]),collapse=" "),
                       method=method, penal=penal, family=family, fitPreds=fitPreds, iter=iter,verbose=verbose,chains=chains)
     
-    # assign models and formulas (that now includes biotic variables too)
+    # assign models and env.formula (that now includes biotic variables too)
     temp.mod
   },mc.cores=detectCores())
   
@@ -230,19 +64,26 @@ trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,pena
   for(j in 1:vcount(G)){
     if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
     
+    
+    if(custom.formula){
+      sp.form = sp.formula[[names(sortedV[j])]]
+    }else{
+      sp.form = sp.formula
+    }
+    
     # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
-    temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula, sp.partition,
-                      formula.foc=paste(as.character(formulas[[names(sortedV[j])]]),collapse=" "),
+    temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula = sp.form, sp.partition,
+                      formula.foc=paste(as.character(env.formula[[names(sortedV[j])]]),collapse=" "),
                       method=method, penal=penal, family=family, fitPreds=fitPreds, chains=chains,iter=iter,verbose=verbose)
 
-    # assign models and formulas (that now includes biotic variables too)
+    # assign models and env.formula (that now includes biotic variables too)
     m[[names(sortedV[j])]]=temp.mod$m
     form.all[[names(sortedV[j])]]=temp.mod$form.all
   }
     
  }
   # return values
-  list(model=m,form.all=form.all,form.env=formulas,sp.formula=NULL,sp.partition=NULL,data=list(X=X,Y=Y),method=method,penal=penal,iter=iter,family=family,G=G)
+  list(model=m,form.all=form.all,form.env=env.formula,sp.formula=NULL,sp.partition=NULL,data=list(X=X,Y=Y),method=method,penal=penal,iter=iter,family=family,G=G)
 }
 
 
@@ -268,7 +109,6 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
       form.env.brms = paste("tempX",as.character(formula.foc))
     }else form.env = paste("y",as.character(formula.foc))
 
-  
   
   ## Build final formula
   preys = names(neighbors(G,focal,mode=c("out")))
@@ -418,11 +258,11 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
     } else form.all = paste(as.character(form.init), paste(species,collapse="+"), sep="+")
   }else{
     # if no group definition
-    if(is.null(sp.partition)){
+    if(grepl("richness",sp.formula)){
+      if(is.null(sp.partition)){
       # we replace "richness" with the sum of all species (and all eventual other terms), both in linear and eventually other terms
       form.all=as.character(form.init)
       
-      if(grepl("richness",sp.formula)){
         # replace richness by the observed species variables
         if(useBRMS){
           # hierarchical definition
@@ -430,23 +270,17 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
           form.brms = paste0("richness ~ 0 + ", gsub("richness",paste0("I(",paste(paste0("temp",species),collapse = "+"),")"),sp.formula))
         } else form.rich = gsub("richness", paste0("I(",paste(species,collapse = "+"),")"), sp.formula)
         form.all = paste(form.all,form.rich,sep="+")
-      }
       
-      if(grepl("diversity",sp.formula)){
-        
-        # not yet available
-        
-      }
     }else{
       # all as above but repeated for every cluster
       form.all=as.character(form.init)
       
-      if(grepl("richness",sp.formula)){
+
         form.rich = NULL
         for(j in 1:length(sp.partition)){
           species.j = species[species %in% sp.partition[[j]]]
           
-          if(length(species.j)>1){        # at least 2 species in the cluster
+          if(length(species.j)>0){        # at least 2 species in the cluster
             if(is.null(form.rich)){
               # create form.rich
               if(useBRMS){
@@ -460,22 +294,22 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
                 form.brms = c(form.brms, paste0("richness",type, j, " ~ 0 + ", gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")"))))
               } else form.rich = paste(form.rich, gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")")),sep="+")
             }
-          }else if(length(species.j)==1){  # only 1 species in the cluster
-            if(is.null(form.rich)){
-              if(useBRMS){
-                form.rich = paste0("richness",type,j)
-                form.brms = list(paste0("richness",type, j, " ~ 0 + ", species.j))
-              } else form.rich = species.j
-            }else{
-              if(useBRMS){
-                form.rich = paste(form.rich, paste0("richness",type, j), sep="+")
-                form.brms = c(form.brms, paste0("richness",type, j, " ~ 0 + ", species.j))
-              } else form.rich = paste(form.rich, species.j, sep="+")
-            }
           }
         }
         form.all = as.formula(paste(form.all,form.rich,sep="+"))
-      }
+    }
+    }else{
+    
+    form.all=as.character(form.init)
+      
+    #only access here if we have a list containing one formula per species. Notice that we don't check anything here, we trust the user.
+    if(useBRMS){
+      # hierarchical definition
+      form.brms = paste0("customform ~ 0 + ", sp.formula)
+      form.all = paste(form.all,"customform",sep="+")
+    }else{
+      form.all = as.formula(paste(form.all,sp.formula,sep="+"))
+    }
     }
   }
   if (useBRMS){
@@ -755,7 +589,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
     Y = m$data$Y[train,]
     X = m$data$X[train,]
     
-    m_K = trophicSDM(Y=Y,X=X,G=m$G,formulas=m$form.env,penal=m$penal,method=m$method,
+    m_K = trophicSDM(Y=Y,X=X,G=m$G,env.formula=m$form.env,penal=m$penal,method=m$method,
                      family=m$family,fitPreds=fitPreds,iter=iter,
                      run.parallel = run.parallel, verbose = verbose,
                      chains=2)
@@ -856,7 +690,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
     train = which(index_all != i)
     test = which(partition == i)
 
-    m_K = trophicSDM(Y=mod$data$Y[train,],X=mod$data$X[train,],G=mod$G,formulas=mod$form.env,penal=mod$penal,method=mod$method,
+    m_K = trophicSDM(Y=mod$data$Y[train,],X=mod$data$X[train,],G=mod$G,env.formula=mod$form.env,penal=mod$penal,method=mod$method,
                      family=mod$family,fitPreds=fitPreds,iter=iter,run.parallel = run.parallel,verbose=verbose,chains=chains)
     
 
@@ -927,6 +761,185 @@ GraphToCommunity <- function(G){
                              consumer=gsub("\\|.*", "", as_ids(E(G))))
   return(Community(nodes, properties, trophic.links))
 }
+
+
+
+plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=FALSE, RN=T,
+                               main="", filename=NULL){
+  
+  nEnv = nrow(SIM$X)/(nRep*nbMerge)
+  envs = SIM$X[1:nEnv, ifelse(intercept, -1, -(K+1))]
+  if(is.null(SIM$fundNiche) & !RN) stop("No theoretical fundamental niche available")
+  
+  proba = list()
+  
+  if(CV){
+    # if realised niche
+    if(RN){
+      #tSDM
+      if(prob.cov){
+        
+        proba$pred = SIM$pCV.mean.stan_prob
+        proba$est.02 = SIM$pCV.qinf.stan_prob
+        proba$est.97 = SIM$pCV.qsup.stan_prob
+        
+      }else{
+        
+        proba$pred = SIM$pCV.mean.stan_bin
+        proba$est.02 = SIM$pCV.qinf.stan_bin
+        proba$est.97 = SIM$pCV.qsup.stan_bin
+        
+      }
+    }else{#if FN
+      
+      proba$pred = SIM$pFundCV.mean.stan
+      proba$est.02 = SIM$pFundCV.qinf.stan
+      proba$est.97 = SIM$pFundCV.qsup.stan
+      
+    }
+    #SDMs (realised or fundamental niche is the same!)
+    proba$SDM.pred = SIM$SDM.pCV.mean.stan
+    proba$SDM.est.02 = SIM$SDM.pCV.qinf.stan
+    proba$SDM.est.97 = SIM$SDM.pCV.qsup.stan
+    
+  }else{#if not CV
+    
+    # if realised niche
+    if(RN){
+      #tSDM
+      if(prob.cov){
+        
+        proba$pred = SIM$p.mean.stan_prob
+        proba$est.02 = SIM$p.qinf.stan_prob
+        proba$est.97 = SIM$p.qsup.stan_prob
+        
+      }else{
+        
+        proba$pred = SIM$p.mean.stan_bin
+        proba$est.02 = SIM$p.qinf.stan_bin
+        proba$est.97 = SIM$p.qsup.stan_bin
+        
+      }
+    }else{#if FN
+      
+      proba$pred = SIM$pFund.mean.stan
+      proba$est.02 = SIM$pFund.qinf.stan
+      proba$est.97 = SIM$pFund.qsup.stan
+      
+    }
+    #SDMs (realised or fundamental niche is the same!)
+    proba$SDM.pred = SIM$SDM.p.mean.stan
+    proba$SDM.est.02 = SIM$SDM.p.qinf.stan
+    proba$SDM.est.97 = SIM$SDM.p.qsup.stan
+    
+  }
+  
+  
+  realizedNiche = SIM$prob
+  
+  if(RN){
+    Niche = SIM$prob
+  }else{
+    Niche = SIM$fundNiche
+  }
+  
+  
+  # build niche table
+  table=data.frame(env=envs,rbind(data.frame(stack(Niche),type=rep("True",nrow(stack(Niche)))),
+                                  data.frame(stack(as.data.frame(proba$pred)),type=rep("tSDM",nrow(stack(Niche)))),
+                                  data.frame(stack(as.data.frame(proba$SDM.pred)),type=rep("SDM",nrow(stack(Niche))))))
+  
+  if(plotprey){
+    Preys=data.frame()
+    for(s in 1:S){
+      for (prey in community$trophic.links[community$trophic.links$consumer == spNames[nameOrder[s]],]$resource){
+        intStrength = abs(IntMat[prey,spNames[nameOrder[s]]])/(strengthBI*2)  # strength of the biotic interaction
+        Preys = rbind(Preys, data.frame(focal=paste0("Y", gsub("Sp|\\..*", "", spNames[nameOrder[s]])),env=envs,
+                                        value=realizedNiche[,paste0("Y", gsub("Sp|\\..*", "", prey))]*intStrength,
+                                        predprey=paste0("Y", gsub("Sp|\\..*", "", prey))))
+        
+      }
+    }
+  }
+  if(plotpred){
+    Pred=data.frame()
+    for(s in 1:S){
+      for (pred in community$trophic.links[community$trophic.links$ressource == spNames[nameOrder[s]],]$consumer) {
+        intStrength = abs(IntMat[prey,spNames[nameOrder[s]]])/(strengthBI*2)  # strength of the biotic interaction
+        Pred = rbind(Pred, data.frame(focal=paste0("Y", gsub("Sp|\\..*", "", spNames[nameOrder[s]])),env=envs,
+                                      value=realizedNiche[,paste0("Y", gsub("Sp|\\..*", "", prey))]*intStrength,
+                                      predprey=paste0("Y", gsub("Sp|\\..*", "", prey))))
+        
+      }
+    }
+    
+  }
+  
+  for(s in 1:S){
+    assign(paste0("tableFoc",s), table[which(table$ind==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
+    if(plotprey){  
+      assign(paste0("tablePrey",s), Preys[which(Preys$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
+    }
+    if(plotpred){
+      assign(paste0("tablePrey",s), Pred[which(Pred$focal==paste0("Y", gsub("Sp|\\..*", "", spNames[s]))),])
+    }
+    if(RN){
+      cols = c("grey75",alpha("mediumorchid",1),"darkblue")
+    }else{
+      cols = c(alpha("royalblue1",0.5),"plum4","darkblue")
+    }
+    assign(paste0("p",s),ggplot() +
+             geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="True",],aes(x=env,y=values),lwd=3, col=cols[1])+
+             geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="tSDM",],aes(x=env,y=values),lwd=2, lty=1, col=cols[2])+
+             geom_line(data=get(paste0("tableFoc",s))[get(paste0("tableFoc",s))$type=="SDM",],aes(x=env,y=values),lwd=1, lty=2, col=cols[3]) +
+             theme_classic()+ggtitle(spNames[s]) + geom_vline(xintercept = SIM$B[paste0("Y", gsub("Sp|\\..*", "", spNames[s])),2],lty=2,col="red",lwd=1,alpha=0.2) +
+             xlab("Env") + ylab("Probability of presence")
+    )
+    
+    if(plotprey){
+      assign(paste0("p",s), get(paste0("p",s)) + geom_line(data=get(paste0("tablePrey",s)), aes(x=env,y=value, group=predprey),color="green",linetype=2,alpha=0.8))
+    }
+    if(plotpred){
+      assign(paste0("p",s), get(paste0("p",s)) + geom_line(data=get(paste0("tablePred",s)), aes(x=env,y=value, group=predprey),color="red",linetype=2,alpha=0.8))
+      
+    }
+    
+  }
+  
+  #p=eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
+  eval(parse(text=paste0("grid.arrange(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
+  eval(parse(text=paste0("p=arrangeGrob(grobs=list(",paste(paste0("p",1:S),collapse=","),"),nrow=4,top=main)")))
+  if(!is.null(filename)) ggsave(filename = filename,p,width=20,height=10, dpi = 150, units = "in")
+  
+  #return(p)
+}
+
+
+
+
+compute_TL_laplacian <- function(G){
+  # recursive function on connected components of G
+  if (igraph::vcount(G) == 1) return(setNames(0, igraph::V(G)$name))
+  A = as.matrix(igraph::get.adjacency(G))
+  names_loc = rownames(A)
+  u  = igraph::degree(G)
+  v =  igraph::degree(G,mode ='in') - igraph::degree(G,mode = 'out')
+  
+  A = A[-1,-1]
+  u = u[-1]
+  v = v[-1]
+  L = diag(u, ncol=length(u)) - A - t(A) # matrix is made symmetric!
+  
+  TL_vec = Matrix::solve(L,v)
+  TL_vec = c(0,TL_vec)
+  TL_vec = TL_vec - min(TL_vec)
+  names(TL_vec) = igraph::V(G)$name
+  return(TL_vec)
+}
+
+
+
+
 
 
 

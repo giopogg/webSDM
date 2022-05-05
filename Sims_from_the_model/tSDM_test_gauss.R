@@ -102,9 +102,9 @@ names(env.form)=colnames(Y)
 
 ###############
 # Run models
-m_stan = trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal=NULL,method="stan_glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
-m_bayes = trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal=NULL,method="bayesglm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
-m_glm = trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal=NULL,method="glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
+m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
+m_bayes = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="bayesglm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
+m_glm = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
 
 ###############
 # Analyse results: obtain posterior means and 95% credible regions for each parameter of each species, and compare against the true ones

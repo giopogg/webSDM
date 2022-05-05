@@ -164,11 +164,11 @@ names(env.form)=colnames(Y)
 # the poly term as an additional variable)
 
 # fit the models
-m_glm = trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal=NULL,method="glm",family=binomial(link = "logit"),iter=1000)
-#m_glm_net = trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal="elasticnet",method="glm",family=binomial(link = "logit"),iter=2000)
-m_stan = trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal=NULL,method="stan_glm",family=binomial(link = "logit"),iter=1000)
-#m_stan_hs =trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal="horshoe",method="stan_glm",family=binomial(link = "logit"),iter=2000)
-m_bayes = trophicSDM(Y=Y,X=X_raw,G=G,formulas=env.form,penal=NULL,method="bayesglm",family=binomial(link = "logit"),iter=1000)
+m_glm = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="glm",family=binomial(link = "logit"),iter=1000)
+#m_glm_net = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal="elasticnet",method="glm",family=binomial(link = "logit"),iter=2000)
+m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",family=binomial(link = "logit"),iter=1000)
+#m_stan_hs =trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal="horshoe",method="stan_glm",family=binomial(link = "logit"),iter=2000)
+m_bayes = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="bayesglm",family=binomial(link = "logit"),iter=1000)
 
 
 # show traceplots for m_stan (also to check if there are some identification issues)
