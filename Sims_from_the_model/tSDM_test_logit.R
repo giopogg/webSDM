@@ -9,9 +9,9 @@ library(gridExtra)
 library(dismo)
 #library(pcalg) not working with R 4.0
 
-wd="~/Documents/Phd/Futureweb/Code/"
+wd="~/Documents/GitHub/trophicSDM/Sims_from_the_model/"
 setwd(wd)
-source('/Users/poggiatg/Documents/Phd/Futureweb/Code/MY_SCRIPTS/tSDM_functions.R')
+source('../tSDM_functions.R')
 
 
 n=1000 #number of sites
@@ -166,7 +166,7 @@ names(env.form)=colnames(Y)
 # fit the models
 m_glm = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="glm",family=binomial(link = "logit"),iter=1000)
 #m_glm_net = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal="elasticnet",method="glm",family=binomial(link = "logit"),iter=2000)
-m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",family=binomial(link = "logit"),iter=1000)
+m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",family=binomial(link = "logit"),iter=1000,custom.formula =run.parallel=F)
 #m_stan_hs =trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal="horshoe",method="stan_glm",family=binomial(link = "logit"),iter=2000)
 m_bayes = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="bayesglm",family=binomial(link = "logit"),iter=1000)
 
@@ -256,7 +256,7 @@ error_prop_sample=1 #error_prop_sample is an important parameter. The greater it
 # Check probabilities of presence pred vs known (because we simulated :) )
 
 #run predictions
-pred_stan_bin=trophicSDM_predict(m=m_stan,Xnew=Xnew,binary.resp = T,prob.cov=F,pred_samples=100,error_prop_sample=error_prop_sample)
+pred_stan_bin=trophicSDM_predict(m=m_stan,Xnew=Xnew,binary.resp = T,prob.cov=F,pred_samples=100,mode="out",run.parallel=T,verbose=T)
 
 colnames(prob)=colnames(Y)
 #reorder the columns of prob to be sure that we are comparing the same things

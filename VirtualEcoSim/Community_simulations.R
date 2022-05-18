@@ -7,12 +7,13 @@ setwd("~/Documents/GitHub/trophicSDM/VirtualEcoSim")
 args= commandArgs(trailingOnly = TRUE)
 job=args[1]
 
-#set.seed(as.numeric(gsub("job_", "", job))*100)
 
+# Parameters
+set.seed(as.numeric(gsub("job_", "", job))*100)  
 # Parameters
 if (!loadSim){
     # Choose the main simulation parameter values
-    S = 5       # number of species
+    S = 20       # number of species
     L = 3         # number of trophic levels
     nEnv = 51     # number of environmental samples
     nRep = 50     # number of replicates
@@ -38,8 +39,9 @@ if (!loadSim){
     dir.create(simPath, showWarnings = FALSE)
     # Choose the directory from which to load the simulations
     simPath = paste0("Simulations_S",S,"L",L,"_nEnv",nEnv,"_nRep",nRep,"_maxBI",maxBI,"_job",job,"/")
-
+    
 }
+
 
 
 #library("plot.matrix")
@@ -283,7 +285,7 @@ if(loadSim){
     
 }else{
 
-    ricker.finalStates.abioticKbasal <- mclapply(1:nRep, function(x){
+    ricker.finalStates.abioticKbasal <- try( mclapply(1:nRep, function(x){
         final_state=sapply(envs, function(e){
             ricker.out.abioticKbasal <- simRicker(Stroph, t(IntMat), spNames, reduceK = TRUE, env=e, niche_optima=niche_optima, sigma=sigma_ricker, death.t=10^-15, tend=1000)
             final_state <- t(data.frame(PA=as.numeric( ricker.out.abioticKbasal[,ncol(ricker.out.abioticKbasal)]>0)))
@@ -293,7 +295,7 @@ if(loadSim){
         final_state_AB=apply(final_state, MARGIN = 2, FUN = function(x){x[[2]]} )
         
         return(list(final_state_PA=final_state_PA,final_state_AB=final_state_AB))
-    },mc.cores = detectCores()-1)
+    },mc.cores = detectCores()-1))
     
     
     ricker.finalStates.abioticKbasal_PA <- lapply(ricker.finalStates.abioticKbasal, function(final_state){

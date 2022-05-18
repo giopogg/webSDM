@@ -49,8 +49,8 @@ if(!linear) poly=F                       # if yes, whether to take a raw polynom
 
 horsh=F
 
-iter=200
-pred_samples=200
+iter=5000
+pred_samples=1000
 
 figPath=paste0(simPath,"Fig/")
 if(!dir.exists(figPath)) dir.create(figPath)

@@ -23,7 +23,7 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
     custom.formula = T
     message("We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.")
     if(!identical(names(sp.formula),colnames(Y))) stop("sp.formula has to be either NULL, richness, or a list whose name equals species names (i.e. colnames(Y))")
-    }
+    }else{custom.formula=F}
   
 
   # laplacian sorting of the graph (component by component)
@@ -336,12 +336,14 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
 #                     If greater than one, we sample pred.sample/error_prop_sample of the predictive distribution of each species (N.B. carefully to guarantee that the samples are consistent across them),
 #                     and then for each of the selected samples, we draw error_prop_sample from the predictive distribution of the focal species, for each selected sample of the predictors.
 
-trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pred_samples=1000,error_prop_sample=10,verbose=F){
+trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pred_samples=1000,run.parallel=T,verbose=F, filter.table=NULL){
   
   # checks & errors
   if(m$method=="glm" & (pred_samples != 1 | error_prop_sample != 1)){stop("glm requires pred_sample and error_prop_sample both =1")}
   
   if(is.null(Xnew)) Xnew = m$data$X
+  
+  if(!is.null(filter.table)) length(filter.table) == nrow(Xnwe)
   
   family = m$family
   n = nrow(Xnew)
@@ -388,9 +390,12 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pre
       if (length(known.neighb)>0) for(k in 1:length(known.neighb)){
         if(prob.cov){
           # if prob.cov=TRUE, use the species predicted probabilities of presence
-          newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(known.neighb[k])]]$predictions.prob[,seq(from=1,by=error_prop_sample,to=pred_samples)]# here select the random samples!  
+          #newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(known.neighb[k])]]$predictions.prob[,seq(from=1,by=error_prop_sample,to=pred_samples)] # here select the random samples!Deprecated with error_prop_sample
+          newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(known.neighb[k])]]$predictions.prob# here select the random samples!  
+          
         }else{
-          newdata[,ncol(Xnew)+k,] <- tryCatch(sp.prediction[[names(known.neighb[k])]]$predictions.bin[,seq(from=1,by=error_prop_sample,to=pred_samples)], error=function(cond){message(paste("dim(sp.prediction[[names(known.neighb[k])]]$predictions.bin):", sp.prediction[[names(known.neighb[k])]]$predictions.bin));return(NA)})# here select the random samples!
+          #newdata[,ncol(Xnew)+k,] <- tryCatch(sp.prediction[[names(known.neighb[k])]]$predictions.bin[,seq(from=1,by=error_prop_sample,to=pred_samples)], error=function(cond){message(paste("dim(sp.prediction[[names(known.neighb[k])]]$predictions.bin):", sp.prediction[[names(known.neighb[k])]]$predictions.bin));return(NA)})# here select the random samples!
+          newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(known.neighb[k])]]$predictions.bin# here select the random samples!
         }
       }
       
@@ -420,13 +425,31 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pre
       }
       
       # apply the function SDMpredict to each layer of the array (MARGIN=3)
-      pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)})
+      if(run.parallel){
+        
+        pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
+      
+        }else{
+          
+        pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)})
+      
+      }
       # unlist and format
       sp.prediction[[names(sortedV[j])]] = list(predictions.prob=NULL,predictions.bin=NULL)
-      sp.prediction[[names(sortedV[j])]]$predictions.prob = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))
-      if(!prob.cov | binary.resp) {
-        sp.prediction[[names(sortedV[j])]]$predictions.bin = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))
+      if(!is.null(filter.table)){
+        # PROBLEM OF DIM sp.prediction should be n*pred_samples???
+        sp.prediction[[names(sortedV[j])]]$predictions.prob = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))*filter.table[[names(sortedV[j])]]
+      }else{
+        sp.prediction[[names(sortedV[j])]]$predictions.prob = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))
       }
+      if(!prob.cov | binary.resp) {
+        if(!is.null(filter.table)){
+        sp.prediction[[names(sortedV[j])]]$predictions.bin = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))*filter.table[[names(sortedV[j])]]
+        }else{
+          sp.prediction[[names(sortedV[j])]]$predictions.bin = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))
+          
+        }
+        }
     }
     if(!binary.resp){
       # if binary.resp=FALSE, remove the binary predictions (that were eventually needed for computations if prob.cov=FALSE)
@@ -456,10 +479,21 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="all",pre
         newdata[,1:ncol(Xnew),]=as.matrix(Xnew)
         
         for(k in 1:length(neigh.sp)){
-          newdata[,ncol(Xnew)+k,]=sp.prediction[[names(neigh.sp[k])]][,seq(from=1,by=error_prop_sample,to=pred_samples)]# here select the random samples!
+          #newdata[,ncol(Xnew)+k,]=sp.prediction[[names(neigh.sp[k])]][,seq(from=1,by=error_prop_sample,to=pred_samples)]# here select the random samples!
+          newdata[,ncol(Xnew)+k,]=sp.prediction[[names(neigh.sp[k])]]# here select the random samples!
+          
         }
         
-        pred.array=apply(newdata,MARGIN=3,FUN = function(x){list(SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov))})
+        if(run.parallel){
+          
+          pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)}, )
+          
+        }else{
+          
+          pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)})
+          
+        }
+
         sp.prediction[[names(sortedV[j])]] = do.call(cbind,lapply(pred.array,FUN=function(x) x[[1]]))
       }
     }

@@ -1,16 +1,20 @@
 rm(list=ls())
-.libPaths( c( .libPaths(), "~/my_r_libraries/") )   
 
 # Choose wether to simulate or simply load already simulated datasets
 loadSim = FALSE
-setwd("~/Documents/GitHub/trophicSDM/VirtualEcoSim")
+#setwd("~/Documents/Phd/Futureweb/Code/MY_SCRIPTS/SIM_JEREMY_old")
+
+.libPaths( c( .libPaths(), "~/my_r_libraries/") ) 
 
 args= commandArgs(trailingOnly = TRUE)
+cat(args)
 job=args[1]
+
+set.seed(as.numeric(gsub("job_", "", job))*100)  
 # Parameters
 if (!loadSim){
     # Choose the main simulation parameter values
-    S = 5       # number of species
+    S = 20       # number of species
     L = 3         # number of trophic levels
     nEnv = 51     # number of environmental samples
     nRep = 50     # number of replicates
@@ -40,12 +44,14 @@ if (!loadSim){
 }
 
 
+#library("plot.matrix")
 library("igraph")
 library("gtools")
 library("cheddar")
 library("devtools") 
-library("seqtime") 
+library("seqtime") ###???
 library("reshape2")
+#library("gplots")
 library("magrittr")
 library("purrr")
 library("readr")
@@ -165,7 +171,8 @@ if (loadSim){
     names(glv.meanAbundances.abioticGR) <- spNames
 }else{
     
-    glv.finalStates.abioticGR <- mclapply(1:nRep, function(x){
+    glv.finalStates.abioticGR <- try(
+        mclapply(1:nRep, function(x){
         final_state=sapply(envs, function(e){
                     glv.out.abioticGR <- simGLV(Stroph, IntMat, spNames, reduceGR = TRUE, env=e, niche_breadth=niche_breadthGR, niche_optima=niche_optima)
                     final_state <- t(data.frame(PA=as.numeric(glv.out.abioticGR[,ncol(glv.out.abioticGR)]>0)))
@@ -176,6 +183,7 @@ if (loadSim){
         
         return(list(final_state_PA=final_state_PA,final_state_AB=final_state_AB))
     },mc.cores = detectCores()-1)
+    )
     
     # Presence-absence
     glv.finalStates.abioticGR_PA <- lapply(glv.finalStates.abioticGR, function(final_state){
@@ -279,7 +287,7 @@ if(loadSim){
     
 }else{
 
-    ricker.finalStates.abioticKbasal <- mclapply(1:nRep, function(x){
+    ricker.finalStates.abioticKbasal <- try( mclapply(1:nRep, function(x){
         final_state=sapply(envs, function(e){
             ricker.out.abioticKbasal <- simRicker(Stroph, t(IntMat), spNames, reduceK = TRUE, env=e, niche_optima=niche_optima, sigma=sigma_ricker, death.t=10^-15, tend=1000)
             final_state <- t(data.frame(PA=as.numeric( ricker.out.abioticKbasal[,ncol(ricker.out.abioticKbasal)]>0)))
@@ -289,9 +297,9 @@ if(loadSim){
         final_state_AB=apply(final_state, MARGIN = 2, FUN = function(x){x[[2]]} )
         
         return(list(final_state_PA=final_state_PA,final_state_AB=final_state_AB))
-    },mc.cores = detectCores()-1)
+    },mc.cores = detectCores()-1), TRUE)
     
-    
+    if(!any(unlist(lapply(ricker.finalStates.abioticKbasal, function(x) class(x)=="try-error")))){
     ricker.finalStates.abioticKbasal_PA <- lapply(ricker.finalStates.abioticKbasal, function(final_state){
         final_state$final_state_PA <- as.data.frame(final_state$final_state_PA, row.names = spNames)
         colnames(final_state$final_state_PA) <- envs
@@ -314,7 +322,7 @@ if(loadSim){
     ricker.meanAbundances.abioticKbasal <- sapply(Reduce(rbind, ricker.finalAbundances.abioticKbasal), function(x)weighted.mean(x, w=x>0))
     
     write.csv2(ricker.meanAbundances.abioticKbasal, paste0(simPath,"ricker.meanAbundances.abioticKbasal.csv"))
-    
+    }
 }
 
 ##################################################################################################  
@@ -331,20 +339,23 @@ if (loadSim){
     soi.finalStates.abioticER <- loadData(paste0(simPath,"soi_finalStates_abioticER.csv"))
     nRep = length(soi.finalStates.abioticER)
 }else{
-    soi.finalStates.abioticER <- mclapply(1:nRep, function(x)sapply(envs, function(e){
+    soi.finalStates.abioticER <- try( mclapply(1:nRep, function(x)sapply(envs, function(e){
                 soi.out.abiotic <- simSOI(Stroph, I, IntMat, spNames, m.vector=m.vector, e.vector=e.vector, increaseE=TRUE, env=e, niche_optima=niche_optima, tend=tend)
                 final_state <- t(data.frame(PA=as.numeric(rowSums(soi.out.abiotic[,(tend-10):tend])>I/10), row.names = spNames))
-                return(final_state)}),mc.cores = detectCores()-1)
+                return(final_state)}),mc.cores = detectCores()-1) , TRUE)
                                     
-   soi.finalStates.abioticER <- lapply(soi.finalStates.abioticER, function(final_state){
+    if(!any(unlist(lapply(soi.finalStates.abioticER, function(x) class(x)=="try-error")))){
+        
+        soi.finalStates.abioticER <- lapply(soi.finalStates.abioticER, function(final_state){
                 final_state <- as.data.frame(final_state, row.names = spNames)
                 colnames(final_state) <- envs
                 return(final_state)})
                                         
-    soi.finalStates.abioticER.merged <- lapply(1:length(soi.finalStates.abioticER), function(i)
+        soi.finalStates.abioticER.merged <- lapply(1:length(soi.finalStates.abioticER), function(i)
                 cbind(datasets = as.character(i), rowN = rownames(soi.finalStates.abioticER[[i]]), soi.finalStates.abioticER[[i]]))
-    soi.finalStates.abioticER.merged <- do.call(rbind, soi.finalStates.abioticER.merged)
-    write.csv2(soi.finalStates.abioticER.merged, paste0(simPath,"soi_finalStates_abioticER.csv"))
+        soi.finalStates.abioticER.merged <- do.call(rbind, soi.finalStates.abioticER.merged)
+        write.csv2(soi.finalStates.abioticER.merged, paste0(simPath,"soi_finalStates_abioticER.csv"))
+    }
 }
 
 
@@ -362,20 +373,22 @@ if (loadSim){
     soi.finalStates.abioticERbasal <- loadData(paste0(simPath,"soi_finalStates_abioticERbasal.csv"))
     nRep = length(soi.finalStates.abioticERbasal)
 }else{
-    soi.finalStates.abioticERbasal <- mclapply(1:nRep, function(x)sapply(envs, function(e){
+    soi.finalStates.abioticERbasal <- try( mclapply(1:nRep, function(x)sapply(envs, function(e){
                 soi.out.abioticERbasal <- simSOI(Stroph, I, IntMat, spNames, m.vector=m.vector, e.vector=e.vector, increaseE=TRUE, basal=TRUE, env=e, niche_optima=niche_optima, tend=tend)
                 final_state <- t(data.frame(PA=as.numeric(rowSums(soi.out.abioticERbasal[,(tend-10):tend])>I/10), row.names = spNames))
-                return(final_state)}),mc.cores = detectCores()-1)
-                                         
-    soi.finalStates.abioticERbasal <- lapply(soi.finalStates.abioticERbasal, function(final_state){
+                return(final_state)}),mc.cores = detectCores()-1), TRUE)
+    
+    if(!any(unlist(lapply(soi.finalStates.abioticERbasal, function(x) class(x)=="try-error")))){                                      
+        soi.finalStates.abioticERbasal <- lapply(soi.finalStates.abioticERbasal, function(final_state){
                 final_state <- as.data.frame(final_state, row.names = spNames)
                 colnames(final_state) <- envs
                 return(final_state)})
     
-    soi.finalStates.abioticERbasal.merged <- lapply(1:length(soi.finalStates.abioticERbasal), function(i)
+        soi.finalStates.abioticERbasal.merged <- lapply(1:length(soi.finalStates.abioticERbasal), function(i)
                 cbind(datasets = as.character(i), rowN = rownames(soi.finalStates.abioticERbasal[[i]]), soi.finalStates.abioticERbasal[[i]]))
-    soi.finalStates.abioticERbasal.merged <- do.call(rbind, soi.finalStates.abioticERbasal.merged)
-    write.csv2(soi.finalStates.abioticERbasal.merged, paste0(simPath,"soi_finalStates_abioticERbasal.csv"))
+        soi.finalStates.abioticERbasal.merged <- do.call(rbind, soi.finalStates.abioticERbasal.merged)
+        write.csv2(soi.finalStates.abioticERbasal.merged, paste0(simPath,"soi_finalStates_abioticERbasal.csv"))
+    }
 }
 
 ##################################################################################################  
@@ -400,11 +413,11 @@ if (loadSim){
     vc.finalStates.abiotic <- loadData(paste0(simPath,"vc_finalStates_abiotic.csv"))
     nRep = length(vc.finalStates.abiotic)
 }else{
-    vc.finalStates.abiotic <- lapply(1:nRep, function(x){
+    vc.finalStates.abiotic <- try(lapply(1:nRep, function(x){
                                     final_state <- t(simulate_community(env, niche_optima, niche_breadthVC, comp_inter, fac_inter, 
                                        beta_env, beta_comp, beta_fac, beta_abun, years, K)[-(S+1)])
                                      colnames(final_state) <- envs
-                                     return (final_state)})
+                                     return (final_state)}), TRUE)
     
     vc.finalStates.abiotic.merged <- lapply(1:length(vc.finalStates.abiotic), function(i)
                 cbind(datasets = as.character(i), rowN = rownames(vc.finalStates.abiotic[[i]]), vc.finalStates.abiotic[[i]]))
@@ -432,17 +445,20 @@ niche_breadthGR = niche_breadthGR
 
 # Compute the theoretical niche as a function of the above defined parameters and the mean abundances computed above.
 # see notebook and rapport de stage for derivation of formulas
-
+if(!any(unlist(lapply(glv.finalStates.abioticGR, function(x) class(x)=="try-error")))){
+    
 glv.fundNicheTh.abioticGR = t(sapply(envs, function(e)1-ptruncnorm(1-exp(-(e-niche_optima)**2/(2*niche_breadthGR**2)) - glv.meanAbundances.abioticGR %*% (IntMat*PredMat), 
                                                                    mean=Reduce('+', b.fundNiche), sd=Reduce('+', sd_noise.fundNiche), 
                                                                    a=ifelse(trophL==1,0,-Inf), b=ifelse(trophL>1,0,Inf))))
 colnames(glv.fundNicheTh.abioticGR) = spNames
 write.csv2(glv.fundNicheTh.abioticGR, paste0(simPath,"glv.fundNicheTh.abioticGR.csv"))
-
+}
 ###################################################################################################################
 #Everything again for GLV K  
 
 niche_breadth_Kbasal=niche_breadth_Kbasal
+
+if(!any(unlist(lapply(glv.finalStates.abioticKbasal, function(x) class(x)=="try-error")))){
 
 glv.fundNicheTh.abioticKbasal = t(sapply(envs, function(e)1-ptruncnorm(1e-10*exp((e-niche_optima)**2/(2*niche_breadth_Kbasal**2))*(trophL==1) - glv.meanAbundances.abioticKbasal %*% (IntMat*PredMat), 
                                                                        mean = Reduce('+', b.fundNiche[-1])+(trophL==1), sd=Reduce('+', sd_noise.fundNiche[-1]), 
@@ -450,8 +466,7 @@ glv.fundNicheTh.abioticKbasal = t(sapply(envs, function(e)1-ptruncnorm(1e-10*exp
 #glv.fundNicheTh.abioticKbasal[,trophL==1] <- t(sapply(envs, function(e) -diag(IntMat.fundNiche$TL1)*exp(-(e-niche_optima)**2/(2*niche_breadth**2))) > 1e-10)[,trophL==1]
 colnames(glv.fundNicheTh.abioticKbasal) = spNames
 write.csv2(glv.fundNicheTh.abioticKbasal, paste0(simPath,"glv.fundNicheTh.abioticKbasal.csv"))
-
-
+}
 #################################################################################################
 ### Ricker
 
@@ -464,6 +479,7 @@ hitting_proba <- function(Y0, drift, sigma, a, b){
     return((1-exp(2*drift/sigma**2*(b-Y0)))/(1-exp(2*drift/sigma**2*(b-a))))
 }
 
+if(!any(unlist(lapply(ricker.finalStates.abioticKbasal, function(x) class(x)=="try-error")))){
 ricker.fundNicheTh.abioticKbasal = t(sapply(envs, function(e){
     K = rep(0.1,S)*pmax(exp(-(niche_optima-e)**2/(2*niche_breadth**2)), 1e-15)
     fundNicheTh =  (trophL==1)*(1-pnorm(1e-15, mean=t(-K*diag(IntMat)), sd=sigma/1000)/3) + # inadequate function, manual fitting
@@ -475,7 +491,7 @@ ricker.fundNicheTh.abioticKbasal = t(sapply(envs, function(e){
 }))
 colnames(ricker.fundNicheTh.abioticKbasal) = spNames
 write.csv2(ricker.fundNicheTh.abioticKbasal, paste0(simPath,"ricker.fundNicheTh.abioticKbasal.csv"))
-
+}
 
 ##########################################################################################
 # Additional plots
