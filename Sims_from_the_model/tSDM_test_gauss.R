@@ -101,7 +101,7 @@ names(env.form)=colnames(Y)
 
 ###############
 # Run models
-m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000,run.parallel=T)
+m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",mode="prey",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000,run.parallel=T)
 m_bayes = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="bayesglm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
 m_glm = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
 
