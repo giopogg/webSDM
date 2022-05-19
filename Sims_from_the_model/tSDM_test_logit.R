@@ -151,7 +151,7 @@ summary(Y)
 summary(prob)
 
 # Important: Y names should not be just raw numbers
-colnames(Y)=colnames(A)=rownames(A)=paste0("Y_",as.character(1:S))
+colnames(Y)=colnames(A)=rownames(A)=paste0("Y",as.character(1:S))
 
 #build graph from A
 G=graph_from_adjacency_matrix(A)

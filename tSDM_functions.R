@@ -12,8 +12,8 @@
 # fitPreds : logical. Should predators be included as covariates?
 # iter : the number of MCMC samples (if bayesian approach)
 
-trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL, mode = "prey",method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=TRUE,chains=2,verbose=F){
-
+trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL, mode = "prey", method="stan_glm",family,iter=1000,run.parallel=TRUE,chains=2,verbose=F){
+  
   # checks & errors
   if(!is_igraph(G)) stop("G is not an igraph object")
   if(!method %in% c("glm","stan_glm","bayesglm")) stop("the selected method has not yet been implemented or it has been misspelled")
@@ -23,12 +23,15 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
     custom.formula = T
     message("We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.")
     if(!identical(names(sp.formula),colnames(Y))) stop("sp.formula has to be either NULL, richness, or a list whose name equals species names (i.e. colnames(Y))")
-    }else{custom.formula=F}
-  #if(!(mode %in% c("prey","predator","all"))){stop("mode must be either 'prey', 'predator' or 'all'")}
-
-  # laplacian sorting of the graph (component by component)
-  sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
+  }else{custom.formula=F}
+  if(!(mode %in% c("prey","predator"))){stop("mode must be either 'prey' or 'predator'")}
   
+  # laplacian sorting of the graph (component by component)
+  if(mode == "prey"){
+    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
+  }else{
+    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=F)]
+  }
   # initialize empty lists of models
   m = form.all = as.list(vector(length=vcount(G)))
   names(m) = names(form.all) = names(sortedV)
@@ -36,54 +39,54 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
   # core part: loop on the species to fit their distribution
   if(run.parallel){
     m=mclapply(1:vcount(G),FUN = function(j){
-    if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
-    
-    if(custom.formula){
-      sp.form = sp.formula[[names(sortedV[j])]]
-    }else{
-        sp.form = sp.formula
-    }
+      if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
       
-    # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
-    temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula = sp.form, sp.partition,
-                      formula.foc=paste(as.character(env.formula[[names(sortedV[j])]]),collapse=" "),
-                      method=method, penal=penal, family=family, fitPreds=fitPreds, iter=iter,verbose=verbose,chains=chains)
+      if(custom.formula){
+        sp.form = sp.formula[[names(sortedV[j])]]
+      }else{
+        sp.form = sp.formula
+      }
+      
+      # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
+      temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula = sp.form, sp.partition, mode = mode,
+                        formula.foc=paste(as.character(env.formula[[names(sortedV[j])]]),collapse=" "),
+                        method=method, penal=penal, family=family, iter=iter,verbose=verbose,chains=chains)
+      
+      # assign models and env.formula (that now includes biotic variables too)
+      temp.mod
+    },mc.cores=detectCores())
     
-    # assign models and env.formula (that now includes biotic variables too)
-    temp.mod
-  },mc.cores=detectCores())
-  
-  form.all=lapply(m, `[[`, 2)
-  m=lapply(m, `[[`, 1)
-  names(m) = names(form.all) = names(sortedV)
-  
-  
+    form.all=lapply(m, `[[`, 2)
+    m=lapply(m, `[[`, 1)
+    names(m) = names(form.all) = names(sortedV)
+    
+    
   }else{
-  
-  
-  for(j in 1:vcount(G)){
-    if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
     
     
-    if(custom.formula){
-      sp.form = sp.formula[[names(sortedV[j])]]
-    }else{
-      sp.form = sp.formula
+    for(j in 1:vcount(G)){
+      if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
+      
+      
+      if(custom.formula){
+        sp.form = sp.formula[[names(sortedV[j])]]
+      }else{
+        sp.form = sp.formula
+      }
+      
+      # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
+      temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula = sp.form, sp.partition, mode = mode,
+                        formula.foc=paste(as.character(env.formula[[names(sortedV[j])]]),collapse=" "),
+                        method=method, penal=penal, family=family, chains=chains,iter=iter,verbose=verbose)
+      
+      # assign models and env.formula (that now includes biotic variables too)
+      m[[names(sortedV[j])]]=temp.mod$m
+      form.all[[names(sortedV[j])]]=temp.mod$form.all
     }
     
-    # call a function that does a SDM with j as focal species, automatically finds covariates from G and formula.foc
-    temp.mod = SDMfit(focal=names(sortedV[j]), Y, X, G, sp.formula = sp.form, sp.partition,
-                      formula.foc=paste(as.character(env.formula[[names(sortedV[j])]]),collapse=" "),
-                      method=method, penal=penal, family=family, fitPreds=fitPreds, chains=chains,iter=iter,verbose=verbose)
-
-    # assign models and env.formula (that now includes biotic variables too)
-    m[[names(sortedV[j])]]=temp.mod$m
-    form.all[[names(sortedV[j])]]=temp.mod$form.all
   }
-    
- }
   # return values
-  list(model=m,form.all=form.all,form.env=env.formula,mode = mode, sp.formula=NULL,sp.partition=NULL,data=list(X=X,Y=Y),method=method,penal=penal,iter=iter,family=family,G=G)
+  list(model=m,form.all=form.all,form.env=env.formula, mode = mode, sp.formula=NULL,sp.partition=NULL,data=list(X=X,Y=Y),method=method,penal=penal,iter=iter,family=family,G=G)
 }
 
 
@@ -95,7 +98,7 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
 
 # nice stuff about formulas https://www.datacamp.com/community/tutorials/r-formula-tutorial
 
-SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,fitPreds=FALSE,iter=1000,chains=2,verbose=T){
+SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition, mode = mode, method="stan_glm",family=NULL,penal=NULL,iter=1000,chains=2,verbose=T){
   
   # for the particular case of the stan_glm model with "coeff.signs" constraint
   # another stan-for-R package is used (brsm) and formulas have to be adapted
@@ -103,50 +106,27 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
   
   
   ## Build environmental part of the formula
-    if(useBRMS){
-      # "tempX" is an intermediary variable allowing to set lower/upper-bounds on priors
-      form.env = "y ~ tempX"
-      form.env.brms = paste("tempX",as.character(formula.foc))
-    }else form.env = paste("y",as.character(formula.foc))
-
+  if(useBRMS){
+    # "tempX" is an intermediary variable allowing to set lower/upper-bounds on priors
+    form.env = "y ~ tempX"
+    form.env.brms = paste("tempX",as.character(formula.foc))
+  }else form.env = paste("y",as.character(formula.foc))
+  
   
   ## Build final formula
-  preys = names(neighbors(G,focal,mode=c("out")))
-  preds = names(neighbors(G,focal,mode=c("in")))
-  predsANDpreys = intersect(preds, preys)
+  neigh = names(neighbors(G,focal,mode=ifelse(mode=="prey","out","in")))
   
-  if (fitPreds){
-    # define a separate category for pairs of species that predate each other (2-species loop),
-    # as they must only be included once in the regression
-    preds = setdiff(preds, predsANDpreys)
-    preys = setdiff(preys, predsANDpreys)
-  }
-  
-  ### Include preys as covariates
-  if (length(preys)>0){
-    formulas = buildFormula(form.init=form.env, species=preys, type="Preys", sp.formula=sp.formula, sp.partition=sp.partition, useBRMS)
+  ### Include neigh as covariates
+  if (length(neigh)>0){
+    formulas = buildFormula(form.init=form.env, species = neigh, sp.formula=sp.formula, sp.partition=sp.partition, useBRMS)
     form.all = formulas$form.all
     if (useBRMS){
       # intermediary species variables are themselves defined from observed species variables
-      form.preys.brms = formulas$form.brms
+      form.neigh.brms = formulas$form.brms
     }
   }else{
     # the focal species is basal
     form.all = as.character(form.env)
-  }
-  
-  ### Include predators as covariates
-  if (fitPreds & length(preds)>0){
-    formulas = buildFormula(form.init=form.all, species=preds, type="Preds", sp.formula, sp.partition, useBRMS)
-    form.all = formulas$form.all
-    if (useBRMS) form.preds.brms = formulas$form.brms
-  }
-  
-  ### Include species that are at the same time preys and predators
-  if (fitPreds && length(predsANDpreys)>0){
-    formulas = buildFormula(form.init=form.all, species=predsANDpreys, type="PreysAndPreds", sp.formula, sp.partition, useBRMS)
-    form.all = formulas$form.all
-    if (useBRMS) form.predsANDpreys.brms = formulas$form.brms
   }
   
   
@@ -216,20 +196,23 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
         priors = Reduce(rbind, lapply(variables, function(VAR){
           VAR <- gsub("\\^", "E", gsub('\\(|\\)', "", VAR))  # correct name for polynomial terms
           if (grepl("X", VAR)) return(set_prior("normal(0,10)", class="b", nlpar=VAR))
-          if (sub("temp","",VAR) %in% preys) return(set_prior("normal(0,5)", class="b", lb=0, nlpar=VAR))
-          if (sub("temp","",VAR) %in% preds) return(set_prior("normal(0,5)", class="b", ub=0, nlpar=VAR))
-          if (sub("temp","",VAR) %in% predsANDpreys) return(set_prior("normal(0,5)", class="b", nlpar=VAR))
-          if (grepl("richnessPreys",VAR)) return(set_prior("normal(0,5)", class="b", lb=0, nlpar=VAR))
-          if (grepl("richnessPreds",VAR)) return(set_prior("normal(0,5)", class="b", ub=0, nlpar=VAR))
-          if (grepl("richnessPreysAndPreds",VAR)) return(set_prior("normal(0,5)", class="b", nlpar=VAR))
+          if(mode=="prey"){
+            if (sub("temp","",VAR) %in% neigh) return(set_prior("normal(0,5)", class="b", lb=0, nlpar=VAR))
+            if (grepl("richness",VAR)) return(set_prior("normal(0,5)", class="b", lb=0, nlpar=VAR))
+            if (grepl("customform",VAR)) return(set_prior("normal(0,5)", class="b", lb=0, nlpar=VAR))
+            
+          }else{
+            if (sub("temp","",VAR) %in% neigh) return(set_prior("normal(0,5)", class="b", ub=0, nlpar=VAR))
+            if (grepl("richness",VAR)) return(set_prior("normal(0,5)", class="b", ub=0, nlpar=VAR))
+            if (grepl("customform",VAR)) return(set_prior("normal(0,5)", class="b", lb=0, nlpar=VAR))
+            
+          }
           warning(paste("Variable", sub("temp","",VAR), "not present in any category"), call.=F)
         }))
         
         # each temporary variable depends on our initial variables ("false" non-linear model)
         form.all = bf(form.all, nl=TRUE) + lf(form.env.brms)
-        if(length(preys)>0) form.all = form.all + lf(form.preys.brms)[[1]]
-        if(fitPreds & length(preds)>0) form.all = form.all + lf(form.preds.brms)[[1]]
-        if(fitPreds && length(predsANDpreys)>0) form.all = form.all + lf(form.predsANDpreys.brms)[[1]]
+        if(length(neigh)>0) form.all = form.all + lf(form.neigh.brms)[[1]]
         
         if(verbose) print(c(Formula=form.all))
         
@@ -247,7 +230,7 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
 
 ## Build formula function
 
-buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition=NULL, useBRMS){
+buildFormula <- function(form.init, species, sp.formula=NULL, sp.partition=NULL, useBRMS){
   #if no composite variables are used
   if(is.null(sp.formula)){
     if(useBRMS){
@@ -260,9 +243,9 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
     # if no group definition
     if(grepl("richness",sp.formula)){
       if(is.null(sp.partition)){
-      # we replace "richness" with the sum of all species (and all eventual other terms), both in linear and eventually other terms
-      form.all=as.character(form.init)
-      
+        # we replace "richness" with the sum of all species (and all eventual other terms), both in linear and eventually other terms
+        form.all=as.character(form.init)
+        
         # replace richness by the observed species variables
         if(useBRMS){
           # hierarchical definition
@@ -270,12 +253,12 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
           form.brms = paste0("richness ~ 0 + ", gsub("richness",paste0("I(",paste(paste0("temp",species),collapse = "+"),")"),sp.formula))
         } else form.rich = gsub("richness", paste0("I(",paste(species,collapse = "+"),")"), sp.formula)
         form.all = paste(form.all,form.rich,sep="+")
-      
-    }else{
-      # all as above but repeated for every cluster
-      form.all=as.character(form.init)
-      
-
+        
+      }else{
+        # all as above but repeated for every cluster
+        form.all=as.character(form.init)
+        
+        
         form.rich = NULL
         for(j in 1:length(sp.partition)){
           species.j = species[species %in% sp.partition[[j]]]
@@ -284,32 +267,32 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
             if(is.null(form.rich)){
               # create form.rich
               if(useBRMS){
-                form.rich = paste0("richness",type,j)
-                form.brms = list(paste0("richness",type, j, " ~ 0 + ", gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")"))))
+                form.rich = paste0("richness",j)
+                form.brms = list(paste0("richness", j, " ~ 0 + ", gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")"))))
               } else form.rich = gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")"))
             }else{
               # add the new formula to the already existing form.rich
               if(useBRMS){
-                form.rich = paste(form.rich, paste0("richness",type, j), sep="+")
-                form.brms = c(form.brms, paste0("richness",type, j, " ~ 0 + ", gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")"))))
+                form.rich = paste(form.rich, paste0("richness", j), sep="+")
+                form.brms = c(form.brms, paste0("richness", j, " ~ 0 + ", gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")"))))
               } else form.rich = paste(form.rich, gsub("richness", paste0("(",paste(species.j,collapse="+"),")"), paste0("I(",gsub("\\+", ")\\+I(",sp.formula),")")),sep="+")
             }
           }
         }
         form.all = as.formula(paste(form.all,form.rich,sep="+"))
-    }
+      }
     }else{
-    
-    form.all=as.character(form.init)
       
-    #only access here if we have a list containing one formula per species. Notice that we don't check anything here, we trust the user.
-    if(useBRMS){
-      # hierarchical definition
-      form.brms = paste0("customform ~ 0 + ", sp.formula)
-      form.all = paste(form.all,"customform",sep="+")
-    }else{
-      form.all = as.formula(paste(form.all,sp.formula,sep="+"))
-    }
+      form.all=as.character(form.init)
+      
+      #only access here if we have a list containing one formula per species. Notice that we don't check anything here, we trust the user.
+      if(useBRMS){
+        # hierarchical definition
+        form.brms = paste0("customform ~ 0 + ", sp.formula)
+        form.all = paste(form.all,"customform",sep="+")
+      }else{
+        form.all = as.formula(paste(form.all,sp.formula,sep="+"))
+      }
     }
   }
   if (useBRMS){
@@ -336,7 +319,8 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
 #                     If greater than one, we sample pred.sample/error_prop_sample of the predictive distribution of each species (N.B. carefully to guarantee that the samples are consistent across them),
 #                     and then for each of the selected samples, we draw error_prop_sample from the predictive distribution of the focal species, for each selected sample of the predictors.
 # filter.table: ONLY FOR EUROPE. is of a list (of length ncol(Y)) whose elements are vector of list nrow(Xnew)
-trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1000,run.parallel=T,verbose=F, filter.table=NULL){
+# fullPost: do you want the model to give back all the samples from the posterior? it can be TRUE, or, if not the confidence level of the credible intervals that are given back (needs to be between 0 and 1, default choice 0.95 for 95% confidence intervals). If !fullPost, only the mean and the confidence intervals of the probabilities are given.
+trophicSDM_predict=function(m,Xnew=NULL,binary.resp=NULL,prob.cov=NULL,pred_samples=1000,run.parallel=T,verbose=F, filter.table=NULL, fullPost = T){
   
   # checks & errors
   if(m$method=="glm" & pred_samples != 1 ){stop("glm requires pred_sample  =1")}
@@ -349,21 +333,28 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1
       length(filter.table) != ncol(Y))) {
     stop("filter.table must be a list where each element is of length nrow(Xnew) ")
   }
+  
   family = m$family
   n = nrow(Xnew)
   S = ncol(m$data$Y)
   G = m$G
-  sp.prediction = as.list(vector(length=vcount(G)))
-  sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
-  names(sp.prediction) = sortedV$name
   mode = m$mode
-
-    if(family$family %in% c("bernoulli", "binomial")){
+  
+  sp.prediction = as.list(vector(length=vcount(G)))
+  if(mode=="prey"){
+    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
+  }else{
+    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=F)]
+  }
+  
+  names(sp.prediction) = sortedV$name
+  
+  if(family$family %in% c("bernoulli", "binomial")){
     
     if(is.null(binary.resp))  message("Please specify the parameter binary.resp. TRUE if you also want binary predictions, FALSE otherwise")
     if(is.null(prob.cov))  message("Please specify the parameter prob.cov. TRUE if you want to use probabilities instead of presence-absence as a proxy for other species predictions. FALSE otherwise")
     
-    Neighb = lapply(sortedV, function(sV)neighbors(G,sV,mode))
+    Neighb = lapply(sortedV, function(sV)neighbors(G,sV,ifelse(mode=="prey","out","in")))
     
     # core loop on species (as in trophicSDM)
     for(j in 1:vcount(G)){
@@ -373,10 +364,6 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1
       # neighbor species
       neighb.sp = Neighb[[sortedV$name[j]]]
       # neighbor species that have already been predicted
-      known.sp = sortedV[which(sapply(sp.prediction, is.list))]
-      known.neighb = neighb.sp[which(neighb.sp %in% known.sp)]
-      # neighbor species that haven't been predicted yet
-      unknown.neighb = neighb.sp[which(!(neighb.sp %in% known.sp))]
       
       # select the predictive samples from the preys (that have already been predicted!!)
       
@@ -384,8 +371,8 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1
       # it's an array where we have the predictive samples on the third dimension.
       # we will therefore apply SDMpredict to each of the matrices (i.e. first two dimensions) in order to correctly propagate the error
       #newdata = array(data=NA,dim=c(n,(ncol(Xnew)+length(known.neighb)+length(unknown.neighb)),pred_samples/error_prop_sample))
-      newdata = array(data=NA,dim=c(n,(ncol(Xnew)+length(known.neighb)+length(unknown.neighb)),pred_samples))
-      colnames(newdata) <- c(colnames(Xnew),names(known.neighb),names(unknown.neighb))
+      newdata = array(data=NA,dim=c(n,(ncol(Xnew)+length(neighb.sp)),pred_samples))
+      colnames(newdata) <- c(colnames(Xnew),names(neighb.sp))
       
       # fill the abiotic variables
       newdata[,1:ncol(Xnew),] <- as.matrix(Xnew)
@@ -393,41 +380,13 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1
       #### fill the biotic part of new data
       
       ## species that have already been predicted
-      if (length(known.neighb)>0) for(k in 1:length(known.neighb)){
+      if (length(neighb.sp)>0) for(k in 1:length(neighb.sp)){
         if(prob.cov){
           # if prob.cov=TRUE, use the species predicted probabilities of presence
-          #newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(known.neighb[k])]]$predictions.prob[,seq(from=1,by=error_prop_sample,to=pred_samples)] # here select the random samples!Deprecated with error_prop_sample
-          newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(known.neighb[k])]]$predictions.prob# here select the random samples!  
+          newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(neighb.sp[k])]]$predictions.prob
           
         }else{
-          #newdata[,ncol(Xnew)+k,] <- tryCatch(sp.prediction[[names(known.neighb[k])]]$predictions.bin[,seq(from=1,by=error_prop_sample,to=pred_samples)], error=function(cond){message(paste("dim(sp.prediction[[names(known.neighb[k])]]$predictions.bin):", sp.prediction[[names(known.neighb[k])]]$predictions.bin));return(NA)})# here select the random samples!
-          newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(known.neighb[k])]]$predictions.bin# here select the random samples!
-        }
-      }
-      
-      ## species that have not already been predicted so another method has to be chosen
-      ## only needed if graph is not a DAG or if we also include predators
-      if (length(unknown.neighb)>0) for(k in 1:length(unknown.neighb)){
-        if(prob.cov){
-          # if prob.cov=TRUE, choose a method to define the unknown species probability of presence
-          # M1 : uniform draw
-          # newdata[,ncol(Xnew)+length(known.neighb)+k,] <- runif(n=length(newdata[,ncol(Xnew)+length(known.neighb)+k,]))# here select the random samples!  
-          # M2 : mean observed prevalence
-          newdata[,ncol(Xnew)+length(known.neighb)+k,] <- mean(m$model[[names(sortedV[j])]]$data[,names(unknown.neighb)[k]])
-          # M3 : true Presence/Absence (for tests only)
-          # newdata[,ncol(Xnew)+length(known.neighb)+k,] <- SIMlist.test$GLV_abioticGR$Y[,names(unknown.neighb)[k]]
-          # M4 : true realized niche (for tests only)
-          # newdata[,ncol(Xnew)+length(known.neighb)+k,] <- SIMlist$GLV_abioticGR$prob[,names(unknown.neighb)[k]]  
-        }else{
-          # if prob.cov=FALSE, choose a method to define the unknown species presence/absence
-          # M1 : uniform sampling
-          # newdata[,ncol(Xnew)+length(known.neighb)+k,] <- sample(c(0,1),size=dim(newdata[,ncol(Xnew)+length(known.neighb)+k,]), replace=T)# here select the random samples!
-          # M2 : sampling based on mean observed prevalence
-          newdata[,ncol(Xnew)+length(known.neighb)+k,] <- rbinom(n=length(newdata[,ncol(Xnew)+length(known.neighb)+k,]), size=1, prob=mean(m$model[[names(sortedV[j])]]$data[,names(unknown.neighb)[k]]))
-          # M3 : true Presence/Absence (for tests only)
-          # newdata[,ncol(Xnew)+length(known.neighb)+k,] <- SIMlist.test$GLV_abioticGR$Y[,names(unknown.neighb)[k]]
-          # M4 : true realized niche (for tests only)
-          # newdata[,ncol(Xnew)+length(known.neighb)+k,] <- SIMlist$GLV_abioticGR$prob[,names(unknown.neighb)[k]]
+          newdata[,ncol(Xnew)+k,] <- sp.prediction[[names(neighb.sp[k])]]$predictions.bin
         }
       }
       
@@ -435,33 +394,55 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1
       if(run.parallel){
         
         pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
-      
-        }else{
-          
+        
+      }else{
+        
         pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)})
-      
+        
       }
+      
+      
       # unlist and format
       sp.prediction[[names(sortedV[j])]] = list(predictions.prob=NULL,predictions.bin=NULL)
+      
       if(!is.null(filter.table)){
         sp.prediction[[names(sortedV[j])]]$predictions.prob = filter.table[[names(sortedV[j])]] * do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))
       }else{
         sp.prediction[[names(sortedV[j])]]$predictions.prob = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))
       }
+      
+      
       if(!prob.cov | binary.resp) {
         if(!is.null(filter.table)){
-        sp.prediction[[names(sortedV[j])]]$predictions.bin = filter.table[[names(sortedV[j])]] * do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))
+          sp.prediction[[names(sortedV[j])]]$predictions.bin = filter.table[[names(sortedV[j])]] * do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))
         }else{
           sp.prediction[[names(sortedV[j])]]$predictions.bin = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))
         }
-        }
+      }
     }
-    if(!binary.resp){
+    if(!binary.resp | !fullPost){
       # if binary.resp=FALSE, remove the binary predictions (that were eventually needed for computations if prob.cov=FALSE)
       for(j in 1:length(sp.prediction)){
         sp.prediction[[j]]$predictions.bin=NULL
       }
+      
+      if(!fullPost){
+        # if !fullPost, only take the mean and intervals
+        for(j in 1:length(sp.prediction)){
+          predictions.mean = rowMeans(sp.prediction[[j]]$predictions.prob)
+          predictions.q975 = apply(sp.prediction[[j]]$predictions.prob,1,quantile,0.975)
+          predictions.q025 = apply(sp.prediction[[j]]$predictions.prob,1,quantile,0.025)
+          
+          sp.prediction[[j]]$predictions.prob = list(predictions.mean = predictions.mean,
+                                                     predictions.q025 = predictions.q025,
+                                                     predictions.q975 = predictions.q975
+          )
+        }
+      }
+      
     }
+    
+    
     return(list(sp.prediction=sp.prediction,binary.resp=binary.resp,prob.cov=prob.cov,pred_samples=pred_samples))
     
     #return(list(sp.prediction=sp.prediction,binary.resp=binary.resp,prob.cov=prob.cov,pred_samples=pred_samples,error_prop_sample=error_prop_sample))
@@ -478,41 +459,57 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1
       # if(basal){
       #   sp.prediction[[names(sortedV[j])]]=SDMpredict(focal=names(sortedV[j]),m=m,newdata=Xnew,pred_samples=pred_samples,binary.resp=binary.resp,prob.cov=prob.cov)
       # }else{
-        neigh.sp = neighbors(G,v=sortedV[j],mode="out")
-        newdata=array(data=NA,dim=c(n,(ncol(Xnew)+length(neigh.sp)),pred_samples))
-        #newdata=array(data=NA,dim=c(n,(ncol(Xnew)+length(neigh.sp)),pred_samples/error_prop_sample))
-        colnames(newdata)=c(colnames(Xnew),names(neigh.sp))
-        
-        # fill the abiotic variables
-        newdata[,1:ncol(Xnew),]=as.matrix(Xnew)
-        
-        if(length((neigh.sp)>0)){
-          for(k in 1:length(neigh.sp)){
+      neigh.sp = neighbors(G,v=sortedV[j],mode="out")
+      newdata=array(data=NA,dim=c(n,(ncol(Xnew)+length(neigh.sp)),pred_samples))
+      #newdata=array(data=NA,dim=c(n,(ncol(Xnew)+length(neigh.sp)),pred_samples/error_prop_sample))
+      colnames(newdata)=c(colnames(Xnew),names(neigh.sp))
+      
+      # fill the abiotic variables
+      newdata[,1:ncol(Xnew),]=as.matrix(Xnew)
+      
+      if(length((neigh.sp)>0)){
+        for(k in 1:length(neigh.sp)){
           #newdata[,ncol(Xnew)+k,]=sp.prediction[[names(neigh.sp[k])]][,seq(from=1,by=error_prop_sample,to=pred_samples)]# here select the random samples!
           newdata[,ncol(Xnew)+k,]=sp.prediction[[names(neigh.sp[k])]]# here select the random samples!
           
-          }
         }
-        if(run.parallel){
-          
-          pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
-          #pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
-          
-        }else{
-          
-          pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)})
-          #pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)})
-          
-        }
+      }
+      if(run.parallel){
         
-        if(!is.null(filter.table)){
-          sp.prediction[[names(sortedV[j])]] = filter.table[[names(sortedV[j])]] * do.call(cbind,pred.array)
-        }else{
-          sp.prediction[[names(sortedV[j])]] = do.call(cbind,pred.array)
-        }
-
+        pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
+        #pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
+        
+      }else{
+        
+        pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)})
+        #pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)})
+        
+      }
+      
+      
+      if(!is.null(filter.table)){
+        sp.prediction[[names(sortedV[j])]] = filter.table[[names(sortedV[j])]] * do.call(cbind,pred.array)
+      }else{
+        sp.prediction[[names(sortedV[j])]] = do.call(cbind,pred.array)
+      }
+      
       
     }
+    
+    if(!fullPost){
+      # if !fullPost, only take the mean and intervals
+      for(j in 1:length(sp.prediction)){
+        predictions.mean = rowMeans(sp.prediction[[j]])
+        predictions.q975 = apply(sp.prediction[[j]],1,quantile,0.975)
+        predictions.q025 = apply(sp.prediction[[j]],1,quantile,0.025)
+        
+        sp.prediction[[j]] = list(predictions.mean = predictions.mean,
+                                  predictions.q025 = predictions.q025,
+                                  predictions.q975 = predictions.q975
+        )
+      }
+    }
+    
     return(list(sp.prediction=sp.prediction,pred_samples=pred_samples))
     #return(list(sp.prediction=sp.prediction,pred_samples=pred_samples,error_prop_sample=error_prop_sample))
     
@@ -617,8 +614,8 @@ SDMpredict=function(m,focal=focal,newdata,pred_samples,binary.resp,prob.cov){
 # K: the number of folds. can be NULL if index is specified
 # index: a vector containing the fold assigned to each of the sites
 
-tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
-                   pred_samples=m$iter,run.parallel,verbose=F, fitPreds=F){
+tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,mode="prey",iter=m$iter,
+                   pred_samples=m$iter,run.parallel,verbose=F){
   
   n = nrow(m$data$X)
   S = length(m$model)
@@ -638,15 +635,15 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
     Y = m$data$Y[train,]
     X = m$data$X[train,]
     
-    m_K = trophicSDM(Y=Y,X=X,G=m$G,env.formula=m$form.env,penal=m$penal,method=m$method,
-                     family=m$family,fitPreds=fitPreds,iter=iter,
+    m_K = trophicSDM(Y=Y,X=X,G=m$G,env.formula=m$form.env,penal=m$penal,method=m$method,mode=mode,
+                     family=m$family,iter=iter,
                      run.parallel = run.parallel, verbose = verbose,
                      chains=2)
     
     pred_K = trophicSDM_predict(m=m_K,Xnew = m$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
                                 mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples
-                                )
+    )
     
     preds[test,,] = abind(lapply(pred_K$sp.prediction,function(x) x$predictions.prob),along=3)
     
@@ -703,7 +700,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
   }
   
   list(meanPred = meanPred, Pred975 = Pred975, Pred025 = Pred025, CVmetrics = CVmetrics, partition = partition, fundNiche = list(FN.meanPred, FN.Pred975, FN.Pred025))
-
+  
 }
 
 
@@ -716,9 +713,9 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
   S = length(mod$model)
   
   if(envCV){
-  partition = rep(1:K,each = round(nEnv/K))
-  
-  if(length(partition)<nEnv) partition = c(partition, rep(K,nEnv-length(partition)))
+    partition = rep(1:K,each = round(nEnv/K))
+    
+    if(length(partition)<nEnv) partition = c(partition, rep(K,nEnv-length(partition)))
   }else{
     partition = sample(1:K,size=nEnv,replace=T)
   }
@@ -727,7 +724,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
   for(i in 1:K){
     
     index_all[ which(mod$data$X[,"X1"] %in% X[partition==i])] = i
-
+    
   }
   
   preds = array(dim=c(nEnv,pred_samples,S))
@@ -735,14 +732,14 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
   if(fundNiche){ predsFund = array(dim=c(nEnv,pred_samples,S))}
   
   for(i in 1:K){
-
+    
     train = which(index_all != i)
     test = which(partition == i)
-
+    
     m_K = trophicSDM(Y=mod$data$Y[train,],X=mod$data$X[train,],G=mod$G,env.formula=mod$form.env,penal=mod$penal,method=mod$method,
                      family=mod$family,fitPreds=fitPreds,iter=iter,run.parallel = run.parallel,verbose=verbose,chains=chains)
     
-
+    
     pred_K = trophicSDM_predict(m=m_K,Xnew = mod$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
                                 mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,
@@ -779,7 +776,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
   Pred025 = apply(preds, quantile, MARGIN=c(1,3),0.025)
   
   colnames( meanPred ) = colnames(Pred975) = colnames(Pred025) = names(pred_K$sp.prediction)
-
+  
   
   if(fundNiche){
     
@@ -794,7 +791,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
   
   list(meanPred = meanPred, Pred975 = Pred975, Pred025 = Pred025, partition.env = partition, index_all=index_all,
        fundNiche = list(FN.meanPred = FN.meanPred, FN.Pred975 = FN.Pred975, FN.Pred025 = FN.Pred025))
-
+  
 }
 
 
