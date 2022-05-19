@@ -22,7 +22,7 @@ if (!loadSim){
     niche_breadth_Kbasal=0.05
     niche_breadthVC=0.3 
     # Name the directory in which to store the simulations
-    simPath = paste0("Simulations_S",S,"L",L,"_nEnv",nEnv,"_nRep",nRep,"_maxBI",maxBI,"_",job,"/")
+    simPath = paste0("../../../Phd/Futureweb/Code/OUTPUTS/Simulations_S",S,"L",L,"_nEnv",nEnv,"_nRep",nRep,"_maxBI",maxBI,"_",job,"/")
     dir.create(simPath, showWarnings = FALSE)
 }else{
     # Choose the main simulation parameter values

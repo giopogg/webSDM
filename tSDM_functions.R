@@ -24,17 +24,11 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
     message("We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.")
     if(!identical(names(sp.formula),colnames(Y))) stop("sp.formula has to be either NULL, richness, or a list whose name equals species names (i.e. colnames(Y))")
     }else{custom.formula=F}
-  if(!(mode %in% c("prey","predator","all"))){stop("mode must be either 'prey', 'predator' or 'all'")}
+  #if(!(mode %in% c("prey","predator","all"))){stop("mode must be either 'prey', 'predator' or 'all'")}
 
-  if(mode=="predator"){fitPreds=T}
-  
   # laplacian sorting of the graph (component by component)
-  if(mode=="prey"){
   sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
-  }
-  if(mode=="predator"){
-    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=F)]
-  }
+  
   # initialize empty lists of models
   m = form.all = as.list(vector(length=vcount(G)))
   names(m) = names(form.all) = names(sortedV)
@@ -101,40 +95,19 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
 
 # nice stuff about formulas https://www.datacamp.com/community/tutorials/r-formula-tutorial
 
-SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,mode = mode,iter=1000,chains=2,verbose=T){
+SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,fitPreds=FALSE,iter=1000,chains=2,verbose=T){
   
   # for the particular case of the stan_glm model with "coeff.signs" constraint
   # another stan-for-R package is used (brsm) and formulas have to be adapted
   useBRMS = !is.null(penal) && penal=="coeff.signs" & method=="stan_glm"
   
+  
   ## Build environmental part of the formula
-  if(useBRMS){
-    # "tempX" is an intermediary variable allowing to set lower/upper-bounds on priors
-    form.env = "y ~ tempX"
-    form.env.brms = paste("tempX",as.character(formula.foc))
-  }else form.env = paste("y",as.character(formula.foc))
-  
-  
-  
-  if(mode != "all"){
-    
-    ## Build final formula
-    neigh = names(neighbors(G,focal,mode=ifelse(mode=="prey","out","in")))
-    
-    ### Include neigh as covariates
-    if (length(neigh)>0){
-      formulas = buildFormula(form.init=form.env, species=neigh, type="Preys", sp.formula=sp.formula, sp.partition=sp.partition, useBRMS)
-      form.all = formulas$form.all
-      if (useBRMS){
-        # intermediary species variables are themselves defined from observed species variables
-        form.neigh.brms = formulas$form.brms
-      }
-    }else{
-      # the focal species is basal (or top predators if mode=="predator")
-      form.all = as.character(form.env)
-    }
-    
-  }else{
+    if(useBRMS){
+      # "tempX" is an intermediary variable allowing to set lower/upper-bounds on priors
+      form.env = "y ~ tempX"
+      form.env.brms = paste("tempX",as.character(formula.foc))
+    }else form.env = paste("y",as.character(formula.foc))
 
   
   ## Build final formula
@@ -142,11 +115,12 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
   preds = names(neighbors(G,focal,mode=c("in")))
   predsANDpreys = intersect(preds, preys)
   
-
-  # define a separate category for pairs of species that predate each other (2-species loop),
-  # as they must only be included once in the regression
-  preds = setdiff(preds, predsANDpreys)
-  preys = setdiff(preys, predsANDpreys)
+  if (fitPreds){
+    # define a separate category for pairs of species that predate each other (2-species loop),
+    # as they must only be included once in the regression
+    preds = setdiff(preds, predsANDpreys)
+    preys = setdiff(preys, predsANDpreys)
+  }
   
   ### Include preys as covariates
   if (length(preys)>0){
@@ -162,19 +136,19 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
   }
   
   ### Include predators as covariates
-  if (length(preds)>0){
+  if (fitPreds & length(preds)>0){
     formulas = buildFormula(form.init=form.all, species=preds, type="Preds", sp.formula, sp.partition, useBRMS)
     form.all = formulas$form.all
     if (useBRMS) form.preds.brms = formulas$form.brms
   }
   
   ### Include species that are at the same time preys and predators
-  if (length(predsANDpreys)>0){
+  if (fitPreds && length(predsANDpreys)>0){
     formulas = buildFormula(form.init=form.all, species=predsANDpreys, type="PreysAndPreds", sp.formula, sp.partition, useBRMS)
     form.all = formulas$form.all
     if (useBRMS) form.predsANDpreys.brms = formulas$form.brms
   }
-  }
+  
   
   ## Build the data matrix to be given to the fit functions
   data = data.frame(X,Y)
@@ -253,14 +227,9 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
         
         # each temporary variable depends on our initial variables ("false" non-linear model)
         form.all = bf(form.all, nl=TRUE) + lf(form.env.brms)
-        if(mode !="all"){
-          if(length(neigh)>0) form.all = form.all + lf(form.neigh.brms)[[1]]
-          
-        }else{
-          if(length(preys)>0) form.all = form.all + lf(form.preys.brms)[[1]]
-        }
-        if(mode=="all" & length(preds)>0) form.all = form.all + lf(form.preds.brms)[[1]]
-        if(mode=="all" && length(predsANDpreys)>0) form.all = form.all + lf(form.predsANDpreys.brms)[[1]]
+        if(length(preys)>0) form.all = form.all + lf(form.preys.brms)[[1]]
+        if(fitPreds & length(preds)>0) form.all = form.all + lf(form.preds.brms)[[1]]
+        if(fitPreds && length(predsANDpreys)>0) form.all = form.all + lf(form.predsANDpreys.brms)[[1]]
         
         if(verbose) print(c(Formula=form.all))
         

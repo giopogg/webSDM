@@ -262,7 +262,7 @@ dev.off()
 
 ##### In-sample, no err_prop
 Xnew=X_raw #Xnew are the environmental variables that we used to fit the model (actually if Xnew=NULL, this is the default choice) 
-error_prop_sample=1 #error_prop_sample is an important parameter. The greater it is, the largest the error propagation (and therefore the predictive credible regions). see tSDM_functions for more details
+#error_prop_sample=1 #error_prop_sample is an important parameter. The greater it is, the largest the error propagation (and therefore the predictive credible regions). see tSDM_functions for more details
 
 # This was just to check that it worked
 #pred_stan=trophicSDM_predict(m=m_stan,Xnew=Xnew,binary.resp = T,prob.cov=F,pred_samples=1000,error_prop_sample=error_prop_sample)
@@ -279,7 +279,7 @@ error_prop_sample=1 #error_prop_sample is an important parameter. The greater it
 # Check probabilities of presence pred vs known (because we simulated :) )
 
 #run predictions
-pred_stan_bin=trophicSDM_predict(m=m_stan,Xnew=Xnew,binary.resp = T,prob.cov=F,pred_samples=100,mode="out",run.parallel=T,verbose=T)
+pred_stan_bin=trophicSDM_predict(m=m_stan,Xnew=Xnew,binary.resp = T,prob.cov=F,pred_samples=1000,run.parallel=T,verbose=T)
 
 colnames(prob)=colnames(Y)
 #reorder the columns of prob to be sure that we are comparing the same things

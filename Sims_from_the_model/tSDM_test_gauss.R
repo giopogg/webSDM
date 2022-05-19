@@ -207,9 +207,9 @@ hist(CR_match_err_pr)
 
 # How do change in n_sample/error_pred sample affect the results?
 # In-sample predictions
-pred_samples=100
+pred_samples=1000
 error_prop_sample=1
-pred_stan=trophicSDM_predict(m=m_stan,Xnew=Xnew,penal=NULL,pred_samples=pred_samples)
+pred_stan=trophicSDM_predict(m=m_stan,Xnew=Xnew,pred_samples=pred_samples)
 
 
 p.mean.stan.temp=lapply(pred_stan$sp.prediction,FUN=function(x) apply(x,mean, MARGIN = 1))
