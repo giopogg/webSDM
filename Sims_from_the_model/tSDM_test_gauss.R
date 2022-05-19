@@ -6,10 +6,9 @@ library(igraph)
 library(ggplot2)
 #library(pcalg) not working with R 4.0
 
-wd="~/Documents/Phd/Futureweb/Code/"
+wd="~/Documents/GitHub/trophicSDM/Sims_from_the_model/"
 setwd(wd)
-source('/Users/poggiatg/Documents/Phd/Futureweb/Code/MY_SCRIPTS/tSDM_functions.R')
-
+source('../tSDM_functions.R')
 
 n=1000 #number of sites
 n_oos= 500#number of sites out of sample
@@ -102,7 +101,7 @@ names(env.form)=colnames(Y)
 
 ###############
 # Run models
-m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
+m_stan = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="stan_glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000,run.parallel=T)
 m_bayes = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="bayesglm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
 m_glm = trophicSDM(Y=Y,X=X_raw,G=G,env.formula=env.form,penal=NULL,method="glm",sp.formula = NULL,sp.partition = NULL,family=gaussian(),iter=2000)
 
@@ -166,12 +165,12 @@ dev.off()
 # In-sample predictions
 Xnew=X_raw  #Xnew are the environmental variables that we used to fit the model (actually if Xnew=NULL, this is the default choice) 
 pred_samples=100 # the number of predictive samples we want for each species
-error_prop_sample=10 #error_prop_sample is an important parameter. The greater it is, the largest the error propagation (and therefore the predictive credible regions). see tSDM_functions for more details
+#error_prop_sample=10 #error_prop_sample is an important parameter. The greater it is, the largest the error propagation (and therefore the predictive credible regions). see tSDM_functions for more details
 
 #run predictions
-pred_stan=trophicSDM_predict(m=m_stan,Xnew=Xnew,pred_samples=pred_samples,error_prop_sample=error_prop_sample)
-pred_bayes=trophicSDM_predict(m=m_bayes,Xnew,pred_samples=pred_samples,error_prop_sample=pred_samples)
-pred_glm=trophicSDM_predict(m=m_glm,Xnew,pred_samples=1,error_prop_sample=1)
+pred_stan=trophicSDM_predict(m=m_stan,Xnew=Xnew,pred_samples=pred_samples)
+pred_bayes=trophicSDM_predict(m=m_bayes,Xnew,pred_samples=pred_samples)
+pred_glm=trophicSDM_predict(m=m_glm,Xnew,pred_samples=1)
 
 p.mean.stan.temp=lapply(pred_stan$sp.prediction,FUN=function(x) apply(x,mean, MARGIN = 1))
 p.mean.stan=do.call(cbind, p.mean.stan.temp)
@@ -194,7 +193,7 @@ table=data.frame(obs=as.vector(as.matrix(Y)),pred=as.vector(as.matrix(p.mean.sta
 
 ggplot(data=table,mapping=aes(x=obs,y=pred,col=sp.name))+geom_point(alpha=0.3)+
   geom_linerange(mapping=aes(ymin=est.02, ymax=est.97,colour=sp.name),alpha=0.5)+
-  geom_abline(slope=1,intercept = 0)+ggtitle(paste0("In-sample predictions stan_glm() \n error_prop_sample = ",error_prop_sample))+
+  geom_abline(slope=1,intercept = 0)+ggtitle(paste0("In-sample predictions stan_glm() "))+
   xlab("Observed") + ylab("predicted")+theme_minimal()+coord_fixed()
 
 # Compute R2 and proportion of confidence interval that match
@@ -210,7 +209,7 @@ hist(CR_match_err_pr)
 # In-sample predictions
 pred_samples=100
 error_prop_sample=1
-pred_stan=trophicSDM_predict(m=m_stan,Xnew=Xnew,penal=NULL,pred_samples=pred_samples,error_prop_sample=error_prop_sample)
+pred_stan=trophicSDM_predict(m=m_stan,Xnew=Xnew,penal=NULL,pred_samples=pred_samples)
 
 
 p.mean.stan.temp=lapply(pred_stan$sp.prediction,FUN=function(x) apply(x,mean, MARGIN = 1))
@@ -230,7 +229,7 @@ table=data.frame(obs=as.vector(as.matrix(Y)),pred=as.vector(as.matrix(p.mean.sta
 
 ggplot(data=table,mapping=aes(x=obs,y=pred,col=sp.name))+geom_point(alpha=0.3)+
   geom_linerange(mapping=aes(ymin=est.02, ymax=est.97,colour=sp.name),alpha=0.3)+
-  geom_abline(slope=1,intercept = 0)+ggtitle(paste0("In-sample predictions stan_glm() \n error_prop_sample = ",error_prop_sample))+
+  geom_abline(slope=1,intercept = 0)+ggtitle("In-sample predictions stan_glm()")+
   xlab("Observed") + ylab("predicted")+theme_minimal()+coord_fixed()
 
 # Compute R2 and proportion of confidence interval that match
@@ -248,9 +247,8 @@ hist(CR_match_no_err_pr)
 Y_test=Y=Y_test[,names(topo_sort(G,mode="in"))]
 
 pred_samples=100
-error_prop_sample=1
 
-pred_stan=trophicSDM_predict(m=m_stan,Xnew=X_test,pred_samples=pred_samples,error_prop_sample=error_prop_sample)
+pred_stan=trophicSDM_predict(m=m_stan,Xnew=X_test,pred_samples=pred_samples)
 
 
 
@@ -271,7 +269,7 @@ table=data.frame(obs=as.vector(as.matrix(Y_test)),pred=as.vector(as.matrix(p.mea
 
 ggplot(data=table,mapping=aes(x=obs,y=pred,col=sp.name))+geom_point(alpha=0.3)+
   geom_linerange(mapping=aes(ymin=est.02, ymax=est.97,colour=sp.name),alpha=0.3)+
-  geom_abline(slope=1,intercept = 0)+ggtitle(paste0("Out-of-sample predictions stan_glm() \n error_prop_sample = ",error_prop_sample))+
+  geom_abline(slope=1,intercept = 0)+ggtitle("Out-of-sample predictions stan_glm()  ")+
   xlab("Observed") + ylab("predicted")+theme_minimal()+coord_fixed()
 
 

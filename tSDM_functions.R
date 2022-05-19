@@ -12,7 +12,7 @@
 # fitPreds : logical. Should predators be included as covariates?
 # iter : the number of MCMC samples (if bayesian approach)
 
-trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL,method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=TRUE,chains=2,verbose=F){
+trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL, mode = "prey",method="stan_glm",family,fitPreds=FALSE,iter=1000,run.parallel=TRUE,chains=2,verbose=F){
 
   # checks & errors
   if(!is_igraph(G)) stop("G is not an igraph object")
@@ -24,11 +24,17 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
     message("We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.")
     if(!identical(names(sp.formula),colnames(Y))) stop("sp.formula has to be either NULL, richness, or a list whose name equals species names (i.e. colnames(Y))")
     }else{custom.formula=F}
-  
+  if(!(mode %in% c("prey","predator","all"))){stop("mode must be either 'prey', 'predator' or 'all'")}
 
-  # laplacian sorting of the graph (component by component)
-  sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
+  if(mode=="predator"){fitPreds=T}
   
+  # laplacian sorting of the graph (component by component)
+  if(mode=="prey"){
+  sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
+  }
+  if(mode=="predator"){
+    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=F)]
+  }
   # initialize empty lists of models
   m = form.all = as.list(vector(length=vcount(G)))
   names(m) = names(form.all) = names(sortedV)
@@ -83,7 +89,7 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
     
  }
   # return values
-  list(model=m,form.all=form.all,form.env=env.formula,sp.formula=NULL,sp.partition=NULL,data=list(X=X,Y=Y),method=method,penal=penal,iter=iter,family=family,G=G)
+  list(model=m,form.all=form.all,form.env=env.formula,mode = mode, sp.formula=NULL,sp.partition=NULL,data=list(X=X,Y=Y),method=method,penal=penal,iter=iter,family=family,G=G)
 }
 
 
@@ -95,19 +101,40 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
 
 # nice stuff about formulas https://www.datacamp.com/community/tutorials/r-formula-tutorial
 
-SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,fitPreds=FALSE,iter=1000,chains=2,verbose=T){
+SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,mode = mode,iter=1000,chains=2,verbose=T){
   
   # for the particular case of the stan_glm model with "coeff.signs" constraint
   # another stan-for-R package is used (brsm) and formulas have to be adapted
   useBRMS = !is.null(penal) && penal=="coeff.signs" & method=="stan_glm"
   
-  
   ## Build environmental part of the formula
-    if(useBRMS){
-      # "tempX" is an intermediary variable allowing to set lower/upper-bounds on priors
-      form.env = "y ~ tempX"
-      form.env.brms = paste("tempX",as.character(formula.foc))
-    }else form.env = paste("y",as.character(formula.foc))
+  if(useBRMS){
+    # "tempX" is an intermediary variable allowing to set lower/upper-bounds on priors
+    form.env = "y ~ tempX"
+    form.env.brms = paste("tempX",as.character(formula.foc))
+  }else form.env = paste("y",as.character(formula.foc))
+  
+  
+  
+  if(mode != "all"){
+    
+    ## Build final formula
+    neigh = names(neighbors(G,focal,mode=ifelse(mode=="prey","out","in")))
+    
+    ### Include neigh as covariates
+    if (length(neigh)>0){
+      formulas = buildFormula(form.init=form.env, species=neigh, type="Preys", sp.formula=sp.formula, sp.partition=sp.partition, useBRMS)
+      form.all = formulas$form.all
+      if (useBRMS){
+        # intermediary species variables are themselves defined from observed species variables
+        form.neigh.brms = formulas$form.brms
+      }
+    }else{
+      # the focal species is basal (or top predators if mode=="predator")
+      form.all = as.character(form.env)
+    }
+    
+  }else{
 
   
   ## Build final formula
@@ -115,12 +142,11 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
   preds = names(neighbors(G,focal,mode=c("in")))
   predsANDpreys = intersect(preds, preys)
   
-  if (fitPreds){
-    # define a separate category for pairs of species that predate each other (2-species loop),
-    # as they must only be included once in the regression
-    preds = setdiff(preds, predsANDpreys)
-    preys = setdiff(preys, predsANDpreys)
-  }
+
+  # define a separate category for pairs of species that predate each other (2-species loop),
+  # as they must only be included once in the regression
+  preds = setdiff(preds, predsANDpreys)
+  preys = setdiff(preys, predsANDpreys)
   
   ### Include preys as covariates
   if (length(preys)>0){
@@ -136,19 +162,19 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
   }
   
   ### Include predators as covariates
-  if (fitPreds & length(preds)>0){
+  if (length(preds)>0){
     formulas = buildFormula(form.init=form.all, species=preds, type="Preds", sp.formula, sp.partition, useBRMS)
     form.all = formulas$form.all
     if (useBRMS) form.preds.brms = formulas$form.brms
   }
   
   ### Include species that are at the same time preys and predators
-  if (fitPreds && length(predsANDpreys)>0){
+  if (length(predsANDpreys)>0){
     formulas = buildFormula(form.init=form.all, species=predsANDpreys, type="PreysAndPreds", sp.formula, sp.partition, useBRMS)
     form.all = formulas$form.all
     if (useBRMS) form.predsANDpreys.brms = formulas$form.brms
   }
-  
+  }
   
   ## Build the data matrix to be given to the fit functions
   data = data.frame(X,Y)
@@ -227,9 +253,14 @@ SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm
         
         # each temporary variable depends on our initial variables ("false" non-linear model)
         form.all = bf(form.all, nl=TRUE) + lf(form.env.brms)
-        if(length(preys)>0) form.all = form.all + lf(form.preys.brms)[[1]]
-        if(fitPreds & length(preds)>0) form.all = form.all + lf(form.preds.brms)[[1]]
-        if(fitPreds && length(predsANDpreys)>0) form.all = form.all + lf(form.predsANDpreys.brms)[[1]]
+        if(mode !="all"){
+          if(length(neigh)>0) form.all = form.all + lf(form.neigh.brms)[[1]]
+          
+        }else{
+          if(length(preys)>0) form.all = form.all + lf(form.preys.brms)[[1]]
+        }
+        if(mode=="all" & length(preds)>0) form.all = form.all + lf(form.preds.brms)[[1]]
+        if(mode=="all" && length(predsANDpreys)>0) form.all = form.all + lf(form.predsANDpreys.brms)[[1]]
         
         if(verbose) print(c(Formula=form.all))
         
@@ -332,19 +363,23 @@ buildFormula <- function(form.init, species, type, sp.formula=NULL, sp.partition
 # prob.cov : TRUE if the predicted probabilities of presence of the preys are used to predict species. FALSE if the randomly (depending of predicted probabilities of course) generated presence-absence are used
 # mode : type of graph neighbors used for prediction, "out" for preys only, "in" for predators only, "all" for both
 # pred.sample : the total number of sample from the predictive distribution of each species at each site
-# error_prop_sample : fine tuning parameter for error propagation. If 1, for each of the predictive samples of the preys, we draw one sample of the predicted distribution for the focal species. 
+#  : fine tuning parameter for error propagation. If 1, for each of the predictive samples of the preys, we draw one sample of the predicted distribution for the focal species. 
 #                     If greater than one, we sample pred.sample/error_prop_sample of the predictive distribution of each species (N.B. carefully to guarantee that the samples are consistent across them),
 #                     and then for each of the selected samples, we draw error_prop_sample from the predictive distribution of the focal species, for each selected sample of the predictors.
-
-trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pred_samples=1000,run.parallel=T,verbose=F, filter.table=NULL){
+# filter.table: ONLY FOR EUROPE. is of a list (of length ncol(Y)) whose elements are vector of list nrow(Xnew)
+trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,pred_samples=1000,run.parallel=T,verbose=F, filter.table=NULL){
   
   # checks & errors
-  if(m$method=="glm" & (pred_samples != 1 | error_prop_sample != 1)){stop("glm requires pred_sample and error_prop_sample both =1")}
+  if(m$method=="glm" & pred_samples != 1 ){stop("glm requires pred_sample  =1")}
   
   if(is.null(Xnew)) Xnew = m$data$X
   
-  if(!is.null(filter.table)) length(filter.table) == nrow(Xnwe)
-  
+  if(!is.null(filter.table) & #either NULL
+     (!is.list(filter.table) | 
+      !all(unlist(lapply(filter.table,function(x) length(x) == nrow(Xnew) ))) | #either filter.table is of a list (of length ncol(Y)) whose elements are vector of list nrow(Xnew)
+      length(filter.table) != ncol(Y))) {
+    stop("filter.table must be a list where each element is of length nrow(Xnew) ")
+  }
   family = m$family
   n = nrow(Xnew)
   S = ncol(m$data$Y)
@@ -352,8 +387,9 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pre
   sp.prediction = as.list(vector(length=vcount(G)))
   sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
   names(sp.prediction) = sortedV$name
-  
-  if(family$family %in% c("bernoulli", "binomial")){
+  mode = m$mode
+
+    if(family$family %in% c("bernoulli", "binomial")){
     
     if(is.null(binary.resp))  message("Please specify the parameter binary.resp. TRUE if you also want binary predictions, FALSE otherwise")
     if(is.null(prob.cov))  message("Please specify the parameter prob.cov. TRUE if you want to use probabilities instead of presence-absence as a proxy for other species predictions. FALSE otherwise")
@@ -378,13 +414,14 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pre
       # create newdata: will include the (eventually new) environmental predictors and the predicted distribution of the preys
       # it's an array where we have the predictive samples on the third dimension.
       # we will therefore apply SDMpredict to each of the matrices (i.e. first two dimensions) in order to correctly propagate the error
-      newdata = array(data=NA,dim=c(n,(ncol(Xnew)+length(known.neighb)+length(unknown.neighb)),pred_samples/error_prop_sample))
+      #newdata = array(data=NA,dim=c(n,(ncol(Xnew)+length(known.neighb)+length(unknown.neighb)),pred_samples/error_prop_sample))
+      newdata = array(data=NA,dim=c(n,(ncol(Xnew)+length(known.neighb)+length(unknown.neighb)),pred_samples))
       colnames(newdata) <- c(colnames(Xnew),names(known.neighb),names(unknown.neighb))
       
       # fill the abiotic variables
       newdata[,1:ncol(Xnew),] <- as.matrix(Xnew)
       
-      # fill the biotic part of new data
+      #### fill the biotic part of new data
       
       ## species that have already been predicted
       if (length(known.neighb)>0) for(k in 1:length(known.neighb)){
@@ -400,6 +437,7 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pre
       }
       
       ## species that have not already been predicted so another method has to be chosen
+      ## only needed if graph is not a DAG or if we also include predators
       if (length(unknown.neighb)>0) for(k in 1:length(unknown.neighb)){
         if(prob.cov){
           # if prob.cov=TRUE, choose a method to define the unknown species probability of presence
@@ -427,7 +465,7 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pre
       # apply the function SDMpredict to each layer of the array (MARGIN=3)
       if(run.parallel){
         
-        pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
+        pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
       
         }else{
           
@@ -437,17 +475,15 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pre
       # unlist and format
       sp.prediction[[names(sortedV[j])]] = list(predictions.prob=NULL,predictions.bin=NULL)
       if(!is.null(filter.table)){
-        # PROBLEM OF DIM sp.prediction should be n*pred_samples???
-        sp.prediction[[names(sortedV[j])]]$predictions.prob = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))*filter.table[[names(sortedV[j])]]
+        sp.prediction[[names(sortedV[j])]]$predictions.prob = filter.table[[names(sortedV[j])]] * do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))
       }else{
         sp.prediction[[names(sortedV[j])]]$predictions.prob = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.prob))
       }
       if(!prob.cov | binary.resp) {
         if(!is.null(filter.table)){
-        sp.prediction[[names(sortedV[j])]]$predictions.bin = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))*filter.table[[names(sortedV[j])]]
+        sp.prediction[[names(sortedV[j])]]$predictions.bin = filter.table[[names(sortedV[j])]] * do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))
         }else{
           sp.prediction[[names(sortedV[j])]]$predictions.bin = do.call(cbind,lapply(pred.array,FUN=function(x) x$predictions.bin))
-          
         }
         }
     }
@@ -457,7 +493,9 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pre
         sp.prediction[[j]]$predictions.bin=NULL
       }
     }
-    return(list(sp.prediction=sp.prediction,binary.resp=binary.resp,prob.cov=prob.cov,pred_samples=pred_samples,error_prop_sample=error_prop_sample))
+    return(list(sp.prediction=sp.prediction,binary.resp=binary.resp,prob.cov=prob.cov,pred_samples=pred_samples))
+    
+    #return(list(sp.prediction=sp.prediction,binary.resp=binary.resp,prob.cov=prob.cov,pred_samples=pred_samples,error_prop_sample=error_prop_sample))
     
   }
   
@@ -466,39 +504,48 @@ trophicSDM_predict=function(m,Xnew,binary.resp=NULL,prob.cov=NULL,mode="out",pre
     
     for(j in 1:vcount(G)){ # eventually modify with apply
       # check if basal or not
-      basal=ifelse(length(neighbors(G,v=sortedV[j],mode="out"))==0,TRUE, FALSE)
-      
-      if(basal){
-        sp.prediction[[names(sortedV[j])]]=SDMpredict(focal=names(sortedV[j]),m=m,newdata=Xnew,pred_samples=pred_samples,binary.resp=binary.resp,prob.cov=prob.cov)
-      }else{
+      # basal=ifelse(length(neighbors(G,v=sortedV[j],mode="out"))==0,TRUE, FALSE)
+      # 
+      # if(basal){
+      #   sp.prediction[[names(sortedV[j])]]=SDMpredict(focal=names(sortedV[j]),m=m,newdata=Xnew,pred_samples=pred_samples,binary.resp=binary.resp,prob.cov=prob.cov)
+      # }else{
         neigh.sp = neighbors(G,v=sortedV[j],mode="out")
-        newdata=array(data=NA,dim=c(n,(ncol(Xnew)+length(neigh.sp)),pred_samples/error_prop_sample))
+        newdata=array(data=NA,dim=c(n,(ncol(Xnew)+length(neigh.sp)),pred_samples))
+        #newdata=array(data=NA,dim=c(n,(ncol(Xnew)+length(neigh.sp)),pred_samples/error_prop_sample))
         colnames(newdata)=c(colnames(Xnew),names(neigh.sp))
         
         # fill the abiotic variables
         newdata[,1:ncol(Xnew),]=as.matrix(Xnew)
         
-        for(k in 1:length(neigh.sp)){
+        if(length((neigh.sp)>0)){
+          for(k in 1:length(neigh.sp)){
           #newdata[,ncol(Xnew)+k,]=sp.prediction[[names(neigh.sp[k])]][,seq(from=1,by=error_prop_sample,to=pred_samples)]# here select the random samples!
           newdata[,ncol(Xnew)+k,]=sp.prediction[[names(neigh.sp[k])]]# here select the random samples!
           
+          }
         }
-        
         if(run.parallel){
           
-          pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)}, )
+          pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
+          #pred.array = mclapply(1:dim(newdata)[3],  FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=newdata[,,x],pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)}, mc.cores = detectCores()-1)
           
         }else{
           
-          pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)})
+          pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=1,binary.resp=binary.resp,prob.cov=prob.cov)})
+          #pred.array = apply(newdata, MARGIN=3, FUN = function(x){SDMpredict(focal=names(sortedV[j]),m=m,newdata=x,pred_samples=error_prop_sample,binary.resp=binary.resp,prob.cov=prob.cov)})
           
         }
+        
+        if(!is.null(filter.table)){
+          sp.prediction[[names(sortedV[j])]] = filter.table[[names(sortedV[j])]] * do.call(cbind,pred.array)
+        }else{
+          sp.prediction[[names(sortedV[j])]] = do.call(cbind,pred.array)
+        }
 
-        sp.prediction[[names(sortedV[j])]] = do.call(cbind,lapply(pred.array,FUN=function(x) x[[1]]))
-      }
+      
     }
-    
-    return(list(sp.prediction=sp.prediction,pred_samples=pred_samples,error_prop_sample=error_prop_sample))
+    return(list(sp.prediction=sp.prediction,pred_samples=pred_samples))
+    #return(list(sp.prediction=sp.prediction,pred_samples=pred_samples,error_prop_sample=error_prop_sample))
     
   }
   
@@ -602,8 +649,7 @@ SDMpredict=function(m,focal=focal,newdata,pred_samples,binary.resp,prob.cov){
 # index: a vector containing the fold assigned to each of the sites
 
 tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
-                   pred_samples=m$iter,run.parallel,verbose=F,
-                   error_prop_sample=10,fitPreds=F){
+                   pred_samples=m$iter,run.parallel,verbose=F, fitPreds=F){
   
   n = nrow(m$data$X)
   S = length(m$model)
@@ -630,8 +676,8 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
     
     pred_K = trophicSDM_predict(m=m_K,Xnew = m$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
-                                mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,
-                                error_prop_sample=error_prop_sample)
+                                mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples
+                                )
     
     preds[test,,] = abind(lapply(pred_K$sp.prediction,function(x) x$predictions.prob),along=3)
     
@@ -694,7 +740,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
 
 
 tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
-                         pred_samples, error_prop_sample = 10,
+                         pred_samples, 
                          fitPreds = F,run.parallel = T, nEnv, verbose=F, envCV=F, chains=2){
   
   X = mod$data$X[1:nEnv,"X1"]
@@ -731,7 +777,7 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
     pred_K = trophicSDM_predict(m=m_K,Xnew = mod$data$X[test,],
                                 binary.resp=F,prob.cov=prob.cov,
                                 mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,
-                                error_prop_sample=error_prop_sample, verbose = verbose)
+                                verbose = verbose)
     
     preds[test,,] = abind(lapply(pred_K$sp.prediction,function(x) x$predictions.prob),along=3)
     

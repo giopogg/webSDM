@@ -35,7 +35,7 @@ source("../tSDM_functions.R")
 
 #job=args[1]
 #job=NA
-simPath = "Simulations_S20L3_nEnv51_nRep50_strengthBI5_asy/"   # directory from which to load the simulations
+simPath = "../../../Phd/Futureweb/Code/OUTPUTS/Simulations_S20L3_nEnv51_nRep50_strengthBI5_asy/"   # directory from which to load the simulations
 S = as.numeric(gsub(".*S|L.*", "", simPath))                       # number of species
 L = as.numeric(gsub(".*L|_nEnv.*", "", simPath))                   # number of trophic levels
 nEnv = as.numeric(gsub(".*nEnv|_nRep.*", "", simPath))             # number of environments
