@@ -6,10 +6,10 @@
 # env.formula : list (names of each element are the name of vertices) of one-hand formulas whose names are the same as in X. 
 # sp.formula : formula for composite variable. It HAS TO BE a string but written as the rhs of a formula. It can include quadratic terms as formula (also poly works). Be careful ONLY "richness". For example, you could set sp.formula="richness" or sp.formula="richness+richness^2" or sp.formula="sin(richness^2)" (no, you won't) 
 # sp.partition : list where the edges (i.e. their name as string) are grouped. Each element of the list is a group. E.g. sp.partition = list(c("Y_1","Y_2"),"Y_3",c("Y_4","Y_5","Y_6"))
-# penalisation: how to penalise the likelihood to reduce the dimension. Each SDM method has its own penalisation type, some SDM method have no available penalisation approach. For now, we have "horshoe" for stan_glm, "elasticnet" for glm and  "coeff.signs" (positive prey interactions and negative predator interactions) for glm and stan_glm
+# penal: how to penalise the likelihood to reduce the dimension. Each SDM method has its own penalisation type, some SDM method have no available penalisation approach. For now, we have "horshoe" for stan_glm, "elasticnet" for glm and  "coeff.signs" (positive prey interactions and negative predator interactions) for glm and stan_glm
 # method: which SDM method to use (available for now: glm (frequentist), stan_glm (full bayesian MCMC), bayesglm (variational approx of the posterior))
 # family: the family parameter of the glm function (see glm). family=gaussian for gaussian data or family=binomial(logit) or binomial(probit) for presence-absence data
-# fitPreds : logical. Should predators be included as covariates?
+# mode : "prey" if bottom-up control, "predators" otherwise
 # iter : the number of MCMC samples (if bayesian approach)
 
 trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,penal=NULL, mode = "prey", method="stan_glm",family,iter=1000,run.parallel=TRUE,chains=2,verbose=F){
@@ -18,6 +18,12 @@ trophicSDM = function(Y,X,G,env.formula=NULL,sp.formula=NULL,sp.partition=NULL,p
   if(!is_igraph(G)) stop("G is not an igraph object")
   if(!method %in% c("glm","stan_glm","bayesglm")) stop("the selected method has not yet been implemented or it has been misspelled")
   if(!(is.null(penal) || penal %in% c("horshoe","elasticnet","coeff.signs"))) stop("the selected penalisation has not yet been implemented or it has been misspelled")
+  
+  if(!is.null(sp.partition) &
+     (!all(colnames(Y) %in% unlist(sp.partition)) |
+      !all(unlist(sp.partition) %in% colnames(Y)))){
+    stop("all species must be included in sp.partition")
+  }
   if(!is.null(sp.formula) & length(sp.formula)>1){
     #did the user specified a custom sp.formula?
     custom.formula = T
@@ -487,7 +493,7 @@ trophicSDM_predict=function(m,Xnew=NULL,binary.resp=NULL,prob.cov=NULL,pred_samp
       }
       
       
-      if(!is.null(filter.table)){
+      if(!is.null(filter.table)){ # eventually we could change this to give back both filtered and unfilted
         sp.prediction[[names(sortedV[j])]] = filter.table[[names(sortedV[j])]] * do.call(cbind,pred.array)
       }else{
         sp.prediction[[names(sortedV[j])]] = do.call(cbind,pred.array)
@@ -614,7 +620,7 @@ SDMpredict=function(m,focal=focal,newdata,pred_samples,binary.resp,prob.cov){
 # K: the number of folds. can be NULL if index is specified
 # index: a vector containing the fold assigned to each of the sites
 
-tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,mode="prey",iter=m$iter,
+tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,iter=m$iter,
                    pred_samples=m$iter,run.parallel,verbose=F){
   
   n = nrow(m$data$X)
@@ -635,14 +641,14 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,mode="prey",iter=m
     Y = m$data$Y[train,]
     X = m$data$X[train,]
     
-    m_K = trophicSDM(Y=Y,X=X,G=m$G,env.formula=m$form.env,penal=m$penal,method=m$method,mode=mode,
+    m_K = trophicSDM(Y=Y,X=X,G=m$G,env.formula=m$form.env,penal=m$penal,method=m$method,mode=m$mode,
                      family=m$family,iter=iter,
                      run.parallel = run.parallel, verbose = verbose,
                      chains=2)
     
     pred_K = trophicSDM_predict(m=m_K,Xnew = m$data$X[test,],
-                                binary.resp=F,prob.cov=prob.cov,
-                                mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples
+                                binary.resp=F,prob.cov=prob.cov
+                                ,pred_samples=pred_samples
     )
     
     preds[test,,] = abind(lapply(pred_K$sp.prediction,function(x) x$predictions.prob),along=3)
@@ -706,8 +712,7 @@ tSDM_CV = function(m,K,partition=NULL, fundNiche=F,prob.cov=T,mode="prey",iter=m
 
 
 tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
-                         pred_samples, 
-                         fitPreds = F,run.parallel = T, nEnv, verbose=F, envCV=F, chains=2){
+                         pred_samples,run.parallel = T, nEnv, verbose=F, envCV=F, chains=2){
   
   X = mod$data$X[1:nEnv,"X1"]
   S = length(mod$model)
@@ -737,12 +742,11 @@ tSDM_CV_SIMUL = function(mod, K, fundNiche = F, prob.cov = T,iter,
     test = which(partition == i)
     
     m_K = trophicSDM(Y=mod$data$Y[train,],X=mod$data$X[train,],G=mod$G,env.formula=mod$form.env,penal=mod$penal,method=mod$method,
-                     family=mod$family,fitPreds=fitPreds,iter=iter,run.parallel = run.parallel,verbose=verbose,chains=chains)
+                     family=mod$family,mode = m$mode,iter=iter,run.parallel = run.parallel,verbose=verbose,chains=chains)
     
     
     pred_K = trophicSDM_predict(m=m_K,Xnew = mod$data$X[test,],
-                                binary.resp=F,prob.cov=prob.cov,
-                                mode=ifelse(fitPreds,"all","out"),pred_samples=pred_samples,
+                                binary.resp=F,prob.cov=prob.cov,pred_samples=pred_samples,
                                 verbose = verbose)
     
     preds[test,,] = abind(lapply(pred_K$sp.prediction,function(x) x$predictions.prob),along=3)
