@@ -7,7 +7,6 @@ library(gridExtra)
 
 rm(list = ls())
 
-
 wd = "~/Documents/Phd/Futureweb/Code/"
 setwd(wd)
 
@@ -80,7 +79,6 @@ for(i in 1:100){ # load files
     }
   }
 
-  
   rm(SIMlist)
 }
 
