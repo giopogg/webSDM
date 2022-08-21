@@ -1,4 +1,12 @@
-#### Script for analysing the simulations for 100 simulations
+########################################################################################################################
+########################################################################################################################
+# Data analysis script from Giovanni Poggiato and Jérémy Andréoletti
+# It needs to have correctly run 100 times scripts "1_Community_simulations.R" and "2_tSDM_inference_sim.R".
+# This will create 100 folders, each containing the simulated communities and the fitted models. 
+# This script simply plots the results of the 100 replications together.
+
+# !!! Only the working directory (i.e. the folder containing the 100 folders should be modified)
+
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -10,19 +18,18 @@ rm(list = ls())
 wd = "~/Documents/Phd/Futureweb/Code/"
 setwd(wd)
 
-data_raw = "~/Documents/Phd/Futureweb/Code/MY_SCRIPTS/VirtualEcoSim/SIMlists_all_cluster/tSDM/"
-fig = "~/Documents/Phd/Futureweb/Code/MY_SCRIPTS/VirtualEcoSim/SIMlists_all_cluster/Fig_all"
-load_list = T
+data_raw = wd
+fig = paste0(wd,"Fig_all/")
+dir.create(fig)
 
-methods = c("GLV_abioticGR", "GLV_abioticKbasal", "Ricker_abioticKbasal",
-            "SOI_abioticER", "SOI_abioticERbasal", "VC_abiotic")
+methods = c("GLV_abioticGR", "GLV_abioticKbasal", "Ricker_abioticKbasal")
 
 
 ###############################################################################################################################################################################
 # Assemble simulation results in one list
 
-if(!load_list){
-realised_list = fund_list = BioControl_wass = BioControl_cor =vector(mode = "list", length = 100)
+
+realised_list = fund_list = vector(mode = "list", length = 100)
 
 sd_methods = c(0.3, 0.05, 0.05, 0.3, 0.3, 0.3)
 names(sd_methods) = methods
@@ -54,28 +61,7 @@ for(i in 1:100){ # load files
                                         method = j)
       }
       
-      # Compute interaction strength:
-
-      #1) Wasserstein distance between realised niche and growth rate
-      BioControl_wass[[i]][[j]] = data.frame( value = sapply(1:S,
-                               function(s)transport::wasserstein1d(
-                                 SIMlist[[j]]$survivalProba[,s],
-                                 dnorm(seq(0,1,length.out=51),
-                                       mean = niche_optima[s],
-                                       sd = sd_methods[[j]]) )) ,
-                               species = colnames(SIMlist[[j]]$survivalProba),
-                               source = i,
-                               methods = j)
-
-      # 2) Correlation between realised niche and growth rate
-      BioControl_cor[[i]][[j]] = data.frame(value = sapply(1:S,
-                              function(s) cor(SIMlist[[j]]$survivalProba[,s], 
-                                              dnorm(seq(0,1,length.out=51),
-                                                    mean = niche_optima[s],
-                                                    sd = sd_methods[[j]]) )),
-                              species = colnames(SIMlist[[j]]$survivalProba),
-                              source = i,
-                              methods = j)
+      
     }
   }
 
@@ -85,49 +71,6 @@ for(i in 1:100){ # load files
 saveRDS(realised_list,file=paste0(data_raw,"realised_list.rds"))
 saveRDS(fund_list,file=paste0(data_raw,"fund_list.rds"))
 
-saveRDS(BioControl_cor,file=paste0(data_raw,"BioControl_cor.rds"))
-saveRDS(BioControl_wass,file=paste0(data_raw,"BioControl_wass.rds"))
-
-}else{
-  
-realised_list = readRDS(file=paste0(data_raw,"realised_list.rds"))
-fund_list = readRDS(file=paste0(data_raw,"fund_list.rds"))
-
-BioControl_cor = readRDS(file=paste0(data_raw,"BioControl_cor.rds"))
-BioControl_wass = readRDS(file=paste0(data_raw,"BioControl_wass.rds"))
-
-}
-
-###############################################################################################################################################################################
-# First check the most stricking LV results (order by difference depending on the metric) 
-
-delta_wass = delta_loo = vector(length = 100)
-
-for(i in 1:100){
-  tab = realised_list[[i]]$GLV_abioticGR
-  
-  delta_wass[i] =  colMeans( (tab %>% filter(model == "tSDM" & metric == "wasserstein" &
-                   TL !=1 & CV=="CV" & type == "bin") %>% select(value) ) -
-                   (tab %>% filter(model == "SDM" & metric == "wasserstein" &
-                     TL !=1 & CV=="CV") %>% select(value) ) )
-    
-  delta_loo[i] =  colMeans( (tab %>% filter(model == "tSDM" & metric == "loo" &
-                                                TL !=1)
-                                    %>% select(value) ) -
-                    (tab %>% filter(model == "SDM" & metric == "loo" &
-                                      TL !=1) %>% select(value) ) )
-  
-  
-}
-names(delta_loo) = names(delta_wass) = as.character(1:100)
-
-sort(delta_loo)
-sort(delta_wass)
-
-
-
-# We choose simulation number one (so modify plots to obtain the ones in the presentation)
-
 
 ###############################################################################################################################################################################
 #  Plot for all the species and all the plots the pairs...for all methods!
@@ -135,14 +78,6 @@ sort(delta_wass)
 realised_list = do.call(rbind,lapply(realised_list, function(x) do.call(rbind, x)))
 
 fund_list = do.call(rbind, lapply(fund_list, function(x) do.call(rbind, x)))
-
-BioControl_cor = do.call(rbind, lapply(BioControl_cor , function(x) do.call(rbind, x)))
-BioControl_cor$TL = gsub(".*\\.TL", "", BioControl_cor$species)
-BioControl_cor$id = paste0(BioControl_cor$species,BioControl_cor$source)
-
-BioControl_wass = do.call(rbind, lapply(BioControl_wass , function(x) do.call(rbind, x)))
-BioControl_wass$TL = gsub(".*\\.TL", "", BioControl_wass$species)
-BioControl_wass$id = paste0(BioControl_wass$species,BioControl_wass$source)
 
 #########################################################################################
 ######### Realised niche
@@ -152,11 +87,7 @@ metrics = c("wasserstein","loo","AUC", "calibration")
 # for all methods
 for(j in methods){
   
-  BioControl_cor_temp = BioControl_cor %>% filter(methods == j, TL != 1)
-  
-  BioControl_wass_temp = BioControl_wass %>% filter(methods ==j, TL !=1)
-  
-  p = tab_temp = tab_temp_spread = BC_wass_temp = BC_cor_temp = BC_SDM_temp =  BC_SDM = BC_cor = list()
+  p = tab_temp = tab_temp_spread = BC_SDM_temp =  BC_SDM = list()
   anova_TL_temp = t_temp = vector()
   
   # put different metrics in the same plot
@@ -168,11 +99,11 @@ for(j in methods){
                                     type != "prob",
                                     CV== "CV",
                                     metric == metrics[k],
-                                    TL != 1) %>% select(-type)
+                                    TL != 1) %>% dplyr::select(-type)
   }else{
     tab_temp[[k]] = realised_list %>% filter(method == j,
                                              metric == metrics[k],
-                                             TL != 1) %>% select(-type)
+                                             TL != 1) %>% dplyr::select(-type)
     
   }
   
@@ -207,36 +138,12 @@ for(j in methods){
                                                  "less", "greater")
                             )$p.value
   
-  # Test if the improvement depends on the 'biotic control' previously computed
-  
+  # Test if the improvement depends on the 'biotic control': 
   # diff ~ SDM performances: we expect that the less SDM are good, the biggest the differences. So we expect negative coefficients
   BC_SDM_temp[[k]] = merge(diff,tab_temp[[k]][which(tab_temp[[k]]$model == 'SDM'),], by = "id")
-  
-  #if(k==1) BC_SDM_temp[[k]]$diff = - BC_SDM_temp[[k]]$diff
-  
+
   BC_SDM[[k]] = summary(lm(scale(diff)~ scale(value),
                          BC_SDM_temp[[k]]))$coefficients[2,c(1,4)]
-  
-  # using correlation
-
-  BC_cor_temp[[k]] = merge(BioControl_cor_temp, diff, by = "id")
-  
-  # If metric = wasserstein change the sense to be consistent: positive coeff means increase in performance with stronger biotic control
-  if(k==1) BC_cor_temp[[k]]$diff = - BC_cor_temp[[k]]$diff
-  
-  # same here: higher correlation means less biotic control so we change sign
-  BC_cor[[k]] = summary(lm(scale(diff)~ I(scale(-value)),
-                         BC_cor_temp[[k]]))$coefficients[2,c(1,4)]
-  
-  #using wasserstein distance
-  #BC_wass_temp[[k]] = merge(BioControl_wass_temp, diff, by = "id")
-  
-  # If metric = wasserstein change the sense to be consistent: positive coeff means increase in performance with stronger biotic control
-  #if(k==1) BC_wass_temp[[k]]$diff = - BC_wass_temp[[k]]$diff
-  
-  # We use minus as 
-  #summary(lm(diff~ value, BC_wass_temp[[k]]))$coefficients[2,c(1,4)]
-  
   
   # Spread the table to do plot
   tab_temp_spread[[k]] = tab_temp[[k]] %>% spread(key = model, value = value)
@@ -261,17 +168,7 @@ for(j in methods){
                                    paste0("= ",
                                           round(BC_SDM[[k]][2], 
                                                      digits = -floor(log10(BC_SDM[[k]][2]))))
-                                   )#,
-                            # " \n cor: coef = ", 
-                            # round(BC_cor[[k]][1],2)," pval ",
-                            # ifelse(BC_cor[[k]][2]< 2.2*10^(-16),
-                            #        paste0("< ", 2.2*10^(-16)),
-                            #        paste0("= ",
-                            #               round(BC_cor[[k]][2], 
-                            #                     digits = -floor(log10(BC_cor[[k]][2]))))
-                            # )
-                            
-                            )) +
+                                   ))) +
     theme_classic()
   
   #Boxplots summarising all repetitions
@@ -309,7 +206,7 @@ metrics = c("wasserstein", "calibration")
 
 for(j in methods){
   
-  p = tab_temp = tab_temp_spread = BC_cor_temp = BC_SDM_temp = BC_cor = BC_SDM = list()
+  p = tab_temp = tab_temp_spread = BC_SDM_temp = BC_SDM = list()
   anova_TL_temp = t_temp = vector()
   
   for(k in 1:length(metrics)){
@@ -340,35 +237,19 @@ for(j in methods){
                    ))
     }
     
-    #anova_TL_temp[k] = summary(lm(diff ~ as.factor(TL), diff))$coefficients[2,4]
-    
+
     anova_TL_temp[k] = t.test(diff[which(diff$TL == 2), "diff"],
                               diff[which(diff$TL == 3), "diff"], 
                               alternative = ifelse(metrics[k] == "wasserstein","less", "greater")
                               )$p.value
     
     # Test if the improvement depends on the 'biotic control' previously computed
-    
     # diff ~ SDM performances: we expect that the less SDM are good, the biggest the differences. So we expect negative coefficients
     BC_SDM_temp[[k]] = merge(diff,tab_temp[[k]][which(tab_temp[[k]]$model == 'SDM'),], by = "id")
-    
-    #if(k==1) BC_SDM_temp[[k]]$diff = - BC_SDM_temp[[k]]$diff
     
     BC_SDM[[k]] = summary(lm(scale(diff)~ scale(value),
                              BC_SDM_temp[[k]]))$coefficients[2,c(1,4)]
     
-    # using correlation
-    
-    BC_cor_temp[[k]] = merge(BioControl_cor_temp, diff, by = "id")
-    
-    # If metric = wasserstein change the sense to be consistent: positive coeff means increase in performance with stronger biotic control
-    if(k==1) BC_cor_temp[[k]]$diff = - BC_cor_temp[[k]]$diff
-    
-    # same here: higher correlation means less biotic control so we change sign
-    BC_cor[[k]] = summary(lm(scale(diff)~ I(scale(-value)),
-                             BC_cor_temp[[k]]))$coefficients[2,c(1,4)]
-    
-      
     tab_temp_spread[[k]] = tab_temp[[k]] %>% spread(key = model, value = value)
     
     p[[2*k-1]] = ggplot( data = tab_temp_spread[[k]] ) + 
@@ -390,17 +271,7 @@ for(j in methods){
                                      paste0("= ",
                                             round(BC_SDM[[k]][2], 
                                                   digits = -floor(log10(BC_SDM[[k]][2]))))
-                              )#,
-                              # " \n cor: coef = ", 
-                              # round(BC_cor[[k]][1],2)," pval ",
-                              # ifelse(BC_cor[[k]][2]< 2.2*10^(-16),
-                              #        paste0("< ", 2.2*10^(-16)),
-                              #        paste0("= ",
-                              #               round(BC_cor[[k]][2], 
-                              #                     digits = -floor(log10(BC_cor[[k]][2]))))
-                              # )
-                              
-               )) +
+                              ))) +
       theme_classic()
     
     
