@@ -1158,7 +1158,7 @@ for(i in 1:length(SIMlist)){
   eval.table = SIM$eval.fund
   
   
-  ### Plot Wasserstein distances
+  ### Plot Wassersetin distances
   
   # no CV
   p1 = ggplot(data=eval.table[which(eval.table$metric=="wasserstein" &
