@@ -16,9 +16,11 @@ library(jtools)
 library(ggstance)
 library(ggplot2)
 library(gridExtra)
+library(GGally)
 #library(devtools)
 #install_github("MarcOhlmann/metanetwork")
 library(metanetwork)
+library(coda)
 # test functions
 
 
@@ -27,7 +29,8 @@ for(j in list.files("~/Documents/GitHub/trophicSDM/trophicSDM/R")) {
   source(paste0("~/Documents/GitHub/trophicSDM/trophicSDM/R/",j))
 }
 
-env.formula = env.form
+env.formula = as.list(rep("~ X_1 + X_2", ncol(Y)))
+names(env.formula) = colnames(Y)
 penal = NULL
 method = "stan_glm"
 family = binomial(link = "logit")
@@ -54,12 +57,21 @@ env.formula = env.form
 
 tSDM = trophicSDM(Y = Y, X = X, G = G, env.formula = env.form, sp.formula = NULL,
                     sp.partition = NULL,
-                    penal = "elasticnet", method = "glm", family = binomial(link = "logit"),
-                    iter = 100, run.parallel = F, verbose=F)
+                    penal = NULL, method = "stan_glm", family = binomial(link = "logit"),
+                    iter = 100, chains = 2, run.parallel = F, verbose=F)
 
+mcmc_rhat(tSDM$mcmc.diag$rhat)
+mcmc_neff(tSDM$mcmc.diag$neff.ratio)
 evaluateModelFit(tSDM)
 plotG(tSDM)
+plotG_inferred(tSDM)
+
+
+
 aa = predictFundamental(tSDM, fullPost =F)
+
+hist()
+
 
 class(tSDM)
 

@@ -153,6 +153,13 @@ trophicSDM = function(Y, X, G,
 
   trophicSDMfit$coef = lapply(trophicSDMfit$model,function(x) x$coef)
 
+  if(method == "stan_glm"){
+    trophicSDMfit$mcmc.diag = data.frame(rhat = unlist(lapply(
+      trophicSDMfit$model, function(x) rhat(x$model))),
+      neff.ratio = unlist(lapply(
+        trophicSDMfit$model, function(x) neff_ratio(x$model))))
+
+  }
   class(trophicSDMfit) = "trophicSDMfit"
 
   return(trophicSDMfit)

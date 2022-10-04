@@ -10,7 +10,7 @@ evaluateModelFit = function(tSDM, Ynew = NULL, Ypredicted = NULL){
 
   if(is.null(Ypredicted)) {
 
-    message("You did not provide Ypredicted, species predictions are sequentailly predicting using predict()")
+    message("You did not provide Ypredicted, species predictions are obtained using predict()")
 
     if(tSDM$model.call$method == "glm") pred_samples =1
     if(tSDM$model.call$method == "stan_glm") pred_samples = tSDM$model.call$iter/10

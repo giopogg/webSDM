@@ -1,6 +1,6 @@
 # Plot the inferred effects
 
-plotG_inferred = function(tSDM, level = 0.95){
+plotG_inferred = function(tSDM, level = 0.90){
 
   #########Checks
   if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class trophicSDMfit" )
@@ -39,12 +39,22 @@ plotG_inferred = function(tSDM, level = 0.95){
   }
   edge.attributes(G)$weight = all_bio[order(idx)]
 
-  # Now plot
-  G.mnet = build_metanet(tSDM$data$G)
+  layout = layout_with_sugiyama(G)$layout
+  rownames(layout) = tSDM$data$sp.name
 
-  G.mnet = compute_TL(G.mnet)
+  edge.color_loc = sapply(1:S, function(x) ifelse(edge.attributes(G)$weight[x]>0, "positive", "negative"))
+  edge.color_loc[which(edge.attributes(G)$weight == 0)] = "non-significant"
 
-  ggmetanet(metanetwork = G.mnet, beta = 0.1)
+
+  edge.color_loc = sapply(1:S, function(x) ifelse(edge.attributes(G)$weight[x]>0, "#CC0000", "#0000CC"))
+  edge.color_loc[which(edge.attributes(G)$weight == 0)] = "grey"
+
+
+  ggnet2(G, mode = layout, arrow.size = 8, node.alpha = 0.5, label=T, arrow.gap = 0.04,
+         edge.label = as.character(signif(edge.attributes(G)$weight,1)), edge.color =  edge.color_loc,
+         edge.alpha = ifelse(edge.color_loc == "grey", 0.5, 1),
+         edge.lty = ifelse(edge.color_loc == "grey", 2, 1))
+
 
 
 }
