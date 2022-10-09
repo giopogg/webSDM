@@ -17,9 +17,7 @@ library(ggstance)
 library(ggplot2)
 library(gridExtra)
 library(GGally)
-#library(devtools)
-#install_github("MarcOhlmann/metanetwork")
-library(metanetwork)
+library(bayesplot)
 library(coda)
 # test functions
 
@@ -65,13 +63,11 @@ mcmc_neff(tSDM$mcmc.diag$neff.ratio)
 evaluateModelFit(tSDM)
 plotG(tSDM)
 plotG_inferred(tSDM)
+computeVariableImportance(tSDM)
+computeVariableImportance(tSDM, groups =list("X" = c("X_1","X_2"), "Y1" = c("Y1","Y2","Y3"), "Y2"= c("Y4", "Y5", "Y6")))
 
 
-
-aa = predictFundamental(tSDM, fullPost =F)
-
-hist()
-
+aa = predictFundamental(tSDM, fullPost =T)
 
 class(tSDM)
 
@@ -101,6 +97,6 @@ filter.table = NULL
 # names(filter.table) = colnames(Y)
 fullPost = T
 
-aa = predict(m_stan, prob.cov = F, fullPost = F)
+aa = predict(tSDM, prob.cov = F, fullPost = F)
 
 
