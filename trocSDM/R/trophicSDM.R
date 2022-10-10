@@ -39,7 +39,12 @@
 #'}
 #' @author Giovanni Poggiato and Jérémy Andréletti
 #' @examples
-#'
+#' data(Y)
+#' data(X)
+#' data(G)
+#' env.formula = as.list(rep("~ X_1 + X_2", ncol(Y)))
+#' names(env.formula) = colnames(Y)
+#' trophicSDM(Y,X,G, env.formula, family = binomial(link = logit()), mode = "prey", method = "stan_glm")
 #' @export
 
 trophicSDM = function(Y, X, G,

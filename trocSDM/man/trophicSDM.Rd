@@ -64,9 +64,9 @@ A "trophicSDMfit" object, containing:
 \item{coef}{A list containing, for each species, the inferred coefficients (with credible intervals or p-values when available)}
 \item{MCMC.diag}{MCMC convergence metrics, only available for MCMC methods}
 
-\item{AIC}{The AIC of the local model}
+\item{AIC}{Model's AIC}
 
-\item{log.lik}{The log.likelihood of the local model}
+\item{log.lik}{Model's log.likelihood}
 }
 \description{
 trophicSDM is used to fit a trophic species distribution model. Requires the species distribution data Y (the sites x species matrix), explanatory variables X and a directed acyclic graph G containing species interactions (i.e., the metaweb, with links going from predators to prey). The function fits the distribution of each species as a function of their preys (with mode = "prey", by default) or predators (if set mode = "predator").
@@ -79,7 +79,12 @@ trophicSDM is used to fit a trophic species distribution model. Requires the spe
 }
 }
 \examples{
-
+data(Y)
+data(X)
+data(G)
+env.formula = as.list(rep("~ X_1 + X_2", ncol(Y)))
+names(env.formula) = colnames(Y)
+trophicSDM(Y,X,G, env.formula, family = binomial(link = logit()), mode = "prey", method = "stan_glm")
 }
 \author{
 Giovanni Poggiato and Jérémy Andréletti
