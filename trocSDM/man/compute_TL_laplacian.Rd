@@ -2,8 +2,7 @@
 % Please edit documentation in R/compute_TL_laplacian.R
 \name{compute_TL_laplacian}
 \alias{compute_TL_laplacian}
-\title{Compute topological ordering
-Method to compute trophic levels from an igraph object G with the method described in MacKay et al 2020.}
+\title{Compute topological ordering}
 \usage{
 compute_TL_laplacian(G)
 }
@@ -11,7 +10,6 @@ compute_TL_laplacian(G)
 \item{G}{The metaweb, it has to be an igraph object}
 }
 \description{
-Compute topological ordering
 Method to compute trophic levels from an igraph object G with the method described in MacKay et al 2020.
 }
 \references{

@@ -19,7 +19,7 @@
 A list containing, for each species, the inferred coefficients (with credible intervals or p-values when available).
 }
 \description{
-Gets regression coefficients from a fitted trophicSDM model.
+Gets regression coefficients (eventually standardised) of a fitted trophicSDM. p-values or credible intervales are returned when available.
 }
 \examples{
 

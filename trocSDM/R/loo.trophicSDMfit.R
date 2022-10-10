@@ -1,4 +1,5 @@
 #' Computes an approximation of loo for the whole model
+#' 
 #' The global loo is computed by summing the loo of all the local models (since the likelihood factorises, the log-likelihood can be summed)
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @author Giovanni Poggiato

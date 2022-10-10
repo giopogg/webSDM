@@ -1,5 +1,6 @@
 #' Computes predicted values from the fitted trophicSDMfit model
-#' For evaluation of the quality of predictions see evaluateModelFit().
+#' 
+#' Computes predicted values from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Once predictions have been obtained, their quality can eventually be evaluated with \code{evaluateModelFit()}.
 #' @param object A trophicSDMfit object obtained with trophicSDM()
 #' @param Xnew a matrix specifying the environmental covariates for the predictions to be made. If NULL (default), predictions are done on the training dataset (e.g. by setting Xnew = tSDM$data$X).
 #' @param prob.cov Parameter to predict with trophicSDM with presence-absence data. Whether to use predicted probability of presence (prob.cov = T) or the transformed presence-absences (default, prov.cov = F) to predict species distribution.

@@ -2,8 +2,7 @@
 % Please edit documentation in R/trophicSDM_CV.R
 \name{trophicSDM_CV}
 \alias{trophicSDM_CV}
-\title{Compute predicted values from a fitted trophicSDM model with a K-fold cross validation
-For evaluation of the quality of predictions see evaluateModelFit().}
+\title{Compute K-fold cross-validation predicted values from a fitted trophicSDM model}
 \usage{
 trophicSDM_CV(
   tSDM,
@@ -43,8 +42,7 @@ A list containing:
 \item{partition}{the partition vector used to compute the K fold cross-validation}
 }
 \description{
-Compute predicted values from a fitted trophicSDM model with a K-fold cross validation
-For evaluation of the quality of predictions see evaluateModelFit().
+Once the CV predicted values are obtained, their quality can be evaluated with \code{evaluateModelFit()}.
 }
 \examples{
 

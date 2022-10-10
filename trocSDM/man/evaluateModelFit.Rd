@@ -2,15 +2,14 @@
 % Please edit documentation in R/evaluateModelFit.R
 \name{evaluateModelFit}
 \alias{evaluateModelFit}
-\title{Evaluates goodness of fit by comparing a true versus a predicted dataset of species distribution
-Ypredicted is tipically predicted using a prediction method of trophicSDM (in cross validation or not)}
+\title{Evaluates prediction goodness of fit}
 \usage{
 evaluateModelFit(tSDM, Ynew = NULL, Ypredicted = NULL)
 }
 \arguments{
-\item{tSDM}{A trophicSDMfit object obtained with trophicSDM()}
+\item{tSDM}{A trophicSDMfit object obtained with \code{trophicSDM()}.}
 
-\item{Ynew}{A sites x species matrix containing the true species occurrences state}
+\item{Ynew}{A sites x species matrix containing the true species occurrences state.}
 
 \item{Ypredicted}{A sites x species matrix containing the predicted species occurrences state.}
 }
@@ -18,8 +17,7 @@ evaluateModelFit(tSDM, Ynew = NULL, Ypredicted = NULL)
 A table specifying the goodness of fit metrics for each species. For presence-absence data, the model computes TSS and AUC. For Gaussian data, the R2.
 }
 \description{
-Evaluates goodness of fit by comparing a true versus a predicted dataset of species distribution
-Ypredicted is tipically predicted using a prediction method of trophicSDM (in cross validation or not)
+Evalute goodness of fit by comparing a true versus a predicted dataset of species distribution. Ypredicted is tipically predicted using a prediction method of trophicSDM (in cross-validation if \code{trophicSDM_CV()} is used).
 }
 \examples{
 

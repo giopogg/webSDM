@@ -1,5 +1,6 @@
-#' Computes predicted values for a local model, i.e., a fitted SDMfit object
-#' This is sequentially called, for each species, by the function trophicSDM.predict
+#' Predicts species fundamental niche
+#' 
+#' Compues predicted values of the fundamental niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @param Xnew a matrix specifying the environmental covariates for the predictions to be made. If NULL (default), predictions are done on the training dataset (e.g. by setting Xnew = tSDM$data$X).
 #' @param pred_samples Number of samples to draw from species posterior predictive distribution when method = "stan_glm". If NULL, set by the default to the number of iterations/10.

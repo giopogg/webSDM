@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.trophicSDMfit.R
 \name{summary.trophicSDMfit}
 \alias{summary.trophicSDMfit}
-\title{Prints the summary of a fitted trophicSDM model}
+\title{Summary of a fitted trophicSDM model}
 \usage{
 \method{summary}{trophicSDMfit}(object, ...)
 }
@@ -12,7 +12,7 @@
 \item{...}{additional arguments}
 }
 \description{
-Prints the summary of a fitted trophicSDM model
+Summary of a fitted trophicSDM model
 }
 \examples{
 

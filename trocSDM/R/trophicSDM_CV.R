@@ -1,5 +1,6 @@
-#' Compute predicted values from a fitted trophicSDM model with a K-fold cross validation
-#' For evaluation of the quality of predictions see evaluateModelFit().
+#' Compute K-fold cross-validation predicted values from a fitted trophicSDM model
+#' 
+#' Once the CV predicted values are obtained, their quality can be evaluated with \code{evaluateModelFit()}.
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @param K The number of folds for the K-fold cross validation
 #' @param partition Optional parameter. A partition vector to specify a partition in K fold for cross validation

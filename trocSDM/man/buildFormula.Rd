@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildFormula.R
 \name{buildFormula}
 \alias{buildFormula}
-\title{Builds the formula of both the abiotic and biotic terms to fit a single species SDM based on the input parameters. The function is called inside the SDMfit function}
+\title{Builds SDM formulae}
 \usage{
 buildFormula(
   form.init,

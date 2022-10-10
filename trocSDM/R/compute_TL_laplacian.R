@@ -1,4 +1,5 @@
 #' Compute topological ordering
+#' 
 #' Method to compute trophic levels from an igraph object G with the method described in MacKay et al 2020.
 #' @param G The metaweb, it has to be an igraph object
 #' @references MacKay, R. S., Johnson, S., & Sansom, B. (2020). How directed is a directed network?. Royal Society open science, 7(9), 201138.

@@ -1,5 +1,6 @@
-#' Computes predicted values for a local model, i.e., a fitted SDMfit object
-#' This is sequentially called, for each species, by the function trophicSDM.predict
+#' Predicts with a local model
+#' 
+#' Computes predicted values for a local model, i.e., a fitted SDMfit object This is sequentially called, for each species, by the function trophicSDM.predict
 #' @param object A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param newdata A matrix containing both environmental covariates and the biotic variables that the local model uses to predict the species distribution.
 #' @param pred_samples Number of samples to draw from species posterior predictive distribution when method = "stan_glm". If NULL, set by the default to the number of iterations/10.

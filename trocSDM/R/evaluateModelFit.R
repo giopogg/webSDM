@@ -1,7 +1,8 @@
-#' Evaluates goodness of fit by comparing a true versus a predicted dataset of species distribution
-#' Ypredicted is tipically predicted using a prediction method of trophicSDM (in cross validation or not)
-#' @param tSDM A trophicSDMfit object obtained with trophicSDM()
-#' @param Ynew A sites x species matrix containing the true species occurrences state
+#' Evaluates prediction goodness of fit
+#' 
+#' Evalute goodness of fit by comparing a true versus a predicted dataset of species distribution. Ypredicted is tipically predicted using a prediction method of trophicSDM (in cross-validation if \code{trophicSDM_CV()} is used).
+#' @param tSDM A trophicSDMfit object obtained with \code{trophicSDM()}.
+#' @param Ynew A sites x species matrix containing the true species occurrences state.
 #' @param Ypredicted A sites x species matrix containing the predicted species occurrences state.
 #' @return A table specifying the goodness of fit metrics for each species. For presence-absence data, the model computes TSS and AUC. For Gaussian data, the R2.
 #' @author Giovanni Poggiato

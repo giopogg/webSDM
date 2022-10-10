@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotG.R
 \name{plotG}
 \alias{plotG}
-\title{Plot the metaweb G
-Plots the metaweb G used to fit the trophicSDM model}
+\title{Plots the metaweb G}
 \usage{
 plotG(tSDM)
 }
@@ -14,7 +13,6 @@ plotG(tSDM)
 A ggnet object
 }
 \description{
-Plot the metaweb G
 Plots the metaweb G used to fit the trophicSDM model
 }
 \examples{

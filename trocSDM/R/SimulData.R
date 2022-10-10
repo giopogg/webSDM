@@ -26,7 +26,7 @@ NULL
 #' @author Giovanni Poggiato
 #'
 #' @keywords datasets
-#'#'
+#'
 #' @examples
 #' data(X)
 NULL

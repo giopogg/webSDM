@@ -1,4 +1,5 @@
-#' Plot the metaweb G
+#' Plots the metaweb G
+#' 
 #' Plots the metaweb G used to fit the trophicSDM model
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @author Giovanni Poggiato

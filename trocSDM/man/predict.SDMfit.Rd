@@ -2,8 +2,7 @@
 % Please edit documentation in R/predict.SDMfit.R
 \name{predict.SDMfit}
 \alias{predict.SDMfit}
-\title{Computes predicted values for a local model, i.e., a fitted SDMfit object
-This is sequentially called, for each species, by the function trophicSDM.predict}
+\title{Predicts with a local model}
 \usage{
 \method{predict}{SDMfit}(object, newdata, pred_samples, prob.cov, ...)
 }
@@ -22,8 +21,7 @@ This is sequentially called, for each species, by the function trophicSDM.predic
 A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites.
 }
 \description{
-Computes predicted values for a local model, i.e., a fitted SDMfit object
-This is sequentially called, for each species, by the function trophicSDM.predict
+Computes predicted values for a local model, i.e., a fitted SDMfit object This is sequentially called, for each species, by the function trophicSDM.predict
 }
 \examples{
 

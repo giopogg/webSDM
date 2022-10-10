@@ -2,8 +2,7 @@
 % Please edit documentation in R/loo.trophicSDMfit.R
 \name{loo.trophicSDMfit}
 \alias{loo.trophicSDMfit}
-\title{Computes an approximation of loo for the whole model
-The global loo is computed by summing the loo of all the local models (since the likelihood factorises, the log-likelihood can be summed)}
+\title{Computes an approximation of loo for the whole model}
 \usage{
 \method{loo}{trophicSDMfit}(tSDM)
 }
@@ -11,7 +10,6 @@ The global loo is computed by summing the loo of all the local models (since the
 \item{tSDM}{A trophicSDMfit object obtained with trophicSDM()}
 }
 \description{
-Computes an approximation of loo for the whole model
 The global loo is computed by summing the loo of all the local models (since the likelihood factorises, the log-likelihood can be summed)
 }
 \examples{

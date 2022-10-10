@@ -1,4 +1,6 @@
 #' Gets regression coefficients from a local model, i.e. a SDMfit object.
+#' 
+#' Gets regression coefficients (eventually standardised) of a local model, i.e. a SDMfit object. p-values or credible intervales are returned when available. 
 #' @param object A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param standardise Whether to standardise regression coefficients. Default to FALSE. If TRUE, coefficients are standardised using the latent variable standardisation (see Grace et al. 2018) for more details.
 #' @param level The confidence level of credible intervals, only available for stan_glm method. Default to 0.95.

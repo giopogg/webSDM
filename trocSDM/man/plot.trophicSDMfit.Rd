@@ -14,7 +14,7 @@
 \item{...}{additional arguments}
 }
 \description{
-Plots the regression coefficients of a fitted trophicSDM model
+Plots the regression coefficients of a fitted trophicSDM model. A subset of species to be plotted can be specified in the parameter\code{species}.
 }
 \examples{
 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/predict.trophicSDMfit.R
 \name{predict.trophicSDMfit}
 \alias{predict.trophicSDMfit}
-\title{Computes predicted values from the fitted trophicSDMfit model
-For evaluation of the quality of predictions see evaluateModelFit().}
+\title{Computes predicted values from the fitted trophicSDMfit model}
 \usage{
 \method{predict}{trophicSDMfit}(
   object,
@@ -40,8 +39,7 @@ For evaluation of the quality of predictions see evaluateModelFit().}
 A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites.
 }
 \description{
-Computes predicted values from the fitted trophicSDMfit model
-For evaluation of the quality of predictions see evaluateModelFit().
+Computes predicted values from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Once predictions have been obtained, their quality can eventually be evaluated with \code{evaluateModelFit()}.
 }
 \examples{
 

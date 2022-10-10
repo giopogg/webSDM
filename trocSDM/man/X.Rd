@@ -19,5 +19,4 @@ data(X)
 \author{
 Giovanni Poggiato
 }
-\keyword{#'}
 \keyword{datasets}

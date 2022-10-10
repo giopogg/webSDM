@@ -1,5 +1,6 @@
-#' Computes variable importance of (groups of variable) for each species of a trophicSDM model.
-#' Variable importance are computed as the standardised regression coefficients (summed across species of the same group). Standardisation is done using latent variable standardisation described in Grace et al. 2018.
+#' Computes variable importance of (groups of) variables of fitted a trophicSDM model.
+#' 
+#' Computes variable importance of (groups of) variables of fitted a trophicSDM model, for each species. Variable importance are computed as the standardised regression coefficients (summed across species of the same group). Standardisation is done using latent variable standardisation described in Grace et al. 2018.
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @param groups A list where each element is group. Each group is specified as a vector containing species or environmental covariates names of a given group. Each element of the list (i.e. each group) has to be named.
 #' @return A groups x species matrix containing variable importance for each groups of variables and each species.

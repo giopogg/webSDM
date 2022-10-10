@@ -1,5 +1,6 @@
 #' Plots the regression coefficients of a fitted trophicSDM model
 #' 
+#' Plots the regression coefficients of a fitted trophicSDM model. A subset of species to be plotted can be specified in the parameter\code{species}.
 #' @param x A trophicSDMfit object obtained with trophicSDM()
 #' @param species A vector of species names to be plot. If NULL (default), all species are plotted.
 #' @param ... 	additional arguments

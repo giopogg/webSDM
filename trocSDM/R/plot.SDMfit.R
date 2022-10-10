@@ -1,5 +1,6 @@
-#' Plots the regression coeffiecients of a local SDMfit model
+#' Plots the regression coeffiecients of a local model
 #' 
+#' Plots the regression coeffiecients of a local SDMfit model
 #' @param x A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param level the confidence level of the confidence intervals
 #' @param ... 	additional arguments

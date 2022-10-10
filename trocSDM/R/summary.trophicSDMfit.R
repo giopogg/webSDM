@@ -1,4 +1,5 @@
-#' Prints the summary of a fitted trophicSDM model
+#' Summary of a fitted trophicSDM model
+#' 
 #' @param object A trophicSDMfit object obtained with trophicSDM()
 #' @param ... 	additional arguments
 #' @author Giovanni Poggiato
@@ -26,7 +27,7 @@ summary.trophicSDMfit = function(object,  ...){
     cat("    $coef \n")
     cat("* Useful S3 methods\n")
     cat("    print(), coef(), plot(), predict(), evaluateModelFit() \n")
-    cat("    predictFundamental(), plotG(), plotVP(), plotBiotic() \n")
+    cat("    predictFundamental(), plotG(), plotG_inferred(), computeVariableImportance() \n")
     cat("* Local models (i.e. single species SDM) can be accessed through \n")
     cat("    $model\n")
 }

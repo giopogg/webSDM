@@ -1,4 +1,4 @@
-#' Prints the summary of a fitted SDMfit model
+#' Summary of a fitted SDMfit model
 #' @param object A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param ... 	additional arguments
 #' @author Giovanni Poggiato

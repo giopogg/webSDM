@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.SDMfit.R
 \name{summary.SDMfit}
 \alias{summary.SDMfit}
-\title{Prints the summary of a fitted SDMfit model}
+\title{Summary of a fitted SDMfit model}
 \usage{
 \method{summary}{SDMfit}(object, ...)
 }
@@ -12,7 +12,7 @@
 \item{...}{additional arguments}
 }
 \description{
-Prints the summary of a fitted SDMfit model
+Summary of a fitted SDMfit model
 }
 \examples{
 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/predictFundamental.R
 \name{predictFundamental}
 \alias{predictFundamental}
-\title{Computes predicted values for a local model, i.e., a fitted SDMfit object
-This is sequentially called, for each species, by the function trophicSDM.predict}
+\title{Predicts species fundamental niche}
 \usage{
 predictFundamental(
   tSDM,
@@ -31,8 +30,7 @@ predictFundamental(
 A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites.
 }
 \description{
-Computes predicted values for a local model, i.e., a fitted SDMfit object
-This is sequentially called, for each species, by the function trophicSDM.predict
+Compues predicted values of the fundamental niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
 }
 \examples{
 

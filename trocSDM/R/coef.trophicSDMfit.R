@@ -1,4 +1,6 @@
 #' Gets regression coefficients from a fitted trophicSDM model.
+#'
+#' Gets regression coefficients (eventually standardised) of a fitted trophicSDM. p-values or credible intervales are returned when available. 
 #' @param object A trophicSDMfit object obtained with trophicSDM()
 #' @param standardise Whether to standardise regression coefficients. Default to FALSE. If TRUE, coefficients are standardised using the latent variable standardisation (see Grace et al. 2018) for more details.
 #' @param level The confidence level of credible intervals, only available for stan_glm method. Default to 0.95.

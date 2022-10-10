@@ -1,4 +1,5 @@
 #' Prints a fitted trophicSDM model
+#' 
 #' @param x A trophicSDMfit object obtained with trophicSDM()
 #' @param ... 	additional arguments
 #' @author Giovanni Poggiato
