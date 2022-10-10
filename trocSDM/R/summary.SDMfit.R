@@ -14,7 +14,7 @@ summary.SDMfit = function(object, ...){
   cat("==================================================================\n")
 
   model = paste0("Local SDMfit for species ", SDM$sp.name, " with ",
-                 ifelse(is.null(tSDM$model.call$penal), "no", tSDM$model.call$penal), " penalty ", SDM$penal,
+                 ifelse(is.null(SDM$penal), "no", SDM$penal), " penalty ", SDM$penal,
                  ", fitted using ", SDM$method,
                  " \n")
   cat(model)

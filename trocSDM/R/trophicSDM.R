@@ -4,7 +4,11 @@
 #' @param Y The sites x species matrix containing observed species distribution (e.g. presence-absence).
 #' @param X The design matrix, i.e. sites x predictor matrix containing the value of each explanatory variable (e.g. the environmental conditions) at each site.
 #' @param G The species interaction network (aka metaweb). Needs to be an igraph object. Links must go from predator to preys. It needs to be a directed acyclic graph.
-#' @param env.formula A list that contains for each species the formula that describes the abiotic part of the model. The names of the list must coincide with the names of the species. The details of model specification are given under ‘Details’.
+#' @param env.formula The definition of the abitic part of the model. It can be :
+#' \itemize{
+#' \item a string specifying the formula (e.g. "~ X_1 + X_2"). In this case, the same environmental variables are used for every species.
+#' }
+#' \item A list that contains for each species the formula that describes the abiotic part of the model. In this case, different species can be modeled as a function of different environmental covariates. The names of the list must coincide with the names of the species.
 #' @param method which SDM method to use. For now the available choises are: "glm" (frequentist) or "stan_glm" (full bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.
 #' @param mode  "prey" if bottom-up control (default), "predators" otherwise. Notice that G needs to be such that links point from predators to prey.
 #' @param family the family parameter of the glm function (see glm). family=gaussian for gaussian data or family=binomial(link = "logit") or binomial(link = "probit") for presence-absence data.
@@ -34,27 +38,45 @@
 #'
 #' @details "sp.formula" and "sp.partition" can be combined to define any kind of composite variables for the biotic part of the formula. "sp.formula" can be :
 #' \itemize{
-#' \item A string defining a formula as function of "richness". E.g., sp.formula="richness+I(richness)^2" (species are modelled as a function of a quadratic polyome of their prey richness), "I(richness>0)" (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey groups.
-#'  \item A more flexible option is to specify sp.formula as a list (whose names are species' names) that contains for each species the definition biotic part of the model. Notice that, in this case, the function does not check that the model is a DAG. This allow to define any kind of composite variable, or to model interactions between environmental covariates and preys (or predators).
+#' \item A string defining a formula as function of "richness". E.g., sp.formula="richness+I(richness)^2" (species are modelled as a function of a quadratic polyome of their prey richness), "I(richness>0)" (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey (or predator) groups.
+#'  \item A more flexible option is to specify sp.formula as a list (whose names are species' names) that contains for each species the definition of the biotic part of the model. Notice that, in this case, the function does not check that the model is a DAG. This allow to define any kind of composite variable, or to model interactions between environmental covariates and preys (or predators).
 #'}
 #' @author Giovanni Poggiato and Jérémy Andréletti
 #' @examples
 #' data(Y)
 #' data(X)
 #' data(G)
-#' env.formula = as.list(rep("~ X_1 + X_2", ncol(Y)))
-#' names(env.formula) = colnames(Y)
-#' trophicSDM(Y,X,G, env.formula, family = binomial(link = logit()), mode = "prey", method = "stan_glm")
+#' # define abiotic part of the model
+#' env.formula = "~ X_1 + X_2"
+#' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
+#' m = trophicSDM(Y,X,G, env.formula, family = binomial(link = "logit"), \cr
+#' penal = NULL, mode = "prey", method = "stan_glm")
+#' print(m)
+#' 
+#' # Access local models (e.g. species "Y5")
+#' m$model$Y5
+#' coef(m$model$Y5)
+#' plot(m$model$Y5)
 #' @export
 
 trophicSDM = function(Y, X, G,
                       env.formula = NULL, sp.formula = NULL, sp.partition = NULL,
                       penal = NULL, mode = "prey", method = "stan_glm",
-                      family, iter=1000, run.parallel=TRUE, chains = 2, verbose = F){
+                      family, iter=1000, chains = 2, run.parallel=TRUE, verbose = F){
 
   ################################
   # checks & errors
+  if(is.null(colnames(Y))) stop("Please provide species names as the column names of Y")
   if(!is_igraph(G)) stop("G is not an igraph object")
+  if(is.null(env.formula)){
+    env.formula = as.list(rep("~ 1", ncol(Y)))
+    names(env.formula) = colnames(Y)
+  }else{
+    if(length(env.formula) == 1){
+      env.formula = as.list(rep(env.formula, ncol(Y)))
+      names(env.formula) = colnames(Y)
+    }
+  }
   if(!method %in% c("glm","stan_glm")) stop("the selected method has not yet been implemented or it has been misspelled")
   if(!(is.null(penal) || penal %in% c("horshoe","elasticnet","coeff.signs"))) stop("the selected penalisation has not yet been implemented or it has been misspelled")
 
@@ -78,13 +100,13 @@ trophicSDM = function(Y, X, G,
   # Laplacian sorting of the graph (component by component)
 
   if(mode == "prey"){
-    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=T)]
+    sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=T)]
   }else{
-    sortedV = V(G)[order(unlist(lapply(decompose(G), compute_TL_laplacian)), decreasing=F)]
+    sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=F)]
   }
 
   # initialize empty lists of models
-  m = form.all = as.list(vector(length=vcount(G)))
+  m = form.all = as.list(vector(length=igraph::vcount(G)))
   names(m) = names(form.all) = names(sortedV)
 
   # core part: loop on the species to fit their distribution
