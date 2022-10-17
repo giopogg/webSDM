@@ -1,0 +1,11 @@
+Package: webSDM
+Title: Including known interactions in SDM
+Version: 0.0.0.9000
+Author: Giovanni Poggiato and Jérémy Andréoletti
+Maintainer: Giovanni Poggiato <giov.poggiato@gmail.com>
+Description: Package to fit a trophic Species Distribution Model, analyse it and predict. See Poggiato et al. In prep.
+License: GPL-3
+Encoding: UTF-8
+Imports: GGally, Matrix, abind, bayesplot, brms, broom.mixed, dismo, dplyr, ggplot2, glmnet, gridExtra, igraph, jtools, rstanarm, rstantools
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2

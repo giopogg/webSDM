@@ -27,8 +27,15 @@ for(j in list.files("~/Documents/GitHub/trophicSDM/trophicSDM/R")) {
   source(paste0("~/Documents/GitHub/trophicSDM/trophicSDM/R/",j))
 }
 
+library(trocSDM)
+data(Y)
+data(X)
+data(G)
 env.formula = as.list(rep("~ X_1 + X_2", ncol(Y)))
+env.formula = list(c("~ X_1 + X_2"),c("~ X_1 + X_2"),c("~ X_1 + X_1^2"),
+                      c("~ X_1"), c("~ X_1 + I(X_2)^2"), c("~ X_1:X_2"))
 names(env.formula) = colnames(Y)
+
 penal = NULL
 method = "stan_glm"
 family = binomial(link = "logit")
@@ -39,7 +46,7 @@ sp.formula = NULL
 mode = "prey"
 sp.partition = NULL
 #sp.partition = list(c("Y1","Y2","Y3"),"Y4",c("Y5","Y6"))
-verbose=F
+verbose = F
 # sp.formula = list()
 # for(j in 1:ncol(Y)){
 #   if(length(names(neighbors(G,colnames(Y)[j],mode="out")))>0){
@@ -53,11 +60,11 @@ G <- set.vertex.attribute(G, "name", value=colnames(Y))
 names(env.form) = colnames(Y)
 env.formula = env.form
 
-tSDM = trophicSDM(Y = Y, X = X, G = G, env.formula = env.form, sp.formula = NULL,
+tSDM = trophicSDM(Y = Y, X = X, G = G, env.formula = env.formula, sp.formula = NULL,
                     sp.partition = NULL,
                     penal = NULL, method = "stan_glm", family = binomial(link = "logit"),
                     iter = 100, chains = 2, run.parallel = F, verbose=F)
-
+rstanarm::loo(tSDM)
 mcmc_rhat(tSDM$mcmc.diag$rhat)
 mcmc_neff(tSDM$mcmc.diag$neff.ratio)
 evaluateModelFit(tSDM)
@@ -66,20 +73,25 @@ plotG_inferred(tSDM)
 computeVariableImportance(tSDM)
 computeVariableImportance(tSDM, groups =list("X" = c("X_1","X_2"), "Y1" = c("Y1","Y2","Y3"), "Y2"= c("Y4", "Y5", "Y6")))
 
-
 aa = predictFundamental(tSDM, fullPost =T)
-
+for(j in 1:ncol(Y)) filter.table[[j]] = rbinom(nrow(X),1,0.5)
+names(filter.table) = colnames(Y)
+aa = predict(tSDM, prob.cov = F, filter.table = filter.table)
+loo(trophicSDM)
+plot(tSDM)
+tSDM
+summary(tSDM)
 class(tSDM)
 
 # Check for every combinations. i.e. method = "glm"& penal = NULL/horshoe or
 # method = "stan_glm", penal = NULL/horshoe/coeff.signs()
-SDM = tSDM$model$S6
+SDM = tSDM$model$Y6
 class(SDM)
 SDM$coef
 coef(SDM)
 plot(SDM)
 coef(SDM, standardise = T)
-summary(tSDM)
+summary(SDM)
 SDM
 
 plot(tSDM)
@@ -92,11 +104,11 @@ pred_samples = 1000
 run.parallel = T
 verbose = F
 filter.table = NULL
-# filter.table = list()
-# for(j in 1:ncol(Y)) filter.table[[j]] = rbinom(nrow(X),1,0.5)
-# names(filter.table) = colnames(Y)
+filter.table = list()
+for(j in 1:ncol(Y)) filter.table[[j]] = rbinom(nrow(X),1,0.5)
+names(filter.table) = colnames(Y)
 fullPost = T
 
-aa = predict(tSDM, prob.cov = F, fullPost = F)
+aa = predict(tSDM, prob.cov = F, fullPost = F, filter.table = )
 
 
