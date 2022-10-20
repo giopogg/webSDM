@@ -47,16 +47,16 @@ data(Y, X, G)
 env.formula = "~ X_1 + X_2"
 # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 # (set iter = 1000 to obtain reliable results)
-m = trophicSDM(Y, X, G, env.formula, 
+m = trophicSDM(Y, X, G, env.formula, iter = 100,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
-# Obtain 100 draws from the posterior predictive distribution of species (pred_samples = 100)
+# Obtain 50 draws from the posterior predictive distribution of species (pred_samples = 50)
 # using predicted presence-absences of species to predict their predators (prob.cov = TRUE)
 # Since we don't specify Xnew, the function sets Xnew = X by default
-Ypred = predict(m, fullPost = TRUE, pred_samples = 100, prob.cov = FALSE)
+Ypred = predict(m, fullPost = TRUE, pred_samples = 50, prob.cov = FALSE)
 # We can ask the function to only give back posterior mean and 95\% credible intervals with
 # fullPost = F
-Ypred = predict(m, fullPost = TRUE, pred_samples = 100, prob.cov = FALSE)
+Ypred = predict(m, fullPost = TRUE, pred_samples = 50, prob.cov = FALSE)
 # If we fit the model using in a frequentist  way (e.g. glm)
 m = trophicSDM(Y, X, G, env.formula, 
                family = binomial(link = "logit"), penal = NULL, 

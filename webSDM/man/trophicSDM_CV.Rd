@@ -53,20 +53,23 @@ env.formula = "~ X_1 + X_2"
 m = trophicSDM(Y, X, G, env.formula, iter = 50,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
-# Run a 5-fold (K=5) cross validation. Predictions is done using presence-absences of preys
+# Run a 3-fold (K=3) cross validation. Predictions is done using presence-absences of preys
 # (prob.cov = FALSE, see ?predict.trophicSDM) with 50 draws from the posterior distribution
 # (pred_samples = 50)
-CV = trophicSDM_CV(m, K = 5, prob.cov = FALSE, pred_samples = 10, run.parallel = FALSE)
+\dontrun{
+CV = trophicSDM_CV(m, K = 3, prob.cov = FALSE, pred_samples = 10, run.parallel = FALSE)
 # Use predicted values to evaluate model goodness of fit in cross validation
 Ypred = CV$meanPred[,colnames(Y)]
+}
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 
 # Now using glm, K = 2 and by specifying the partition of site
-m = trophicSDM(Y, X, G, env.formula,
+m = trophicSDM(Y, X, G, env.formula, iter = 50,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "glm")
 partition = c(rep(1,500),rep(2,500))
-CV = trophicSDM_CV(m, K = 2, partition = partition, prob.cov = FALSE, run.parallel = FALSE)
+CV = trophicSDM_CV(m, K = 2, partition = partition, prob.cov = FALSE,
+                   pred_samples = 10, run.parallel = FALSE)
 Ypred = CV$meanPred[,colnames(Y)]
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 }

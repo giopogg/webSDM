@@ -18,9 +18,9 @@ data(Y, X, G)
 env.formula = "~ X_1 + X_2"
 # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 m = trophicSDM(Y,X,G, env.formula, 
-               family = binomial(link = "logit"), penal = NULL, 
+               family = binomial(link = "logit"), penal = NULL, iter = 50,
                mode = "prey", method = "stan_glm")
-brms::loo(m)
+\dontrun{brms::loo(m)}
 }
 \author{
 Giovanni Poggiato

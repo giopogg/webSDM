@@ -23,6 +23,7 @@
 #' @importFrom jtools plot_summs
 #' @importFrom gridExtra grid.arrange
 #' @importFrom stats coef
+#' @importFrom utils globalVariables
 #' @method plot SDMfit
 #' @export
 plot.SDMfit = function(x, level = 0.95, plot = TRUE,...){

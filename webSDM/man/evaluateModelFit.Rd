@@ -25,7 +25,7 @@ data(Y, X, G)
 env.formula = "~ X_1 + X_2"
 # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 # (set iter = 1000 to obtain reliable results)
-m = trophicSDM(Y, X, G, env.formula, 
+m = trophicSDM(Y, X, G, env.formula, iter = 50,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
 # Evaluate the quality of model predictions on the training
@@ -44,7 +44,7 @@ evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 evaluateModelFit(m)
 
 # If we fitted the model using "glm"
-m = trophicSDM(Y, X, G, env.formula, 
+m = trophicSDM(Y, X, G, env.formula, iter = 50,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "glm")
 Ypred = predict(m, fullPost = FALSE)

@@ -13,7 +13,7 @@
 #' m = trophicSDM(Y,X,G, env.formula, 
 #'                family = binomial(link = "logit"), penal = NULL, iter = 50,
 #'                mode = "prey", method = "stan_glm")
-#' brms::loo(m)
+#' \dontrun{brms::loo(m)}
 #' @method loo trophicSDMfit
 #' @export
 loo.trophicSDMfit = function(tSDM){
