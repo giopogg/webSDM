@@ -14,3 +14,7 @@ Authors@R:
       person("Jérémy", "Andréoletti", role = c("aut", "ctb"),
            comment = c(ORCID = "0000-0003-1957-9764")))
 URL: https://github.com/giopogg/trophicSDM
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

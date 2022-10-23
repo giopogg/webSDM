@@ -34,9 +34,9 @@
 #' CV = trophicSDM_CV(m, K = 3, prob.cov = FALSE, pred_samples = 10, run.parallel = FALSE)
 #' # Use predicted values to evaluate model goodness of fit in cross validation
 #' Ypred = CV$meanPred[,colnames(Y)]
-#' }
-#' evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 #' 
+#' evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
+#' }
 #' # Now using glm, K = 2 and by specifying the partition of site
 #' m = trophicSDM(Y, X, G, env.formula, iter = 50,
 #'                family = binomial(link = "logit"), penal = NULL, 
