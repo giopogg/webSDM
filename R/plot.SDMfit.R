@@ -3,7 +3,6 @@
 #' Plots the regression coeffiecients of a local SDMfit model
 #' @param x A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param level the confidence level of the confidence intervals
-#' @param plot wheter to print the plot or just return a ggplot object
 #' @param ... 	additional arguments
 #' @author Giovanni Poggiato
 #' @examples
@@ -26,7 +25,7 @@
 #' @importFrom utils globalVariables
 #' @method plot SDMfit
 #' @export
-plot.SDMfit = function(x, level = 0.95, plot = TRUE,...){
+plot.SDMfit = function(x, level = 0.95,...){
 
   SDM = x
   
@@ -37,8 +36,6 @@ plot.SDMfit = function(x, level = 0.95, plot = TRUE,...){
     if(is.null(SDM$penal)){
       p = plot_summs(SDM$model, robust = TRUE,plot.distributions = TRUE, inner_ci_level = level, omit.coefs = NULL) +
         ggtitle(paste0("Species : ", SDM$sp.name))
-
-      if(plot) print(p)
 
       return(p)
 
@@ -51,8 +48,6 @@ plot.SDMfit = function(x, level = 0.95, plot = TRUE,...){
         theme_classic() +  theme(axis.text.y = element_text(face="bold", size=13)) +
         ggtitle(paste0("Species : ", SDM$sp.name))
 
-      if(plot) print(p)
-      
       return(p)
 
     }
@@ -61,8 +56,6 @@ plot.SDMfit = function(x, level = 0.95, plot = TRUE,...){
   if(SDM$method == "stan_glm"){
     p = plot(SDM$model, prob = level, plotfun = "areas") + ggtitle(paste0("Species : ", SDM$sp.name))
 
-    if(plot) print(p)
-    
     return(p)
   }
 }

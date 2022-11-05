@@ -38,13 +38,15 @@ plot.trophicSDMfit = function(x, species = NULL, ...){
   # if is.null assign to the whole species pool
   if(is.null(species)) species = tSDM$data$sp.name
   
-  plist = lapply(tSDM$model[names(tSDM$model) %in% species], function(x) plot(x, plot = F))
+  plist = lapply(tSDM$model[names(tSDM$model) %in% species], function(x) plot(x))
   
   nCol = 2
   nRow = ifelse(length(species) < 6, ceiling(length(species)/2), 3)
   nPage =  ceiling(length(species)/6)
   
+  if(tSDM$data$S>6){
   devAskNewPage(TRUE)
+  }
   for (i in 1:nPage) do.call(grid.arrange,
                              c(plist[((i-1)*6+1):ifelse(((i-1)*6+6)>length(plist),
                                                         length(plist),
