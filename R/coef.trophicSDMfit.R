@@ -41,6 +41,6 @@ coef.trophicSDMfit = function(object, standardise = F, level = 0.95, ...){
 
   if(class(tSDM) != "trophicSDMfit") stop("object is not of class trophicSDMfit" )
 
-  lapply(tSDM$model, function(x) coef(x, standardise = T, level = level))
+  lapply(tSDM$model, function(x) coef(x, standardise = standardise, level = level))
 
 }

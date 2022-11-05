@@ -183,11 +183,16 @@ trophicSDM = function(Y, X, G,
   trophicSDMfit$log.lik = do.call(sum, lapply(trophicSDMfit$model, function(x) x$log.lik))
 
   if(method == "stan_glm"){
-    trophicSDMfit$mcmc.diag = data.frame(rhat = unlist(lapply(
+    mcmc.diag = data.frame(rhat = unlist(lapply(
       trophicSDMfit$model, function(x) rhat(x$model))),
       neff.ratio = unlist(lapply(
         trophicSDMfit$model, function(x) neff_ratio(x$model))))
 
+    mcmc.diag$species  = sub("\\..*", "",rownames(mcmc.diag))
+    mcmc.diag$coef= sub(".*\\.", "",rownames(mcmc.diag))
+    
+    trophicSDMfit$mcmc.diag = mcmc.diag
+  
   }
   class(trophicSDMfit) = "trophicSDMfit"
 

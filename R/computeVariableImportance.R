@@ -48,7 +48,7 @@ computeVariableImportance = function(tSDM, groups = NULL){
     for(k in 1:length(groups)){
 
       sel = unique(unlist(sapply(groups[[k]], grep, names(coef_temp))))
-      if(any(sel)) VI[k,j] = sum(abs(coef_temp[sel])) else VI[k,j] = 0
+      if(length(sel) > 0) VI[k,j] = sum(abs(coef_temp[sel])) else VI[k,j] = 0
 
     }
   }

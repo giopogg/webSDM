@@ -1,0 +1,103 @@
+---
+title: "R package 'webSDM'"
+author: "Giovanni Poggiato"
+date: "17/10/22"
+# output: 
+#   slidy_presentation: 
+#     fig_height: 8
+#     fig_width: 10
+fig_width: 6 
+fig_height: 4 
+output: github_document
+always_allow_html: true
+---
+```{r chunk-name, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.path = "man/figures/"
+)
+```
+# <img src="man/figures/logo_jtdm.png" align="right" width="300px"/>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+
+# webSDM - including known trophic interactions in SDM
+
+webSDM implements the trophic SDM model described in Poggiato et al., "Integrating trophic food webs in species distribution models improves ecological niche estimation and prediction". Trophic SDM integrate a known trophic interaction network in SDM, thus oroviding more realistic and ecologically sound predictions. We here after present the main functions of the package, but we refer to the vignettes and the help functions for a more complete documentation of our package.
+
+## Installing the R package
+
+```{r,eval=FALSE}
+library(devtools)
+# Run to install webSDM
+install_github("giopogg/webSDM")
+library(webSDM)
+```
+
+## Fit a trophic SDM to data
+
+Fitting a trophic SDM require the species distribution data, the environmental covariates and a known trophic interaction network.
+
+```{r,warning=FALSE,results='hide'}
+library(jtdm)
+library(ggplot2)
+set.seed(1712)
+data(Y)
+data(X)
+# Short MCMC to obtain a fast example: results are unreliable !
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burnin = 100, sample = 100)
+
+# Inferred parameters
+getB(m)$Bmean
+get_sigma(m)$Smean 
+```
+###Trait-environment relationships
+
+Single-trait trait-environment relationships
+``` {r}
+partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
+```
+
+### Joint trait-environment relationships
+ 
+ 
+Partial response curve of the most suitable community-level strategy and envelop of possible community-level strategies of SLA and LNC along the GDD gradient.
+
+```{r}
+ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
+```
+
+### Joint probabilities
+Computes joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
+
+```{r}
+joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
+
+```
+
+
+Unsurprisingly, the probability is low. Then, we compute how this probability varies along the GDD gradient.
+``` {r}
+joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+```
+
+
+And we plot it.
+
+```{r,echo=FALSE}
+table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
+                                   q02 = joint$GradProbsq025,
+                                   q97 = joint$GradProbsq975)
+ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +              ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
+```
+
+
+As climatic conditions become more favourable (i.e. GDD increases), the probability of having high values of both traits increases.
+
+## Author
+This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The framework implemented in this package is described in: Joint modeling and predictions of community traits. Poggiato Giovanni, Gaüzere Pierre, Martinez Almoyna, Camille, Deschamps, Gabrielle, Renaud, Julien, Violle, Cyrille, Münkemüller, Tamara, Thuiller, Wilfried. In preparation.
