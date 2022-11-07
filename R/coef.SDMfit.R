@@ -110,8 +110,13 @@ coef.SDMfit = function(object, standardise = F, level = 0.95, ...){
   if(SDM$method == "stan_glm"){
     
     if(!standardise){
-      
+      if(family$family =="gaussian"){
       table = cbind(mean = SDM$model$coefficients, posterior_interval(SDM$model, prob = level))
+      }else{
+        #remove sigma value from posterior
+        post = posterior_interval(SDM$model, prob = level)
+        table = cbind(mean = SDM$model$coefficients, post[-nrow(post),])
+      }
       return(table)
       
     }else{
@@ -130,8 +135,11 @@ coef.SDMfit = function(object, standardise = F, level = 0.95, ...){
         apply(dplyr::select(SDM$data,  -c("y", "(Intercept)" )), 2, sd)/
         sqrt(var(predict(SDM$model, link = T)) + pi^2/3)
       
-      table = cbind(estimate, table_quantile)
-      
+      if(family$family =="gaussian"){
+        table = cbind(estimate, table_quantile[-nrow(table_quantile)])
+      }else{
+        table = cbind(estimate, table_quantile)
+      }
       table = rbind("(Intercept)" = SDM$model$coefficients[1], table)
       return(table)
       

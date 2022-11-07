@@ -12,7 +12,7 @@
 #' }
 #' @param method which SDM method to use. For now the available choises are: \code{"glm"} (frequentist) or \code{"stan_glm"} (full bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.
 #' @param mode  "prey" if bottom-up control (default), "predators" otherwise. Notice that G needs to be such that links point from predators to prey.
-#' @param family the family parameter of the glm function (see \code{glm}). \code{gaussian} for gaussian data. \code{binomial(link = "logit")} or \code{binomial(link = "probit")} for presence-absence data.
+#' @param family the family parameter of the glm function (see \code{glm}). \code{gaussian(link = "identity)} for gaussian data. \code{binomial(link = "logit")} or \code{binomial(link = "probit")} for presence-absence data.
 #' @param iter (for \code{"stan_glm"} only) Number of iterations for each MCMC chain if stan_glm is used
 #' @param chains (for \code{"stan_glm"} only) Number of MCMC chains (default to 2)
 #' @param penal Penalisation method to shrink regression coefficients. If \code{NULL} (default), the model does not penalise the regression coefficient. For now, available penalization method are  \code{"horshoe"} for method stan_glm, \code{"elasticnet"} for method glm. It is also possible to constrain the sign of biotic coefficients (prey coefficients are set to posite and predator coefficients to negative) by setting \code{"coeff.signs"} for methods glm and stan_glm.
@@ -99,7 +99,10 @@ trophicSDM = function(Y, X, G,
     if(!identical(names(sp.formula),colnames(Y))) stop("sp.formula has to be either NULL, richness, or a list whose name equals species names (i.e. colnames(Y))")
   }else{custom.formula=F}
   if(!(mode %in% c("prey","predator"))){stop("mode must be either 'prey' or 'predator'")}
+  
+  if(is.null(colnames(X))) warning("columns of X must have names in order to match the env.formula argument")
 
+  if(family == "gaussian" | is.function(family)){stop("If you want to model Gaussian data, please provide family = gaussian(), eventually specifying a link.}
   ################################
 
 

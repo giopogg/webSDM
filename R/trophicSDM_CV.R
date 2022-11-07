@@ -97,7 +97,7 @@ trophicSDM_CV = function(tSDM, K, partition = NULL, prob.cov = FALSE,
       preds[test,,] = do.call(cbind, pred_K)
     }
 
-    print(paste0("Fold ", i, " out of ", K,"\n"))
+    print(paste0("Fold ", i, " out of ", K," \n"))
 
   }
 

@@ -131,7 +131,7 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
 
         pred.array = mclapply(1:dim(newdata)[3],
                               FUN = function(x){
-                                predict.SDMfit(object = tSDM$model[[names(sortedV[j])]],
+                                predict(object = tSDM$model[[names(sortedV[j])]],
                                                newdata = newdata[,,x],
                                                pred_samples=1,
                                                prob.cov=prob.cov)},
@@ -142,7 +142,7 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
         pred.array = apply(newdata,
                            MARGIN = 3,
                            FUN = function(x){
-                             predict.SDMfit(object = tSDM$model[[names(sortedV[j])]],
+                             predict(object = tSDM$model[[names(sortedV[j])]],
                                             newdata = x,
                                             pred_samples = 1,
                                             prob.cov = prob.cov)})
@@ -272,7 +272,7 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
 
         pred.array = mclapply(1:dim(newdata)[3],
                               FUN = function(x){
-                                predict.SDMfit(object = tSDM$model[[names(sortedV[j])]],
+                                predict(object = tSDM$model[[names(sortedV[j])]],
                                            newdata = newdata[,,x],
                                            pred_samples = 1,
                                            prob.cov = prob.cov)},
@@ -283,7 +283,7 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
         pred.array = apply(newdata,
                            MARGIN=3,
                            FUN = function(x){
-                             predict.SDMfit(object = tSDM$model[[names(sortedV[j])]],
+                             predict(object = tSDM$model[[names(sortedV[j])]],
                                         newdata = x,
                                         pred_samples = 1,
                                         prob.cov = prob.cov)})
