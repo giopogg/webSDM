@@ -102,7 +102,7 @@ trophicSDM = function(Y, X, G,
   
   if(is.null(colnames(X))) warning("columns of X must have names in order to match the env.formula argument")
 
-  if(family == "gaussian" | is.function(family)){stop("If you want to model Gaussian data, please provide family = gaussian(), eventually specifying a link.")}
+  if(is.character(family) | is.function(family)){stop("If you want to model Gaussian data, please provide family = gaussian(), eventually specifying a link.")}
   ################################
 
 
