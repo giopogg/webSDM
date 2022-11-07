@@ -36,10 +36,11 @@ set.seed(1234)
 
 
 ## Simulate data
-For illustrative purposes, we use simulated data for which we know the parameter values. We thus simulate a trophic interaction network and species distribution for six species. We simulate data with a stronger dependence on the abiotic variables for species in lower trophic levels, and increasing dependence on the biotic terms (i.e., their preys) for species higher with a higher trophic level. We will then use trophic SDM and see if the model can retrieve this simulate process and the species fundamental niches.
+For illustrative purposes, we use simulated data for which we know the parameter values. We thus simulate a trophic interaction network and species distribution for six species, whose names are ordered accordingly to their trophic level (Y1 being basal and Y6 being at the highest trophic position). We simulate data with a stronger dependence on the abiotic variables for species in lower trophic levels, and increasing dependence on the biotic terms (i.e., their preys) for species with a higher trophic level. We will then use trophic SDM and see if the model can retrieve this simulate process and the species fundamental niches.
 
 ### Create trophic interaction network
-We first create the trophic interaction network. The network needs to be a directed acyclic graph (DAG), with arrows pointing from predator to prey.
+We first create the trophic interaction network. The network needs to be a directed acyclic graph (DAG), with arrows pointing from predator to prey. We thus simulate an interaction network such that species only have prey in a lower trophic position.
+
 ```{r simulate graph, message = FALSE, warning = FALSE}
 # Set number of species
 S = 6
@@ -64,10 +65,8 @@ G = graph_from_adjacency_matrix(A)
 plot(G)
 ```
 
-The simulated interaction network is such that species are more or less ordered according to their trophic level. Indeed, species Y1 and Y2 do not feed on any other species, Y5 is a generalist feeding on four different species and Y6 is a top predator feeding on intermediate consumers like Y3 and Y5.
-
 ### Create trophic interaction network
-We now simulate species distribution at 300 locations along two environmental gradients. We simulate species such that species Y1 to Y3 have a negative dependence to the first environmental variable X_1 and a positive dependence to X_2, viceversa for species Y4 to Y6. Moreover, the strength of the environmental term decreases along the trophic level, while the effect of the prey increases. Moreover, preys always have a positive effect on the predators.
+We now simulate species distribution at 300 locations along two environmental gradients. We simulate species such that species Y1 to Y3 have a negative dependence to the first environmental variable X_1 and a positive dependence to X_2, viceversa for species Y4 to Y6. Moreover, the strength of the environmental term decreases along the trophic level, while the effect of the prey increases. Finally, preys always have a positive effect on predators.
 
 ```{r simulate data, message = FALSE, warning = FALSE}
 # Number of sites
@@ -76,19 +75,8 @@ n = 500
 # Simulate environmental gradient
 X_1= scale(runif(n, max = 1))
 X_2= scale(runif(n, max = 1))
-# X=cbind(1, poly(X_1,degree=2), poly(X_2,degree=2))
-# X = cbind(1, X_1, X_2)
+
 X = cbind(1, X_1^2, X_2^2)
-
-
-# Species Y1 to Y3 have a negative response to X_1 and a positive response to X_2. Viceversa for species Y4 to Y6
-# B = matrix(c(1, 1, 1, 1, 1, 1,
-#              -2, -2, -2, 2, 2, 2,
-#              1, 1, 1, -1, -1, -1,
-#              2, 2, 2, -2, -2, -2,
-#              -1, -1, -1, 1, 1, 1
-#              ), ncol = 5)
-
 
 B = matrix(c(1, 1, 1, 1, 1, 1,
              -2, -2, -2, 2, 2, 2,
@@ -115,9 +103,9 @@ colnames(Y) = paste0("Y",as.character(1:S))
 ```
 
 ## Fit trophic SDM
-Now that we simulate the data, we can fit a species distribution model with the function `trophicSDM` The function requires: the species distribution data `Y` (a sites x species matrix), the environmental variables `X` and an igraph object `G` representing the trophic interaction network. Importantly, `G` must be acyclic and arrows must point from predator to prey. Finally, the user has to specify a formula for the environmental part of the model and the description of the error distribution and link function to be used in the model (parameter `family`), just as with any `glm`.
-By default, the function models each species as a function of their prey (set `mode = "predator"` otherwise) and of the environmental variables (as defined in `env.formula`). Trophic SDM can be also fitted as a function of the summary variables of preys (i.e. composite variables like prey richness), instead of each prey species directly. We cover this topic in the vignette 'Composite variables'.
-The algorithm behind trophic SDM fits each species independently as a generalised linear model (glm). These glm can be fitted in the frequentist framework by relying on the function `glm`  (set `method = "glm"`), or in the Bayesian framework by relying on the function `rstanarm` (set `method = "stan_glm"`, the default choice). Model fitting is parallelised if `run.parallel = T`.
+Now that we simulate the data, we can fit a species distribution model with the function `trophicSDM`. The function requires the species distribution data `Y` (a sites x species matrix), the environmental variables `X` and an igraph object `G` representing the trophic interaction network. Importantly, `G` must be acyclic and arrows must point from predator to prey. Finally, the user has to specify a formula for the environmental part of the model and the description of the error distribution and link function to be used in the model (parameter `family`), just as with any `glm`.  
+By default, `trophicSDM` models each species as a function of their prey (set `mode = "predator"` to model species as a function of their predators) and of the environmental variables (as defined in `env.formula`). Trophic SDM can be also fitted as a function of the summary variables of preys (i.e. composite variables like prey richness), instead of each prey species directly. We cover this topic in the vignette 'Composite variables'.  
+The algorithm behind trophic SDM fits a set of generalised linear model (glm), one for each species. These glm can be fitted in the frequentist framework by relying on the function `glm`  (set `method = "glm"`), or in the Bayesian framework by relying on the function `rstanarm` (set `method = "stan_glm"`, the default choice). Model fitting is parallelised if `run.parallel = T`.
 These glm can be penalised to shrink regression coefficients (by default the model is run without penalisation). In the Bayesian framework set `penal = "horshoe"` to implement penalised glm using horshoe prior. In the frequentist framework set `penal = "elasticnet"` to implement penalised glm with elasticnet.
 Hereafter, we only fit trophic SDM in the Bayesian framework with no penalisation. However, all the functions and analyses (except for MCMC diagnostic) presented in this vignette applies straightforwardly with or without penalisation and in the frequentist framework.
 
@@ -134,8 +122,6 @@ X = data.frame(X_1 = X_1, X_2 = X_2)
 
 m = trophicSDM(Y = Y, X = X, G = G, 
                env.formula = "~ I(X_1^2) + I(X_2^2)",
-               #env.formula = "~ I(X_1) + I(X_2)",
-               #env.formula = "~ I(poly(X_1, degree = 2)) +  I(poly(X_2, degree = 2))",
                family = binomial(link = "logit"), 
                method = "stan_glm", chains = nchains, iter = iter, verbose = verbose)
 ```

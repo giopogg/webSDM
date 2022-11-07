@@ -77,7 +77,8 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
   S = tSDM$data$S
   G = tSDM$data$G
   mode = tSDM$model.call$mode
-
+  method = tSDM$model.call$method
+  
   # Sort species
   sp.prediction = as.list(vector(length=vcount(G)))
 
@@ -302,11 +303,12 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
 
     if(pred_samples == 1){
       for(j in 1:length(sp.prediction)){
-        sp.prediction[[j]] = sp.prediction[,1]
+        sp.prediction[[j]] = sp.prediction[[j]][,1]
       }
     }else{
 
-      if(!fullPost){
+      
+      if(!fullPost & method == "stan_glm"){
         # if !fullPost, only take the mean and intervals
         for(j in 1:length(sp.prediction)){
           predictions.mean = rowMeans(sp.prediction[[j]])
