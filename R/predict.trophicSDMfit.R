@@ -292,9 +292,9 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
 
 
       if(!is.null(filter.table)){ # eventually we could change this to give back both filtered and unfilted
-        sp.prediction[[names(sortedV[j])]] = filter.table[[names(sortedV[j])]] * do.call(cbind,pred.array)
+        sp.prediction[[names(sortedV[j])]] = filter.table[[names(sortedV[j])]] * pred.array
       }else{
-        sp.prediction[[names(sortedV[j])]] = do.call(cbind,pred.array)
+        sp.prediction[[names(sortedV[j])]] = pred.array
       }
 
 
