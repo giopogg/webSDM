@@ -102,7 +102,7 @@ predict.SDMfit = function(object, newdata, pred_samples = 100, prob.cov = TRUE,.
 
   # If gaussian data
 
-  if(family$family =="gaussian"){
+  if(SDM$family$family =="gaussian"){
 
     if(method=="stan_glm"){
       predictions=t(posterior_predict(SDM$model, newdata=as.data.frame(newdata),draws=pred_samples))
