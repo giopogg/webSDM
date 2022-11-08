@@ -65,7 +65,7 @@ plotG_inferred = function(tSDM, level = 0.90){
   layout = layout_with_sugiyama(G)$layout
   rownames(layout) = tSDM$data$sp.name
 
-  edge.color_loc = sapply(1:length(E(G)), function(x) ifelse(edge_attr(G)$weight[x]>0, "#CC0000", "#0000CC"))
+  edge.color_loc = sapply(1:length(igraph::E(G)), function(x) ifelse(edge_attr(G)$weight[x]>0, "#CC0000", "#0000CC"))
   edge.color_loc[which(edge_attr(G)$weight == 0)] = "grey"
 
 

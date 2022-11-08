@@ -28,76 +28,91 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # webSDM - including known trophic interactions in SDM
 
-webSDM implements the trophic SDM model described in Poggiato et al., "Integrating trophic food webs in species distribution models improves ecological niche estimation and prediction". Trophic SDM integrate a known trophic interaction network in SDM, thus oroviding more realistic and ecologically sound predictions. We here after present the main functions of the package, but we refer to the vignettes and the help functions for a more complete documentation of our package.
+webSDM implements the trophic SDM model described in Poggiato et al., "Integrating trophic food webs in species distribution models improves ecological niche estimation and prediction". Trophic SDM integrate a known trophic interaction network in SDM, thus oroviding more realistic and ecologically sound predictions. We here after present a quick introduction to some of the feature of the package, but we refer to the vignettes and the help functions for a more complete documentation of our package.
 
 ## Installing the R package
 
-```{r,eval=FALSE}
+```{r, warning=FALSE}
 library(devtools)
 # Run to install webSDM
 install_github("giopogg/webSDM")
 library(webSDM)
+library(ggplot2)
 ```
 
 ## Fit a trophic SDM to data
 
-Fitting a trophic SDM require the species distribution data, the environmental covariates and a known trophic interaction network.
+Fitting a trophic SDM require the species distribution data, the environmental covariates and a known trophic interaction network.  
+We load a simulated datasets, where Y contains the species distribution data (a site x species matrix), X the environmental covariates (a sites x covariates matrix) and G is an `igraph` object describing the interaction network (with links going from predators to prey). We specify, for every species, a quadratic relationship with respect to the environment, and we fit a model assuming bottom-up control (i.e., predators are modelled as a function of preys). We fit the trophicSDM in the Bayesian framework.
+```{r,warning=FALSE}
+data(X, Y, G)
 
+m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
+           family = binomial(link = "logit"),
+           mode = "prey", method = "stan_glm")
+```
+### Inferred coefficients
+We can see the formula of each glm in the argument `$form.all`
 ```{r,warning=FALSE,results='hide'}
-library(jtdm)
-library(ggplot2)
-set.seed(1712)
-data(Y)
-data(X)
-# Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burnin = 100, sample = 100)
-
-# Inferred parameters
-getB(m)$Bmean
-get_sigma(m)$Smean 
+m$form.all
 ```
-###Trait-environment relationships
-
-Single-trait trait-environment relationships
+We can have a first look to regression coefficients using the function `plot`.
+```{r,warning=FALSE,results='hide'}
+plot(m)
+```
+We can access to the regression coefficients (eventually standardised) with the function `coef`.
 ``` {r}
-partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
+coef(m, standardise = T, level = 0.9)
 ```
-
-### Joint trait-environment relationships
- 
- 
+We can access to the regression coefficients (eventually standardised) with the function `coef`.
+``` {r}
+coef(m, standardise = T, level = 0.9)
+```
+We can visualise the biotic coefficients with the function `plotG_inferred`
+```{r,warning=FALSE,results='hide'}
+plotG_inferred(m)
+```
+We can also visualise the importance of each (set of) variable with the function `computeVariableImportance'
+```{r varImpo}
+VarImpo = computeVariableImportance(m, 
+                                    groups = list("Abiotic" = c("X_1","X_2"),
+                                                     "Biotic" = c("Y1","Y2", "Y3", "Y4", "Y5", "Y6")))
+VarImpo = apply(VarImpo, 2, function(x) x/(x[1]+x[2]))
+tab = reshape2::melt(VarImpo)
+tab$Var2 = factor(tab$Var2, levels = colnames(Y))
+ggplot(tab, aes(x = Var2, y = value, fill = Var1)) + geom_bar(stat="identity") +
+  theme_classic()
+```
 Partial response curve of the most suitable community-level strategy and envelop of possible community-level strategies of SLA and LNC along the GDD gradient.
-
+### Local objects
+We can access each local model in the field `$model` and then select a given local model, that can be analysed using some the implemented methods
 ```{r}
-ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
+m$model$Y5
 ```
-
-### Joint probabilities
-Computes joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
-
+### Predictions
+We can predict with a fitted trophic SDM in multiple ways. The most straightforward way is to use the function `predict`.  We can for example obtain 50 draws from the posterior predictive distribution of species (pred_samples = 50) using predicted presence-absences of species to predict their predators (prob.cov = TRUE). When we don't specify Xnew, the function sets Xnew = X by default
 ```{r}
-joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
-
+ Ypred = predict(m, fullPost = TRUE, pred_samples = 50, prob.cov = FALSE)
+```
+Ypred is a list containing the predictions for each species at each sites.
+We can now evaluate species probabilities of presence for the enviromental conditions X_1 = 0.5 and X_2 = 0.5.
+```{r}
+predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 ```
 
-
-Unsurprisingly, the probability is low. Then, we compute how this probability varies along the GDD gradient.
-``` {r}
-joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+We can also obtain an estimation of the fundamental niche, that corresponds, in the bottom-up approach, to the probability of presence of a species given that its preys are present. We can for example compute the probability of presence of species for the enviromental conditions X_1 = 0.5 and X_2 = 0.5 assuming all their preys to be present.
+```{r}
+Ypred = predictFundamental(m, fullPost = FALSE, pred_samples = 100, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 ```
 
-
-And we plot it.
-
-```{r,echo=FALSE}
-table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
-                                   q02 = joint$GradProbsq025,
-                                   q97 = joint$GradProbsq975)
-ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +              ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
+### Frequentist approach
+Notice that we can also fit a trophic SDM in the frequentist approach.
+```{r}
+m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
+           family = binomial(link = "logit"),
+           mode = "prey", method = "glm")
 ```
-
-
-As climatic conditions become more favourable (i.e. GDD increases), the probability of having high values of both traits increases.
+All the above-mentioned functions are also available in the frequentist framework, with adaptations when necessary (e.g. coefficients are significant or not depending on the p-values instead of the credible interval). However, error propagation is not available and we can only obtain one prediction for each species and site, instead of multiple samples in the Bayesian case.
 
 ## Author
-This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The framework implemented in this package is described in: Joint modeling and predictions of community traits. Poggiato Giovanni, Gaüzere Pierre, Martinez Almoyna, Camille, Deschamps, Gabrielle, Renaud, Julien, Violle, Cyrille, Münkemüller, Tamara, Thuiller, Wilfried. In preparation.
+This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The framework implemented in this package is described in: "Integrating trophic food webs in species distribution models improves ecological niche estimation and prediction" Poggiato Giovanni, Jérémy Andréoletti, Laura J. Pollock and Wilfried Thuiller. In preparation.

@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-knitr::opts_chunk$set(fig.width=8, fig.height=6) 
+knitr::opts_chunk$set(fig.width=7, fig.height=6) 
 ```
 
 
@@ -65,7 +65,7 @@ G = graph_from_adjacency_matrix(A)
 plot(G)
 ```
 
-### Create trophic interaction network
+### Simulate data
 We now simulate species distribution at 300 locations along two environmental gradients. We simulate species such that species Y1 to Y3 have a negative dependence to the first environmental variable X_1 and a positive dependence to X_2, viceversa for species Y4 to Y6. Moreover, the strength of the environmental term decreases along the trophic level, while the effect of the prey increases. Finally, preys always have a positive effect on predators.
 
 ```{r simulate data, message = FALSE, warning = FALSE}
@@ -82,12 +82,16 @@ B = matrix(c(1, 1, 1, 1, 1, 1,
              -2, -2, -2, 2, 2, 2,
              2, 2, 2, -2, -2, -2
              ), ncol = 3)
-# Sample the distribution of each species as a logit model as a function of the environment and the distribution of preys
+# Sample the distribution of each species as a logit model as a function of the
+# environment and the distribution of preys
 Y = V = prob = matrix(0, nrow = n, ncol = S)
 
 for(j in 1:S){
-  # The logit of the probability of presence of each species is given by the effect of the environment and of the   preys
-  # Create the linear term. As j increases, the weight of the environmental effect decreases and the biotic effect increases
+  # The logit of the probability of presence of each species is given by the 
+  # effect of the environment and of the preys.
+  
+  # Create the linear term. As j increases, the weight of the environmental effect 
+  # decreases and the biotic effect increases
   eff_bio = seq(0.1, 0.9, length.out = S)[j]
   eff_abio = seq(0.1, 0.9, length.out = S)[S+1-j]
   V[,j]= eff_abio*X%*%B[j,] + eff_bio*Y%*%A[j,]*2
@@ -127,7 +131,7 @@ m = trophicSDM(Y = Y, X = X, G = G,
 ```
 
 ### A trophicSDMfit object
-The fitted model `m` is a `"trophicSDMfit"`. We also show here the formulas used to fit the models, where each predator is modeled as a function of the preys and of the environmental variables.
+The fitted model `m` is of class `"trophicSDMfit"`. We also show here the formulas used to fit the each glm, where each predator is modeled as a function of the preys and of the environmental variables.
 ``` {r tSDM obj}
 m
 class(m)
@@ -136,9 +140,9 @@ m$form.all
 ```
 
 ## Analyse a fitted trophicSDM
-The field `$model` contains all the the single species glm (i.e., all the local models). `$model.call`and `$data` contains informations on the data and choices to fit the model. `$form.all` contains the formula used to fit each glm (i.e., both abiotic and biotic terms). `$coef` contains the inferred regression coefficients of the glm for all species. `$AIC` and `$log.lik` are respectively the AIC and log-likelihood of the fitted trophic SDM. Finally, in the Bayesian framework, the field `$mcmc.diag` contains the convergence diagnostic metrics of the MCMC chains for each species.
+The field `$model` contains all the the single species glm (i.e., all the local models). `$data` and `trophicSDM` contains informations on the data and choices to fit the model respectively. `$form.all` contains the formula used to fit each glm (i.e., both abiotic and biotic terms). `$coef` contains the inferred regression coefficients of the glm for all species. `$AIC` and `$log.lik` are respectively the AIC and log-likelihood of the fitted trophic SDM. Finally, in the Bayesian framework, the field `$mcmc.diag` contains the convergence diagnostic metrics of the MCMC chains for each species.
 
-In this vignette, we first ensure that the MCMC chains correctly converged. Then, we analyse the inferred model, by focusing in particular on the effect of the biotic versus abiotic terms. We then analyse the predictive performances of the model and use it to predict the species fundamental niches. 
+In this vignette, we first ensure that the MCMC chains correctly converged. Then, we analyse the inferred model, by focusing in particular on the effect of the biotic versus abiotic terms. We then analyse the predictive performances of the model (comparing it to environment-only SDM) and use it to predict the species fundamental niches. 
 
 ### MCMC convergence
 First, we can have a look at effective sample size to total sample size and of the potential scale reduction factor (aka 'R hat') for each species. Each line corresponds to a given parameter.
@@ -166,7 +170,7 @@ We now analyse the estimates of the regression coefficients. We can have a first
 plot(m)
 ```
 
-We can visually see that the regression coefficients for the environmental part of the model match the simulated parameters, as species Y1 to Y3 have a positive response to X_1 and a negative one to X_2, viceversa for species Y3 to Y6. We also remark that the environmental coefficients are less important for basal species than for predators. Indeed, the posterior mean of the regression coefficients of the environmental part get closer to 0 and their posterior distribution tend to overlap zero more and more as we move from species Y1 to species Y6.  We can quantify this visual assessment by looking at the posterior mean and quantile of the regression coefficients. The parameter `level` set the probability of the quantile (default 0.95).
+We can visually see that the regression coefficients for the environmental part of the model match the simulated parameters, as species Y1 to Y3 have a positive response to X_1 and a negative one to X_2, viceversa for species Y3 to Y6. We also remark that the environmental coefficients are less important for basal species than for predators. Indeed, the posterior mean of the regression coefficients of the environmental part gets closer to zero and their posterior distribution tend to overlap zero more and more as we move from species Y1 to species Y6.  We can quantify this visual assessment by looking at the posterior mean and quantile of the regression coefficients. The parameter `level` set the probability of the quantile (default 0.95).
 ``` {r estimates II}
 coef(m, level = 0.9)
 ```
@@ -176,14 +180,17 @@ Notice that regression coefficients are directly available in the field `$coef` 
 coef(m, level = 0.9, standardise = T)
 ```
 
-This results confirm the previous analysis. We can analyse the relative importance of different group of variables with the function `computeVariableImportance`. This function can take as input the definition of groups of variables in the variable `groups` (by default, with `groups = NULL`, each explanatory variable is a different group). The variable importance of groups of variables is computed as the standardised regression coefficients summed across species of the same group.
+This results confirms the previous analysis. We can analyse the relative importance of different group of variables with the function `computeVariableImportance`. This function can take as input the definition of groups of variables in the argument `groups` (by default, with `groups = NULL`, each explanatory variable is a different group). The variable importance of groups of variables is computed as the standardised regression coefficients summed across variable of the same group.  
 We hereafter use this function to compute the relative importance of the abiotic versus biotic covariates.
 ```{r varImpo}
-VarImpo = computeVariableImportance(m, groups = list("Abiotic" = c("X_1","X_2"), "Biotic" = c("Y1","Y2", "Y3", "Y4", "Y5", "Y6")))
+VarImpo = computeVariableImportance(m, 
+                                    groups = list("Abiotic" = c("X_1","X_2"),
+                                                     "Biotic" = c("Y1","Y2", "Y3", "Y4", "Y5", "Y6")))
 VarImpo = apply(VarImpo, 2, function(x) x/(x[1]+x[2]))
 tab = reshape2::melt(VarImpo)
 tab$Var2 = factor(tab$Var2, levels = colnames(Y))
-ggplot(tab, aes(x = Var2, y = value, fill = Var1)) + geom_bar(stat="identity") + theme_classic()
+ggplot(tab, aes(x = Var2, y = value, fill = Var1)) + geom_bar(stat="identity") +
+  theme_classic()
 ```
 
 We clearly see that our model correctly retrived the simulated pattern, with the importance of biotic variables with respect to the abiotic ones becomes greater as the trophic level increases.
@@ -193,11 +200,11 @@ Finally, we can visualise the effect of each trophic interactions with the funct
 plotG_inferred(m, level = 0.9)
 ```
 
-We see that, expect for two links that are non significant, all prey have a posite effect on the predators.
+We see that the model correctly retrieves that preys have a posite effect on the predators and that this effect becomes more important for predators at higher trophic positions.
 
 ### Analysis of local models
 
-In order to examine the package and practice with it, we here show how to easily manipulate local models (i.e. single species SDMs), the smallest pieces of trophic SDM. These local models belong to the class "SDMfit", for which multiple methods exists. We hereafter show how to some of these methods for species Y6.
+In order to examine the package and practice with it, we here show how to easily manipulate local models, i.e. each glm (that can be seen as a  single species SDMs), the smallest pieces of trophic SDM. These local models belong to the class "SDMfit", for which multiple methods exists. We hereafter show how to some of these methods for species Y6.
 ```{r SDMfit}
 SDM = m$model$Y6
 
@@ -213,10 +220,10 @@ coef(SDM, level = 0.9, standardise = T)
 
 We can also predict the probability of presence of species Y6 at a site with X_1 = 0.5, X_2 = 0.5, assuming its preys to be present present.
 ```{r predictSDMfit}
-#preds = predict(SDM, newdata = data.frame(X_1 = 0.5, X_2 = 0.5, Y3 = 1, Y5 = 1))
+preds = predict(SDM, newdata = data.frame(X_1 = 0.5, X_2 = 0.5, Y3 = 1, Y5 = 1))
 
 # Posterior mean of the probability of presence
-#mean(preds$predictions.prob)
+mean(preds$predictions.prob)
 
 ```
 
@@ -224,7 +231,7 @@ We see that the species has a high probability of presence in this environmental
 
 ## Predictions with trophic SDM
 
-We show how to fit and analyse a trophic SDM. We also saw how to predict a single species (Y6 in the previous section), when we can fix the distribution of its prey. However, the distribution of prey is tipically unavaible when we want to predict the distribution of species at unobserved sites and/or under future environmental conditions. Intuitively, in a simple network of two trophic level we would need to predict the prey first and use these predictions to predict the predator. To generalize this idea to complex networks, we predict species following the topological ordering of the metaweb. This order that exists for every DAG guarantees that when predicting a given species, all its prey will have already been predicted.
+We showed how to fit and analyse a trophic SDM and how to predict a single species (Y6 in the previous section), when we can fix the distribution of its prey. However, the distribution of prey is tipically unavaible when we want to predict the distribution of species at unobserved sites and/or under future environmental conditions.   Intuitively, in a simple network of two trophic level we would need to predict the prey first and use these predictions to predict the predator. To generalize this idea to complex networks, we predict species following the topological ordering of the metaweb. This order that exists for every DAG guarantees that when predicting a given species, all its prey will have already been predicted.  
 The function `predict` computes the topological order of species, and then predicts them sequentially. As any `predict` function, it takes into account the values of the environmental variables in the argument `Xnew`. We can provide to the function the number of samples from the posterior distribution.
 ```{r predict I}
 pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), pred_samples = 100)
@@ -234,17 +241,18 @@ dim(pred$Y2)
 
 By default, the function `predict` transforms the probability of presence of prey in presence-absence, and then use these presence-absences to predict the predator. However, we can use directly the probability of presence of prey by setting `prob.cov = TRUE`.
 
-Pred is a list containing the posterior distribution of the predicted probability of presence of each species (i.e., number of sites x pred_samples). Notice that we ask the function to directly provide a summary of the posterior distribution (i.e. posterior mean and 95% quantiles) of the probabilities of presence by setting `fullPost = FALSE`. As for `trophicSDM`, we can choose to parallelise some parts of the `predict` function by setting `run.parallel = TRUE` (which can speed up computational times).
+Pred is a list containing the posterior distribution of the predicted probability of presence of each species (i.e., number of sites x pred_samples). Notice that we can ask the function to directly provide a summary of the posterior distribution (i.e. posterior mean and 95% quantiles) of the probabilities of presence by setting `fullPost = FALSE`. As for `trophicSDM`, we can choose to parallelise some parts of the `predict` function by setting `run.parallel = TRUE` (which can speed up computational times).
 
 ```{r predict II}
-pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), pred_samples = 100, fullPost = FALSE, run.parallel = FALSE)
+pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), pred_samples = 100, 
+               fullPost = FALSE, run.parallel = FALSE)
 
 pred$Y2
 ```
 
 ## Model evaluation
 We now want to evaluate how well the model fits the data and how well it generalises to new data with respect to classical SDM. We thus first run a classical SDM, by providing an empty graph to `trophicSDM`. Then, we will compare model AIC and their predictive performances both on the training data and in cross-validation. Notice that when we compare classical SDM and trophic SDM it is important to account for the fact that trophic SDM have a higher number of parameters, and will therefore have, by default, a higher fit on the the training data. 
-We first fit a classical SDM.
+
 ```{r fit classical, results = 'hide', message = FALSE, warning = FALSE}
 empty_graph = graph_from_adjacency_matrix(matrix(0, nrow = S, ncol = S,
                                           dimnames = list(colnames(Y), colnames(Y))))
@@ -253,9 +261,8 @@ m_classic = trophicSDM(Y = Y, X = X,
                        env.formula = "~ I(X_1^2) + I(X_2^2)", family = binomial(link = "logit"), 
                        method = "stan_glm", chains = nchains, iter = iter, verbose = verbose)
 ```
-
-We first compare model AIC and an approximation of the leave-one-out cross-validation log-likelihood (loo, see Vehtari, A. et al 2017). AIC penalises the likelihood of the model as a function of the number of model parameter, while loo approximate the likelihood of the model on leave-one out cross validation. Therefore, both these metrics can be used to correctly compare the two approaches
 ### AIC, loo
+We first compare model AIC and an approximation of the leave-one-out cross-validation log-likelihood (loo, see Vehtari, A. et al 2017). AIC penalises the likelihood of the model as a function of the number of model parameter, while loo approximate the likelihood of the model on leave-one out cross validation. Therefore, both these metrics can be used to correctly compare the two approaches
 ```{r aic.loo}
 
 m$AIC
@@ -272,7 +279,8 @@ We see that our trophic model has a lower AIC and a higher loo, which proves tha
 We now compare the predictive performance of the two approaches on the training dataset. To do so, we first use the function `predict`, and then the function `evaluateModelFit` to compare how well predictions match the true data.
 ```{r compare.fitted}
 
-# Trophic SDM (when Xnew is not specified, predictions are carried on the training dataset by setting Xnew = m$data$X)
+# Trophic SDM (when Xnew is not specified, predictions are carried on
+# the training dataset by setting Xnew = m$data$X)
 Ypred = predict(m, fullPost = FALSE)
 # Transfom in a table
 Ypred = do.call(cbind,
@@ -298,9 +306,11 @@ mean(metrics$tss)
 mean(metrics_classic$tss)
 ```
 
+On the training dataset models have similar performances, with our trophic model that slightly improves SDM's TSS.
 
 ### Cross-validation
-The mean AUC and mean TSS are higher for trophic SDM than for classical SDM. However, this is not surprising because, as where mentioning before, trophic SDM includes more predictor. We now compare the two approaches in K-fild cross validation with the function `trophicSDM_CV`. This function creates a partition based on the specified number of fold (but can also takes a user-specified partition in the argument `partition`) and run a cross validation. This can take a bit of time. Set `run.parallel = TRUE` if you want to reduce computation time
+We now compare the two approaches in K-fild cross validation with the function `trophicSDM_CV`. This function creates a partition based on the specified number of fold (but can also takes a user-specified partition in the argument `partition`) and run a cross validation. This can take a bit of time. Set `run.parallel = TRUE` if you want to reduce computation time.
+
 ```{r CV}
 # 3-fold cross validation
 CV = trophicSDM_CV(m, K = 5, prob.cov = T, iter = 2000,
