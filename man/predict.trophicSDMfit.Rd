@@ -54,6 +54,9 @@ m = trophicSDM(Y, X, G, env.formula, iter = 100,
 # using predicted presence-absences of species to predict their predators (prob.cov = TRUE)
 # Since we don't specify Xnew, the function sets Xnew = X by default
 Ypred = predict(m, fullPost = TRUE, pred_samples = 50, prob.cov = FALSE)
+We can now evaluate species probabilities of presence for the enviromental
+conditions c(0.5, 0.5)
+predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 # We can ask the function to only give back posterior mean and 95\% credible intervals with
 # fullPost = F
 Ypred = predict(m, fullPost = TRUE, pred_samples = 50, prob.cov = FALSE)

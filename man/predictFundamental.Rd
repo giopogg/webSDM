@@ -45,6 +45,15 @@ Ypred = predictFundamental(m, fullPost = TRUE, pred_samples = 100)
 # We can ask the function to only give back posterior mean and 95\% credible intervals with
 # fullPost = FALSE
 Ypred = predictFundamental(m, fullPost = FALSE, pred_samples = 100)
+
+
+
+#' We can now evaluate species probabilities of presence for the enviromental
+conditions c(0.5, 0.5)
+predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
+
+
+
 # If we fit the model using in a frequentist  way (e.g. glm)
 m = trophicSDM(Y, X, G, env.formula, 
                family = binomial(link = "logit"), penal = NULL, 

@@ -82,6 +82,7 @@ B = matrix(c(1, 1, 1, 1, 1, 1,
              -2, -2, -2, 2, 2, 2,
              2, 2, 2, -2, -2, -2
              ), ncol = 3)
+
 # Sample the distribution of each species as a logit model as a function of the
 # environment and the distribution of preys
 Y = V = prob = matrix(0, nrow = n, ncol = S)
@@ -94,7 +95,7 @@ for(j in 1:S){
   # decreases and the biotic effect increases
   eff_bio = seq(0.1, 0.9, length.out = S)[j]
   eff_abio = seq(0.1, 0.9, length.out = S)[S+1-j]
-  V[,j]= eff_abio*X%*%B[j,] + eff_bio*Y%*%A[j,]*2
+  V[,j]= eff_abio*X%*%B[j,] + eff_bio*Y%*%A[j,]*3
   # Transform to logit
   prob[,j] = 1/(1 + exp(-V[,j]))
   # Sample the probability of presence
@@ -156,7 +157,7 @@ p2 = mcmc_neff(m$mcmc.diag$neff.ratio)
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-We observe that the effective sample sizes are very close to the theoretical value of the actual number of samples, as the ratio is close to 1. This indicates that there is very little autocorrelation among consecutive samples. The potential scale reduction factors are very close to one, which indicates that two chains gave consistent results.
+We observe that the effective sample sizes are very close to the theoretical value of the actual number of samples, as the ratio is close to 1. In few cases the ratio is lower, and we might consider running the chains for longer, or thin them, to improve convergence. This indicates that there is very little autocorrelation among consecutive samples. The potential scale reduction factors are very close to one, which indicates that two chains gave consistent results.
 We can have a closer look to the MCMC chains by looking at the traceplots of the parameters of a given model, for example here for species Y5 who feeds on species Y1, Y2, Y3 and Y4. To do so, we first assess the local model of species Y5, and in particular its field `$model` that gives us the output of the function `stan_glm`. We can then exploit the plot method of this object.
 ``` {r mcmc convergence II}
 plot(m$model$Y5$model, "trace")
@@ -313,7 +314,7 @@ We now compare the two approaches in K-fild cross validation with the function `
 
 ```{r CV}
 # 3-fold cross validation
-CV = trophicSDM_CV(m, K = 5, prob.cov = T, iter = 2000,
+CV = trophicSDM_CV(m, K = 3, prob.cov = T, iter = 2000,
                    pred_samples = 500, run.parallel = FALSE)
 # Transfom in a table
 Ypred = CV$meanPred
@@ -326,7 +327,7 @@ metrics = evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 
 # We specify the same partition for classic SDM so that the two cross-validations are comparable.
 
-CV_classic = trophicSDM_CV(m_classic, K = 5, prob.cov = T, iter = 2000,
+CV_classic = trophicSDM_CV(m_classic, K = 3, prob.cov = T, iter = 2000,
                            pred_samples = 500, run.parallel = FALSE,
                            partition = CV$partition)
 

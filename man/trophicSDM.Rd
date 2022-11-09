@@ -45,7 +45,7 @@ trophicSDM(
 
 \item{method}{which SDM method to use. For now the available choises are: \code{"glm"} (frequentist) or \code{"stan_glm"} (full bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.}
 
-\item{family}{the family parameter of the glm function (see \code{glm}). \code{gaussian} for gaussian data. \code{binomial(link = "logit")} or \code{binomial(link = "probit")} for presence-absence data.}
+\item{family}{the family parameter of the glm function (see \code{glm}). \code{gaussian(link = "identity)} for gaussian data. \code{binomial(link = "logit")} or \code{binomial(link = "probit")} for presence-absence data.}
 
 \item{iter}{(for \code{"stan_glm"} only) Number of iterations for each MCMC chain if stan_glm is used}
 

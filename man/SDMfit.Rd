@@ -40,7 +40,7 @@ SDMfit(
 
 \item{method}{which SDM method to use. For now the available choises are: "glm" (frequentist) or "stan_glm" (full bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.}
 
-\item{family}{the family parameter of the glm function (see glm). family=gaussian for gaussian data or family=binomial(link = "logit") or binomial(link = "probit") for presence-absence data.}
+\item{family}{the family parameter of the glm function (see glm). family=gaussian(link ="identity") for gaussian data or family=binomial(link = "logit") or binomial(link = "probit") for presence-absence data.}
 
 \item{penal}{(optional, default to NULL) Penalisation method to shrink regression coefficients.If NULL (default), the model does not penalise the regression coefficient. For now, available penalisation method are "horshoe" for stan_glm, "elasticnet" for glm and  "coeff.signs" (prey coefficients are set to posite and predator coefficients to negative) for glm and stan_glm.}
 

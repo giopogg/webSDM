@@ -102,33 +102,33 @@
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span><span class="co">#Compute the importance of each variable</span></span></span>
 <span class="r-in"><span><span class="fu">computeVariableImportance</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Y1         Y2        Y3         Y5         Y4         Y6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1 0.2037462 0.38345476 0.2700909 0.20284345 0.17126842 0.03214165</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2 0.2554072 0.07527812 0.1991440 0.30628915 0.01158701 0.08799086</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1  0.0000000 0.00000000 0.0000000 0.43935624 0.00000000 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2  0.0000000 0.00000000 0.0000000 0.02231688 0.00000000 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3  0.0000000 0.00000000 0.0000000 0.20677101 0.07507933 0.23378057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1 0.2017992 0.38193099 0.2631157 0.19972342 0.17197806 0.03344243</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2 0.2567930 0.07183023 0.1958218 0.30503788 0.01312492 0.08706911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1  0.0000000 0.00000000 0.0000000 0.43918705 0.00000000 0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2  0.0000000 0.00000000 0.0000000 0.02239697 0.00000000 0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3  0.0000000 0.00000000 0.0000000 0.21044764 0.07854144 0.23711129</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y4  0.0000000 0.00000000 0.0000000 0.00000000 0.00000000 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y5  0.0000000 0.00000000 0.0000000 0.00000000 0.00000000 0.09952659</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y5  0.0000000 0.00000000 0.0000000 0.00000000 0.00000000 0.10095637</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y6  0.0000000 0.00000000 0.0000000 0.00000000 0.00000000 0.00000000</span>
 <span class="r-in"><span><span class="co">#Compute the importance of three different set of variables</span></span></span>
 <span class="r-in"><span><span class="fu">computeVariableImportance</span><span class="op">(</span><span class="va">m</span>, groups <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"X"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X_1"</span>,<span class="st">"X_2"</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>                                             <span class="st">"Ybasal"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y1"</span>,<span class="st">"Y2"</span>,<span class="st">"Y3"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                             <span class="st">"Ypredator"</span><span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y4"</span>, <span class="st">"Y5"</span>, <span class="st">"Y6"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  Y1        Y2        Y3        Y5         Y4         Y6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X         0.4591534 0.4587329 0.4692348 0.5091326 0.18285543 0.12013252</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ybasal    0.0000000 0.0000000 0.0000000 0.6684441 0.07507933 0.23378057</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ypredator 0.0000000 0.0000000 0.0000000 0.0000000 0.00000000 0.09952659</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  Y1        Y2        Y3        Y5         Y4        Y6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X         0.4585922 0.4537612 0.4589375 0.5047613 0.18510298 0.1205115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ybasal    0.0000000 0.0000000 0.0000000 0.6720317 0.07854144 0.2371113</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ypredator 0.0000000 0.0000000 0.0000000 0.0000000 0.00000000 0.1009564</span>
 </code></pre></div>
     </div>
   </div>

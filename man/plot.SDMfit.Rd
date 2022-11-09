@@ -4,14 +4,12 @@
 \alias{plot.SDMfit}
 \title{Plots the regression coeffiecients of a local model}
 \usage{
-\method{plot}{SDMfit}(x, level = 0.95, plot = TRUE, ...)
+\method{plot}{SDMfit}(x, level = 0.95, ...)
 }
 \arguments{
 \item{x}{A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object}
 
 \item{level}{the confidence level of the confidence intervals}
-
-\item{plot}{wheter to print the plot or just return a ggplot object}
 
 \item{...}{additional arguments}
 }

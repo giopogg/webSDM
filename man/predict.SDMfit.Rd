@@ -37,11 +37,8 @@ m = trophicSDM(Y, X, G, env.formula,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
 # In order to predict non-basal species, we need to also provide
-# the predicted occurrences of its preys. Here we simply give, as an example
-# the observed distribution of the preys. This function is sequantially 
-# called in the prediction of trophicSDM, so that preys are predicted as a function
-# of the environment and so on.
-predict(m$model$Y1, newdata = cbind(X, Y))
+# the predicted occurrences of its preys. Here we compute the probability of presence of species Y4 at environemntal conditions c(0.5,0.5) when its prey Y3 is present.
+predict(m$model$Y4, newdata = data.frame(X_1 = 0.5, X_2 = 0.5, Y3 = 1), pred_samples = 10)
 }
 \author{
 Giovanni Poggiato and Jérémy Andréoletti
