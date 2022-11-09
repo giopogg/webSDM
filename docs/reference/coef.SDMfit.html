@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">webSDM</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
       </span>
     </div>
 
@@ -118,21 +118,21 @@
 <span class="r-in"><span><span class="co"># unstandardised regression coefficients</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.62883572 -1.0558350 -0.1481505</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.49750776  0.9525724  1.9722069</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.29802665 -2.8521825 -1.7435051</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.94909640  1.6239922  2.2898865</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09696597 -0.4316089  0.2005740</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.97147151 -1.2831190 -0.6619989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.59067654 -1.0575117 -0.1337863</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.46958004  0.9227125  2.0308577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27995846 -2.8288418 -1.8194396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.94995368  1.5813078  2.3462560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.07895881 -0.4293780  0.2418938</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.99015856 -1.3061872 -0.6525526</span>
 <span class="r-in"><span><span class="co">#standardised regression coefficients with 90% credible intervals</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span>, standardised <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    mean         5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.62883572 -0.9992123 -0.2344338</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.49750776  1.0327070  1.9105171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.29802665 -2.7735770 -1.8008663</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.94909640  1.6678562  2.2425316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09696597 -0.3639842  0.1405345</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.97147151 -1.2520102 -0.7259352</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.59067654 -1.0175934 -0.1958266</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.46958004  0.9988275  1.9512945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27995846 -2.7805031 -1.8718066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.94995368  1.6319353  2.2856138</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.07895881 -0.3929417  0.1796983</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.99015856 -1.2591207 -0.7016367</span>
 <span class="r-in"><span><span class="co"># Run the same model using glm as fitting method</span></span></span>
 <span class="r-in"><span><span class="co"># (set iter = 1000 to obtain reliable results)</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>

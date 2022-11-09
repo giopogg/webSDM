@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">webSDM</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
       </span>
     </div>
 
@@ -129,6 +129,168 @@
 <span class="r-in"><span><span class="co"># We can ask the function to only give back posterior mean and 95% credible intervals with</span></span></span>
 <span class="r-in"><span><span class="co"># fullPost = FALSE</span></span></span>
 <span class="r-in"><span><span class="va">Ypred</span> <span class="op">=</span> <span class="fu">predictFundamental</span><span class="op">(</span><span class="va">m</span>, fullPost <span class="op">=</span> <span class="cn">FALSE</span>, pred_samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#' We can now evaluate species probabilities of presence for the enviromental</span></span></span>
+<span class="r-in"><span><span class="co"># conditions c(0.5, 0.5)</span></span></span>
+<span class="r-in"><span><span class="fu">predictFundamental</span><span class="op">(</span><span class="va">m</span>, Xnew <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6428954 0.6484726 0.6280197 0.6273431 0.6304129 0.6269071 0.6436065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]      [,9]     [,10]     [,11]   [,12]     [,13]     [,14]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6693037 0.6630854 0.6157333 0.6202398 0.62783 0.6466239 0.6460509</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,15]     [,16]     [,17]     [,18]     [,19]     [,20]     [,21]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6212451 0.6518513 0.6193525 0.6135919 0.6506048 0.6123213 0.6254153</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,22]     [,23]     [,24]     [,25]     [,26]     [,27]     [,28]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6159494 0.6423523 0.6128943 0.6461533 0.6350517 0.6451262 0.6398852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,29]     [,30]     [,31]    [,32]     [,33]     [,34]     [,35]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6237059 0.6534133 0.6065846 0.616241 0.6271228 0.6000572 0.6214444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,36]     [,37]     [,38]     [,39]     [,40]     [,41]     [,42]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6308772 0.6272147 0.6341432 0.6415561 0.6266559 0.6281908 0.6459319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,43]    [,44]     [,45]     [,46]     [,47]     [,48]     [,49]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6347093 0.626796 0.6658868 0.6477584 0.6278314 0.6337699 0.6388683</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,50]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6475844</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6812212 0.7014459 0.6750425 0.7057909 0.7047272 0.6587065 0.6727624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]      [,9]     [,10]     [,11]     [,12]     [,13]     [,14]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6966136 0.6646332 0.7085227 0.6871602 0.6728834 0.6855301 0.6771681</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,15]     [,16]     [,17]     [,18]    [,19]     [,20]    [,21]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6908616 0.6747525 0.6826946 0.6851288 0.664335 0.7203027 0.704721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,22]     [,23]     [,24]     [,25]    [,26]     [,27]     [,28]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6971687 0.6846449 0.6906652 0.7019174 0.697026 0.6742642 0.6773321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,29]     [,30]     [,31]     [,32]     [,33]     [,34]   [,35]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6955658 0.6958838 0.7100242 0.7160792 0.7124575 0.6980909 0.68554</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,36]     [,37]     [,38]    [,39]     [,40]     [,41]     [,42]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6711172 0.6651805 0.6764677 0.681339 0.6915654 0.6959964 0.6498516</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,43]     [,44]     [,45]     [,46]    [,47]     [,48]     [,49]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6874784 0.6576462 0.6991703 0.6761389 0.715529 0.6956044 0.6918299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,50]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6843433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.7399324 0.687442 0.7267074 0.7054595 0.7188487 0.7150891 0.7414999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]      [,9]     [,10]     [,11]     [,12]     [,13]     [,14]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.7044789 0.7265889 0.7305691 0.7115678 0.7179752 0.7277691 0.7257066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,15]    [,16]     [,17]     [,18]     [,19]     [,20]     [,21]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.7000998 0.725263 0.7293179 0.7194431 0.6933258 0.6997819 0.7133621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,22]     [,23]    [,24]    [,25]     [,26]     [,27]     [,28]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.7162532 0.7300225 0.696186 0.687075 0.7148288 0.6942869 0.7455719</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,29]     [,30]     [,31]     [,32]     [,33]     [,34]     [,35]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6947944 0.7227574 0.7041007 0.6874775 0.7185478 0.7298715 0.7391875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,36]     [,37]     [,38]     [,39]     [,40]     [,41]     [,42]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.7014717 0.7150777 0.7334114 0.6994511 0.6983772 0.7325418 0.7578301</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,43]     [,44]     [,45]    [,46]     [,47]   [,48]     [,49]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.6974874 0.7343401 0.7387657 0.702776 0.7389371 0.71352 0.7037885</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,50]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.7087209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]      [,2]      [,3]     [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.486003 0.4549605 0.4485901 0.447412 0.4655948 0.4448637 0.4693746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]      [,9]     [,10]     [,11]     [,12]     [,13]     [,14]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4389418 0.4565942 0.4603135 0.4605906 0.4574631 0.5034592 0.4621506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,15]     [,16]     [,17]     [,18]     [,19]     [,20]     [,21]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4790823 0.4959654 0.4800575 0.4572889 0.5090893 0.4219425 0.4629001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,22]     [,23]     [,24]     [,25]     [,26]     [,27]     [,28]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4320286 0.5007611 0.4728307 0.4342393 0.4074294 0.4589317 0.4929626</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,29]     [,30]     [,31]     [,32]     [,33]    [,34]     [,35]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4536343 0.4216833 0.4762749 0.4409547 0.4628753 0.445502 0.4875504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,36]     [,37]     [,38]     [,39]     [,40]     [,41]     [,42]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.43328 0.4201594 0.4843608 0.4591845 0.4564391 0.4530672 0.4926295</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,43]     [,44]     [,45]     [,46]     [,47]     [,48]     [,49]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4171497 0.4667255 0.4279199 0.4505041 0.4473918 0.3900024 0.4955559</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,50]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4724425</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4860499 0.4815026 0.4840908 0.4754812 0.4869874 0.4885573 0.4415332</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]     [,9]     [,10]     [,11]     [,12]     [,13]     [,14]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4982689 0.490668 0.4944125 0.4855877 0.4720521 0.4582388 0.4650751</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,15]     [,16]     [,17]     [,18]     [,19]     [,20]     [,21]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4868683 0.4597264 0.4682093 0.4704855 0.4803805 0.4727787 0.4387947</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,22]     [,23]     [,24]     [,25]     [,26]     [,27]     [,28]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5223535 0.4688617 0.4588101 0.4201557 0.4886017 0.4768089 0.4979609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,29]    [,30]     [,31]     [,32]     [,33]     [,34]     [,35]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4922346 0.507552 0.4360399 0.4518266 0.4868481 0.4937074 0.4788323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,36]     [,37]     [,38]    [,39]     [,40]     [,41]     [,42]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4494463 0.4791575 0.4370296 0.489921 0.4857503 0.4671762 0.4871461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,43]     [,44]     [,45]     [,46]     [,47]     [,48]     [,49]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4680001 0.4529472 0.4558751 0.4869071 0.4550422 0.4930073 0.4950165</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,50]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4922605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5697522 0.538346 0.5107876 0.5511072 0.5810147 0.5213236 0.5378126</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]      [,9]     [,10]     [,11]     [,12]     [,13]     [,14]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5546705 0.4950206 0.4797656 0.5253836 0.4574117 0.5329068 0.5353943</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,15]     [,16]     [,17]     [,18]     [,19]    [,20]     [,21]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5895206 0.5270053 0.5119106 0.4795671 0.4039892 0.536404 0.5208403</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,22]     [,23]    [,24]    [,25]     [,26]   [,27]    [,28]     [,29]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5734516 0.5290618 0.486908 0.552315 0.4859481 0.48516 0.491579 0.5232418</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,30]     [,31]     [,32]     [,33]     [,34]     [,35]     [,36]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4926528 0.5214357 0.5522106 0.5150058 0.4932236 0.6025162 0.5329441</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,37]     [,38]     [,39]     [,40]     [,41]     [,42]     [,43]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5256912 0.5449587 0.5578221 0.5257323 0.5339227 0.6179736 0.5352385</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,44]     [,45]     [,46]    [,47]     [,48]     [,49]     [,50]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5373879 0.5386615 0.5800178 0.543731 0.4978837 0.5740987 0.4638615</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If we fit the model using in a frequentist  way (e.g. glm)</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
