@@ -201,19 +201,16 @@
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A trophicSDM fit with no penalty, fitted using stan_glm </span>
@@ -240,13 +237,13 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>     $model gives the stanreg class object </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6072851 -1.0670483 -0.1585365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.4831383  0.9198980  2.0070599</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2905763 -2.8020410 -1.7325982</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9609420  1.6260514  2.3129873</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1020190 -0.4238213  0.2554132</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9948627 -1.3175241 -0.7091001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    mean       2.5%      97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.61557307 -1.0618336 -0.1672112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.46014115  0.9420164  2.0905728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.26406489 -2.8011964 -1.6701568</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.95358784  1.6230227  2.2928744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09951653 -0.4304145  0.2032997</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.98695218 -1.3041161 -0.6667058</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="trophicSDM-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>

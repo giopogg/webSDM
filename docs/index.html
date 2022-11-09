@@ -100,18 +100,6 @@
 <span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giopogg/webSDM"</span><span class="op">)</span></span>
 <span><span class="co">## Downloading GitHub repo giopogg/webSDM@HEAD</span></span>
 <span><span class="co">## Skipping 2 packages ahead of CRAN: StanHeaders, rstan</span></span>
-<span><span class="co">## * checking for file ‘/private/var/folders/r3/9y8k5nps07j0c23zw5sxgc4h0000gp/T/Rtmpaj5O78/remotese0b41f043868/giopogg-webSDM-4f20a47/DESCRIPTION’ ... OK</span></span>
-<span><span class="co">## * preparing ‘webSDM’:</span></span>
-<span><span class="co">## * checking DESCRIPTION meta-information ... OK</span></span>
-<span><span class="co">## * checking for LF line-endings in source and make files and shell scripts</span></span>
-<span><span class="co">## * checking for empty or unneeded directories</span></span>
-<span><span class="co">## * looking to see if a ‘data/datalist’ file should be added</span></span>
-<span><span class="co">##   NB: this package now depends on R (&gt;= 3.5.0)</span></span>
-<span><span class="co">##   WARNING: Added dependency on R &gt;= 3.5.0 because serialized objects in</span></span>
-<span><span class="co">##   serialize/load version 3 cannot be read in older versions of R.</span></span>
-<span><span class="co">##   File(s) containing such objects:</span></span>
-<span><span class="co">##     ‘webSDM/data/G.rda’ ‘webSDM/data/X.rda’ ‘webSDM/data/Y.rda’</span></span>
-<span><span class="co">## * building ‘webSDM_1.0.tar.gz’</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/trophicSDM" class="external-link">webSDM</a></span><span class="op">)</span></span>
 <span><span class="co">## Registered S3 method overwritten by 'GGally':</span></span>
 <span><span class="co">##   method from   </span></span>
@@ -168,45 +156,45 @@ We load a simulated datasets, where Y contains the species distribution data (a 
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span>, standardise <span class="op">=</span> <span class="cn">T</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
 <span><span class="co">## $Y1</span></span>
 <span><span class="co">##               estimate         5%        95%</span></span>
-<span><span class="co">## (Intercept)  0.3419894  0.3419894  0.3419894</span></span>
-<span><span class="co">## X_1         -0.2014491 -0.2623716 -0.1402599</span></span>
-<span><span class="co">## X_2          0.2584788  0.1992240  0.3127267</span></span>
+<span><span class="co">## (Intercept)  0.3562149  0.3562149  0.3562149</span></span>
+<span><span class="co">## X_1         -0.2014647 -0.2604956 -0.1436094</span></span>
+<span><span class="co">## X_2          0.2554151  0.1937473  0.3159938</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Y2</span></span>
-<span><span class="co">##                estimate         5%        95%</span></span>
-<span><span class="co">## (Intercept) -0.25655569 -0.2565557 -0.2565557</span></span>
-<span><span class="co">## X_1          0.38405043  0.3193099  0.4421080</span></span>
-<span><span class="co">## X_2         -0.07454524 -0.1374964 -0.0185223</span></span>
+<span><span class="co">##                estimate         5%         95%</span></span>
+<span><span class="co">## (Intercept) -0.24979347 -0.2497935 -0.24979347</span></span>
+<span><span class="co">## X_1          0.38275398  0.3229011  0.45082125</span></span>
+<span><span class="co">## X_2         -0.07791224 -0.1311278 -0.01871129</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Y3</span></span>
 <span><span class="co">##               estimate         5%        95%</span></span>
-<span><span class="co">## (Intercept) -0.6156090 -0.6156090 -0.6156090</span></span>
-<span><span class="co">## X_1          0.2667873  0.2079244  0.3261906</span></span>
-<span><span class="co">## X_2          0.1977205  0.1444873  0.2601250</span></span>
+<span><span class="co">## (Intercept) -0.6018835 -0.6018835 -0.6018835</span></span>
+<span><span class="co">## X_1          0.2653408  0.2055345  0.3216305</span></span>
+<span><span class="co">## X_2          0.1958249  0.1337946  0.2639825</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Y5</span></span>
 <span><span class="co">##                estimate          5%         95%</span></span>
-<span><span class="co">## (Intercept) -0.62495068 -0.62495068 -0.62495068</span></span>
-<span><span class="co">## X_1          0.20256338  0.13685528  0.26400297</span></span>
-<span><span class="co">## X_2         -0.30512345 -0.36844356 -0.24203831</span></span>
-<span><span class="co">## Y1           0.44391316  0.36519172  0.51943893</span></span>
-<span><span class="co">## Y2          -0.02364431 -0.08600163  0.03538514</span></span>
-<span><span class="co">## Y3          -0.20853817 -0.26926139 -0.15297434</span></span>
+<span><span class="co">## (Intercept) -0.64779230 -0.64779230 -0.64779230</span></span>
+<span><span class="co">## X_1          0.20323300  0.14004437  0.26087663</span></span>
+<span><span class="co">## X_2         -0.30565183 -0.37097541 -0.24290578</span></span>
+<span><span class="co">## Y1           0.44458437  0.37791324  0.51034823</span></span>
+<span><span class="co">## Y2          -0.02181675 -0.08456258  0.03748773</span></span>
+<span><span class="co">## Y3          -0.20632689 -0.26510604 -0.14831954</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Y4</span></span>
 <span><span class="co">##                estimate         5%         95%</span></span>
-<span><span class="co">## (Intercept)  0.78325958  0.7832596  0.78325958</span></span>
-<span><span class="co">## X_1         -0.17294411 -0.2276932 -0.11537706</span></span>
-<span><span class="co">## X_2         -0.01047435 -0.0722522  0.04170778</span></span>
-<span><span class="co">## Y3          -0.07401585 -0.1382470 -0.01995621</span></span>
+<span><span class="co">## (Intercept)  0.78836717  0.7883672  0.78836717</span></span>
+<span><span class="co">## X_1         -0.17847005 -0.2331681 -0.11012682</span></span>
+<span><span class="co">## X_2         -0.01380052 -0.0764206  0.04672100</span></span>
+<span><span class="co">## Y3          -0.07569101 -0.1295458 -0.01520788</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Y6</span></span>
 <span><span class="co">##                estimate          5%         95%</span></span>
-<span><span class="co">## (Intercept)  1.31720160  1.31720160  1.31720160</span></span>
-<span><span class="co">## X_1         -0.03643866 -0.09138910  0.02736963</span></span>
-<span><span class="co">## X_2          0.08902413  0.03261566  0.14881751</span></span>
-<span><span class="co">## Y3          -0.23720796 -0.31118097 -0.17834505</span></span>
-<span><span class="co">## Y5          -0.10211904 -0.16494169 -0.03994232</span></span></code></pre></div>
+<span><span class="co">## (Intercept)  1.31567391  1.31567391  1.31567391</span></span>
+<span><span class="co">## X_1         -0.03349156 -0.08985247  0.02697293</span></span>
+<span><span class="co">## X_2          0.08725338  0.02590899  0.16075345</span></span>
+<span><span class="co">## Y3          -0.24235979 -0.30849456 -0.17930790</span></span>
+<span><span class="co">## Y5          -0.10309014 -0.16706182 -0.03837826</span></span></code></pre></div>
 <p>We can visualise the biotic coefficients with the function <code>plotG_inferred</code></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/plotG_inferred.html">plotG_inferred</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code></pre></div>
@@ -250,20 +238,20 @@ We load a simulated datasets, where Y contains the species distribution data (a 
 <span></span>
 <span><span class="va">Ypred</span> <span class="op">=</span> <span class="va">Ypred</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="reference/evaluateModelFit.html">evaluateModelFit</a></span><span class="op">(</span><span class="va">m</span>, Ynew <span class="op">=</span> <span class="va">Y</span>, Ypredicted <span class="op">=</span> <span class="va">Ypred</span><span class="op">)</span></span>
-<span><span class="co">##         auc       tss species</span></span>
-<span><span class="co">## 1 0.6733956 0.2806452      Y1</span></span>
-<span><span class="co">## 2 0.7049365 0.3131448      Y2</span></span>
-<span><span class="co">## 3 0.6689217 0.2772449      Y3</span></span>
-<span><span class="co">## 4 0.5978101 0.1599270      Y4</span></span>
-<span><span class="co">## 5 0.6290963 0.2082388      Y5</span></span>
-<span><span class="co">## 6 0.5620701 0.1339426      Y6</span></span>
+<span><span class="co">##         auc        tss species</span></span>
+<span><span class="co">## 1 0.6732725 0.28030560      Y1</span></span>
+<span><span class="co">## 2 0.7049140 0.31314479      Y2</span></span>
+<span><span class="co">## 3 0.6689169 0.27724486      Y3</span></span>
+<span><span class="co">## 4 0.5989422 0.17304892      Y4</span></span>
+<span><span class="co">## 5 0.6243296 0.22047079      Y5</span></span>
+<span><span class="co">## 6 0.5448663 0.07774837      Y6</span></span>
 <span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">log.lik</span></span>
-<span><span class="co">## [1] -3638.81</span></span>
+<span><span class="co">## [1] -3638.918</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">AIC</span></span>
-<span><span class="co">## [1] 7337.62</span></span>
+<span><span class="co">## [1] 7337.835</span></span>
 <span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo.html" class="external-link">loo</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
-<span><span class="co">## [1] -3651.176</span></span></code></pre></div>
+<span><span class="co">## [1] -3651.445</span></span></code></pre></div>
 <p>We can also evaluate the quality of model predictions using K-fold cross-validation:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">CV</span> <span class="op">=</span> <span class="fu"><a href="reference/trophicSDM_CV.html">trophicSDM_CV</a></span><span class="op">(</span><span class="va">m</span>, K <span class="op">=</span> <span class="fl">3</span>, prob.cov <span class="op">=</span> <span class="cn">T</span>, run.parallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -277,12 +265,12 @@ We load a simulated datasets, where Y contains the species distribution data (a 
 <code class="sourceCode R"><span><span class="va">Pred</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, Xnew <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, fullPost <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">cbind</span>, <span class="va">Pred</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">##    predictions.mean predictions.q025 predictions.q975</span></span>
-<span><span class="co">## Y1 0.6334255        0.6039058        0.665871        </span></span>
-<span><span class="co">## Y2 0.6854213        0.6569794        0.7202425       </span></span>
-<span><span class="co">## Y3 0.7161267        0.6851891        0.7457177       </span></span>
-<span><span class="co">## Y5 0.427165         0.09932224       0.7450608       </span></span>
-<span><span class="co">## Y4 0.5092461        0.4381532        0.5872319       </span></span>
-<span><span class="co">## Y6 0.6816344        0.5074137        0.8548638</span></span></code></pre></div>
+<span><span class="co">## Y1 0.6331431        0.6035287        0.6641208       </span></span>
+<span><span class="co">## Y2 0.6827973        0.6567078        0.715115        </span></span>
+<span><span class="co">## Y3 0.7183925        0.6959038        0.7412682       </span></span>
+<span><span class="co">## Y5 0.4540656        0.1067405        0.7156716       </span></span>
+<span><span class="co">## Y4 0.4962124        0.4350453        0.5902856       </span></span>
+<span><span class="co">## Y6 0.6370469        0.490708         0.8478799</span></span></code></pre></div>
 <p>We can also obtain an estimation of the fundamental niche, that corresponds, in the bottom-up approach, to the probability of presence of a species given that its preys are present. We can for example compute the probability of presence of species for the enviromental conditions X_1 = 0.5 and X_2 = 0.5 assuming all their preys to be present.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Ypred</span> <span class="op">=</span> <span class="fu"><a href="reference/predictFundamental.html">predictFundamental</a></span><span class="op">(</span><span class="va">m</span>, fullPost <span class="op">=</span> <span class="cn">FALSE</span>, pred_samples <span class="op">=</span> <span class="fl">100</span>, Xnew <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -320,6 +308,9 @@ We load a simulated datasets, where Y contains the species distribution data (a 
 <span><span class="co">## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
 <span><span class="co">## Running the chains for more iterations may help. See</span></span>
 <span><span class="co">## https://mc-stan.org/misc/warnings.html#bulk-ess</span></span>
+<span><span class="co">## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span></span>
+<span><span class="co">## Running the chains for more iterations may help. See</span></span>
+<span><span class="co">## https://mc-stan.org/misc/warnings.html#tail-ess</span></span>
 <span><span class="co">## [1] "--- Species Y2 ---"</span></span>
 <span><span class="co">## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
 <span><span class="co">## Running the chains for more iterations may help. See</span></span>
@@ -329,13 +320,13 @@ We load a simulated datasets, where Y contains the species distribution data (a 
 <span><span class="co">## Running the chains for more iterations may help. See</span></span>
 <span><span class="co">## https://mc-stan.org/misc/warnings.html#bulk-ess</span></span>
 <span><span class="co">## [1] "--- Species Y5 ---"</span></span>
+<span><span class="co">## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
+<span><span class="co">## Running the chains for more iterations may help. See</span></span>
+<span><span class="co">## https://mc-stan.org/misc/warnings.html#bulk-ess</span></span>
 <span><span class="co">## [1] "--- Species Y4 ---"</span></span>
 <span><span class="co">## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
 <span><span class="co">## Running the chains for more iterations may help. See</span></span>
 <span><span class="co">## https://mc-stan.org/misc/warnings.html#bulk-ess</span></span>
-<span><span class="co">## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span></span>
-<span><span class="co">## Running the chains for more iterations may help. See</span></span>
-<span><span class="co">## https://mc-stan.org/misc/warnings.html#tail-ess</span></span>
 <span><span class="co">## [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
 <span><span class="co">## Running the chains for more iterations may help. See</span></span>
