@@ -1,0 +1,11 @@
+pandoc: 2.14.0.3
+pkgdown: 2.0.6
+pkgdown_sha: ~
+articles:
+  Differences_with_SDMs: Differences_with_SDMs.html
+  Introduction: Introduction.html
+last_built: 2022-11-09T08:28Z
+urls:
+  reference: https://giopogg.github.io/webSDM/reference
+  article: https://giopogg.github.io/webSDM/articles
+

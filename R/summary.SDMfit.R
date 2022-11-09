@@ -32,5 +32,8 @@ summary.SDMfit = function(object, ...){
   cat(paste0("    $model gives the ",class(SDM$model)[1], " class object \n"))
   cat("==================================================================\n")
   summary(SDM$model)
+  
+  #Just to fix pkgdown
+  invisible(object)
 
 }

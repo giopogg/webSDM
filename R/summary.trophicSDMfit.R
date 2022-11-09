@@ -38,4 +38,7 @@ summary.trophicSDMfit = function(object,  ...){
     cat("    predictFundamental(), plotG(), plotG_inferred(), computeVariableImportance() \n")
     cat("* Local models (i.e. single species SDM) can be accessed through \n")
     cat("    $model\n")
+    
+    #Just to fix pkgdown
+    invisible(object)
 }

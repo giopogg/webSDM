@@ -1,0 +1,66 @@
+title: webSDM
+url: https://giopogg.github.io/webSDM/
+navbar:
+  structure:
+    left: [home, reference, articles]
+    right: [github]
+  components:
+    home: ~
+    articles:
+      text: "Vignettes"
+      menu:
+      - text: "Introduction"
+        href: articles/Introduction.html
+      - text: "Subtles and obvious differences between SDM and trophic SDM"
+        href: articles/Differences_with_SDMs.html
+reference:
+- title: fit trophic SDM
+  desc: |
+    Function to fit a trophic SDM and functions to display output
+  contents:
+  - "trophicSDM"
+  - "print.trophicSDMfit"
+  - "summary.trophicSDMfit"
+- title: analyse a trophic SDM
+  desc: |
+    Functions to get model parameters, visualise and analyse them
+  contents:
+  - "coef.trophicSDMfit"
+  - "plot.trophicSDMfit"
+  - "plotG"
+  - "plotG_inferred"
+  - "computeVariableImportance"
+- title: Predict and evaluate a trophic SDM
+  desc: |
+    Functions to predict with a trophic SDM and evaluate model predictions and goodness-of-fit
+  contents:
+  - "predict.trophicSDMfit"
+  - "trophicSDM_CV"
+  - "evaluateModelFit"
+  - "predictFundamental"
+  - "loo.trophicSDMfit"
+- title: Functions to analyse and manipulate local models (i.e. single-species SDMs)
+  desc: |
+    Set of functionsto analyse, manipulate and predict with local models (i.e. single-species SDMs)
+  contents:
+  - "SDMfit"
+  - "predict.SDMfit"
+  - "coef.SDMfit"
+  - "plot.SDMfit"
+  - "print.SDMfit"
+  - "summary.SDMfit"
+- title: Data sets
+  desc: ~
+  contents:
+  - "Y"
+  - "X"
+  - "G"
+- title: Tool functions
+  desc: ~
+  contents:
+  - "global"
+  - "buildFormula"
+  - "compute_TL_laplacian"
+  - "webSDM"
+development:
+  mode: auto

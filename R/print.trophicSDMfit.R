@@ -22,4 +22,7 @@ print.trophicSDMfit = function(x, ...){
   if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class trophicSDMfit" )
 
   summary(tSDM)
+  
+  #Just to fix pkgdown
+  invisible(object)
 }

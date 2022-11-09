@@ -1,3 +1,11 @@
 ^\.Rproj\.user$
 ^publication
 ^.*\.pdf
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^docs
+^_pkgdown.yml
+^README.Rmd
+
