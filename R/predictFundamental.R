@@ -31,7 +31,7 @@
 #' 
 #' 
 #' #' We can now evaluate species probabilities of presence for the enviromental
-#' conditions c(0.5, 0.5)
+#' # conditions c(0.5, 0.5)
 #' predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 #' 
 #' 

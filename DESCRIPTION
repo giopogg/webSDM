@@ -1,6 +1,6 @@
 Package: webSDM
 Title: Including known interactions in SDM
-Version: 0.0.0.9000
+Version: 1.0
 Maintainer: Giovanni Poggiato <giov.poggiato@gmail.com>
 Description: Package to fit a trophic Species Distribution Model, analyse it and predict. See Poggiato et al. In prep.
 License: GPL-3
@@ -16,5 +16,9 @@ Authors@R:
 URL: https://github.com/giopogg/trophicSDM
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    reshape2,
+    devtools,
+    loo,
+    randomForest
 VignetteBuilder: knitr

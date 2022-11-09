@@ -22,10 +22,6 @@ knitr::opts_chunk$set(
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
-
 # webSDM - including known trophic interactions in SDM
 
 webSDM implements the trophic SDM model described in Poggiato et al., "Integrating trophic food webs in species distribution models improves ecological niche estimation and prediction". Trophic SDM integrate a known trophic interaction network in SDM, thus oroviding more realistic and ecologically sound predictions. We here after present a quick introduction to some of the feature of the package, but we refer to the vignettes and the help functions for a more complete documentation of our package.
