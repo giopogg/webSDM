@@ -114,25 +114,31 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span><span class="co"># unstandardised regression coefficients</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.59067654 -1.0575117 -0.1337863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.46958004  0.9227125  2.0308577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27995846 -2.8288418 -1.8194396</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.94995368  1.5813078  2.3462560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.07895881 -0.4293780  0.2418938</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.99015856 -1.3061872 -0.6525526</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.62869083 -1.1074536 -0.1481102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.44889907  0.9724242  2.0028352</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27957966 -2.8585128 -1.7427168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.95521999  1.6151314  2.3138683</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09429181 -0.4184351  0.2293410</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.97247341 -1.3252438 -0.6534143</span>
 <span class="r-in"><span><span class="co">#standardised regression coefficients with 90% credible intervals</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span>, standardised <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    mean         5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.59067654 -1.0175934 -0.1958266</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.46958004  0.9988275  1.9512945</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27995846 -2.7805031 -1.8718066</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.94995368  1.6319353  2.2856138</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.07895881 -0.3929417  0.1796983</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.99015856 -1.2591207 -0.7016367</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.62869083 -1.0194592 -0.2331996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.44889907  1.0199999  1.9497043</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27957966 -2.7686882 -1.8543570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.95521999  1.6623795  2.2640927</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09429181 -0.3643666  0.1780530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.97247341 -1.2624531 -0.7048829</span>
 <span class="r-in"><span><span class="co"># Run the same model using glm as fitting method</span></span></span>
 <span class="r-in"><span><span class="co"># (set iter = 1000 to obtain reliable results)</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
