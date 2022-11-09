@@ -23,6 +23,6 @@ print.SDMfit = function(x, ...){
   summary(SDM)
   
   #Just to fix pkgdown
-  invisible(object)
+  invisible(x)
 }
 

@@ -24,5 +24,5 @@ print.trophicSDMfit = function(x, ...){
   summary(tSDM)
   
   #Just to fix pkgdown
-  invisible(object)
+  invisible(x)
 }
