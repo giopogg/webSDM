@@ -35,6 +35,9 @@ buildFormula <- function(form.init, species, sp.formula=NULL, sp.partition=NULL,
         } else form.rich = gsub("richness", paste0("I(",paste(species,collapse = "+"),")"), sp.formula)
         form.all = paste(form.all,form.rich,sep="+")
 
+        
+        
+        
       }else{
         # all as above but repeated for every cluster
         form.all=as.character(form.init)

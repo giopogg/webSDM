@@ -34,7 +34,7 @@
 #' @method predict SDMfit
 #' @export
 
-predict.SDMfit = function(object, newdata, pred_samples = 100, prob.cov = TRUE,...){
+predict.SDMfit = function(object, newdata, pred_samples = NULL, prob.cov = TRUE,...){
 
   SDM = object 
   if(class(SDM) != "SDMfit") stop("you need to provide a SDMfit object")

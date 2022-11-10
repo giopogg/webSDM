@@ -86,6 +86,40 @@ SDMfit = function(focal, Y, X, G, formula.foc, sp.formula = NULL, sp.partition =
 
     form.all = formulas$form.all
 
+    #### Remove duplicate variables in formula
+    
+    data = data.frame(X,Y)
+    data = dplyr::rename(data,y=all_of(focal))  # rename the focal column to be called "y"
+    
+    
+    if(!useBRMS){
+    temp.mf = model.frame(form.all, data)
+    temp.mf.all = temp.mf[!duplicated(as.list(temp.mf))]
+    
+    if(length(colnames(temp.mf.all)) != length(colnames(temp.mf))){
+    message("Formula was modified since it led to identical columns of \n
+                the design matrix (e.g. Y_1 or Y_1^2 for binary data")}
+    
+    form.all = paste0("y ~ ", paste(colnames(temp.mf.all)[-1], collapse = "+"))
+    }else{
+    
+    for(i in length(formulas$form.brms)){
+    form.temp = formulas$form.brms[[i]]
+    form.temp = sub(".*~", "y ~", as.character(form.temp))
+    
+    temp.mf = model.frame(form.temp, data)
+    temp.mf.all = temp.mf[!duplicated(as.list(temp.mf))]
+    
+    if(length(colnames(temp.mf.all)) != length(colnames(temp.mf))){
+      message("Formula was modified since it led to identical columns of \n
+                the design matrix (e.g. Y_1 or Y_1^2 for binary data")}
+    
+    form.all = paste0("y ~ ", paste(colnames(temp.mf)[-1], collapse = "+"))
+    formulas$form.brms[[i]] = as.formula(paste0(sub("()","",formulas$form.brms[[i]][2]),
+                                                "~ 0 +", paste(colnames(temp.mf)[-1], collapse = "+")))
+    }
+    }
+    
     if (useBRMS){
       # intermediary species variables are themselves defined from observed species variables
       form.neigh.brms = formulas$form.brms
@@ -94,11 +128,6 @@ SDMfit = function(focal, Y, X, G, formula.foc, sp.formula = NULL, sp.partition =
     # the focal species is basal
     form.all = as.character(form.env)
   }
-
-
-  ## Build the data matrix to be given to the fit functions
-  data = data.frame(X,Y)
-  data = dplyr::rename(data,y=all_of(focal))  # rename the focal column to be called "y"
 
 
   ## Fit models depending on the chosen method and penalisation
