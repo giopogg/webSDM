@@ -95,8 +95,7 @@ SDMfit = function(focal, Y, X, G, formula.foc, sp.formula = NULL, sp.partition =
     temp.mf.all = temp.mf[!duplicated(as.list(temp.mf))]
     
     if(length(colnames(temp.mf.all)) != length(colnames(temp.mf))){
-    message("Formula was modified since it led to identical columns of \n
-                the design matrix (e.g. Y_1 or Y_1^2 for binary data")}
+    message("Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data")}
     
     form.all = paste0("y ~ ", paste(colnames(temp.mf.all)[-1], collapse = "+"))
     }else{
