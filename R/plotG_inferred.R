@@ -25,7 +25,7 @@ plotG_inferred = function(tSDM, level = 0.90){
 
   #########Checks
   if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class trophicSDMfit" )
-  if(tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs oenalisation")}
+  if(!is.null(tSDM$model.call$penal) & tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs oenalisation")}
   
   if(!is.null(tSDM$model.call$sp.formula)) stop("plotG_inferred only works without composite variables")
   G = tSDM$data$G

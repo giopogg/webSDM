@@ -26,7 +26,7 @@
 
 computeVariableImportance = function(tSDM, groups = NULL){
 
-  if(tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs oenalisation")}
+  if(!is.null(tSDM$model.call$penal) & tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs penalisation")}
   if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class SDMfit" )
   if(!is.null(tSDM$model.call$sp.formula)) stop("plotG_inferred only works without composite variables")
   
