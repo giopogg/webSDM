@@ -77,6 +77,9 @@ SDMfit = function(focal, Y, X, G, formula.foc, sp.formula = NULL, sp.partition =
   ## Build final formula
   neigh = names(neighbors(G,focal,mode=ifelse(mode=="prey","out","in")))
 
+  data = data.frame(X,Y)
+  data = dplyr::rename(data,y=all_of(focal))  # rename the focal column to be called "y"
+  
   ### Include neigh as covariates
   if (length(neigh)>0){
     formulas = buildFormula(form.init=form.env,
@@ -87,11 +90,6 @@ SDMfit = function(focal, Y, X, G, formula.foc, sp.formula = NULL, sp.partition =
     form.all = formulas$form.all
 
     #### Remove duplicate variables in formula
-    
-    data = data.frame(X,Y)
-    data = dplyr::rename(data,y=all_of(focal))  # rename the focal column to be called "y"
-    
-    
     if(!useBRMS){
     temp.mf = model.frame(form.all, data)
     temp.mf.all = temp.mf[!duplicated(as.list(temp.mf))]
