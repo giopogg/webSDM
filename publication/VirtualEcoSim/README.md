@@ -1,5 +1,7 @@
 # trophicSDM
-This codes reproduce exactly the same results published in the paper. The results from the scripts are available at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7242258.svg)](https://doi.org/10.5281/zenodo.7242258)
+This codes reproduce exactly the same results published in the paper. The results from the scripts are available at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7309691.svg)](https://doi.org/10.5281/zenodo.7309691)
+
+
 
 
 
