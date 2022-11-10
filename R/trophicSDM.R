@@ -179,8 +179,10 @@ trophicSDM = function(Y, X, G,
                                          method = method, penal = penal,
                                          iter = iter, family = family))
 
+  if(penal!= "coeff.signs"){
   trophicSDMfit$coef = lapply(trophicSDMfit$model,function(x) x$coef)
-
+  }
+  
   trophicSDMfit$AIC = do.call(sum, lapply(trophicSDMfit$model, function(x) x$AIC))
 
   trophicSDMfit$log.lik = do.call(sum, lapply(trophicSDMfit$model, function(x) x$log.lik))

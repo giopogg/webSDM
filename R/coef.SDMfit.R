@@ -40,6 +40,7 @@
 coef.SDMfit = function(object, standardise = F, level = 0.95, ...){
   
   SDM = object
+  if(object$penal == "coeff.signs"){stop("This function is not available for coeff.signs oenalisation")}
   
   if(class(SDM) != "SDMfit") stop("SDM is not an object of class SDMfit" )
   
