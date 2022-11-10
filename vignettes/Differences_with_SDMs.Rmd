@@ -179,7 +179,7 @@ all.equal(pred_SDM, pred_trophic)
 cor(B, pred_SDM)^2
 cor(B, pred_trophic)^2
 ```
-The relationship between the coefficients of the two models does not hold anymore more, and predictions are now different, with trophic SDM reaching a far better predictive accuracy than classic SDM for species 𝑦𝐵 (R2 of 0.83 and 0.96 respectively).
+The relationship between the coefficients of the two models does not hold anymore more, and predictions are now different, with trophic SDM reaching a far better predictive accuracy than classic SDM for species $y_B$ (R2 of 0.83 and 0.96 respectively).
 
 ### Non-continous observable entities (presence-absence, counts) 
 Let’s now consider here the case of presence-absences (i.e. binary data), without modifying the other two conditions. Therefore, we use a (generalized) linear model like logistic regression, and we model a linear relationship (at the link level) between predator and prey. Thus, for SDM we have:  
@@ -264,12 +264,10 @@ plot(X,A, main = "Species A realised \n and fundamental niche")
 plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
 ```
+
 We infer statistical models with random forest
-```{r fitRF}
+```{r fitRF, warning=F, results = 'hide'}
 library(randomForest)
-#> Warning: le package 'randomForest' a été compilé avec la version R 4.1.2
-#> randomForest 4.7-1.1
-#> Type rfNews() to see new features/changes/bug fixes.
 
 # Species A
 m_A  = randomForest(A ~ X + I(X^2))
@@ -279,6 +277,7 @@ m_trophic = randomForest(B ~ X + I(X^2) + A)
 # Species B classic SDM
 m_SDM <- randomForest(B ~ X + I(X^2))
 ```
+
 We now compare the predictions from the two models.
 ```{r predictRF}
 # Prediction are now different
@@ -291,5 +290,6 @@ all.equal(pred_SDM, pred_trophic)
 cor(B, pred_SDM)^2
 cor(B, pred_trophic)^2
 ```
+
 Predictions from the model are different, and trophic SDM has a larger R2 than classical SDMs.
 
