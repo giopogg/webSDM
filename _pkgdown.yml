@@ -11,6 +11,8 @@ navbar:
       menu:
       - text: "Introduction"
         href: articles/Introduction.html
+      - text: "Composite variables and biotic-abiotic interactions"
+        href: articles/Composite_variables.html
       - text: "Subtles and obvious differences between SDM and trophic SDM"
         href: articles/Differences_with_SDMs.html
 reference:

@@ -35,6 +35,9 @@
       <a href="../articles/Introduction.html">Introduction</a>
     </li>
     <li>
+      <a href="../articles/Composite_variables.html">Composite variables and biotic-abiotic interactions</a>
+    </li>
+    <li>
       <a href="../articles/Differences_with_SDMs.html">Subtles and obvious differences between SDM and trophic SDM</a>
     </li>
   </ul></li>
@@ -64,7 +67,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for SDMfit</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, pred_samples <span class="op">=</span> <span class="fl">100</span>, prob.cov <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, pred_samples <span class="op">=</span> <span class="cn">NULL</span>, prob.cov <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -117,12 +120,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-in"><span><span class="co"># In order to predict non-basal species, we need to also provide</span></span></span>
 <span class="r-in"><span><span class="co"># the predicted occurrences of its preys. Here we compute the probability of</span></span></span>
 <span class="r-in"><span><span class="co"># presence of species Y4 at environemntal conditions c(0.5,0.5)</span></span></span>
@@ -131,10 +128,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictions.prob</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4859354 0.4531494 0.4388746 0.4592105 0.4715284 0.4809634 0.4790968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4977406 0.4993476 0.4872832 0.4642802 0.4451526 0.4582251 0.4803447</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4547447 0.5001733 0.5017968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,8]      [,9]     [,10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.453944 0.4696637 0.4804194</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictions.bin</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>

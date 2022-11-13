@@ -79,7 +79,7 @@ trophicSDM is used to fit a trophic species distribution model. Requires the spe
 \details{
 "sp.formula" and "sp.partition" can be combined to define any kind of composite variables for the biotic part of the formula. "sp.formula" can be :
 \itemize{
-\item A string defining a formula as function of "richness". E.g., \code{"richness+I(richness)^2"} (species are modelled as a function of a quadratic polyome of their prey richness), \code{"I(richness>0)"} (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey (or predator) groups.
+\item A string defining a formula as function of "richness", e.g., \code{"richness+I(richness)^2"} (species are modelled as a function of a quadratic polyome of their prey richness), \code{"I(richness>0)"} (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey (or predator) groups.
 \item A more flexible option is to specify sp.formula as a list (whose names are species' names) that contains for each species the definition of the biotic part of the model. Notice that, in this case, the function does not check that the model is a DAG. This allow to define any kind of composite variable, or to model interactions between environmental covariates and preys (or predators).
 }
 }
@@ -98,7 +98,7 @@ m$model$Y5
 coef(m$model$Y5)
 plot(m$model$Y5)
 
-Fit a sparse model in the Bayesian framework with the horshoe prior
+# Fit a sparse model in the Bayesian framework with the horshoe prior
 m = trophicSDM(Y,X,G, env.formula, 
                family = binomial(link = "logit"), penal = "horshoe", 
                mode = "prey", method = "stan_glm")
@@ -131,8 +131,9 @@ m = trophicSDM(Y,X,G, env.formula,
                sp.formula = "I(richness>0)",
                mode = "prey", method = "glm")
 m$form.all
-# Define group of preys and use model species as a function the richness (with a quadratic term)
-# of these groups of preys separetely
+
+# Define group of preys and model species as a function of the richness (with a quadratic term)
+# of these groups of preys separately
 
 # Species Y1 and Y2 belong to the same group, species Y3 and Y4 are both alone in their group and 
 # species Y5 and Y6 form another group

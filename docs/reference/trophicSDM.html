@@ -35,6 +35,9 @@
       <a href="../articles/Introduction.html">Introduction</a>
     </li>
     <li>
+      <a href="../articles/Composite_variables.html">Composite variables and biotic-abiotic interactions</a>
+    </li>
+    <li>
       <a href="../articles/Differences_with_SDMs.html">Subtles and obvious differences between SDM and trophic SDM</a>
     </li>
   </ul></li>
@@ -182,7 +185,7 @@
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>"sp.formula" and "sp.partition" can be combined to define any kind of composite variables for the biotic part of the formula. "sp.formula" can be :</p><ul><li><p>A string defining a formula as function of "richness". E.g., <code>"richness+I(richness)^2"</code> (species are modelled as a function of a quadratic polyome of their prey richness), <code>"I(richness&gt;0)"</code> (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey (or predator) groups.</p></li>
+    <p>"sp.formula" and "sp.partition" can be combined to define any kind of composite variables for the biotic part of the formula. "sp.formula" can be :</p><ul><li><p>A string defining a formula as function of "richness", e.g., <code>"richness+I(richness)^2"</code> (species are modelled as a function of a quadratic polyome of their prey richness), <code>"I(richness&gt;0)"</code> (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey (or predator) groups.</p></li>
 <li><p>A more flexible option is to specify sp.formula as a list (whose names are species' names) that contains for each species the definition of the biotic part of the model. Notice that, in this case, the function does not check that the model is a DAG. This allow to define any kind of composite variable, or to model interactions between environmental covariates and preys (or predators).</p></li>
 </ul></div>
     <div id="author">
@@ -192,61 +195,7 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># define abiotic part of the model</span></span></span>
-<span class="r-in"><span><span class="va">env.formula</span> <span class="op">=</span> <span class="st">"~ X_1 + X_2"</span></span></span>
-<span class="r-in"><span><span class="co"># Run the model with bottom-up control using stan_glm as fitting method and no penalisation</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
-<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
-<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A trophicSDM fit with no penalty, fitted using stan_glm </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  with a bottom-up approach </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Number of species : 6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Number of links : 6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * Useful fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     $coef </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * Useful S3 methods</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     print(), coef(), plot(), predict(), evaluateModelFit() </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     predictFundamental(), plotG(), plotG_inferred(), computeVariableImportance() </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * Local models (i.e. single species SDM) can be accessed through </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     $model</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Access local models (e.g. species "Y5")</span></span></span>
-<span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Local SDMfit for species Y5 with no penalty , fitted using stan_glm </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> * Useful S3 methods</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     print(), coef(), plot(), predict()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     $model gives the stanreg class object </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.61557307 -1.0618336 -0.1672112</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.46014115  0.9420164  2.0905728</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.26406489 -2.8011964 -1.6701568</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.95358784  1.6230227  2.2928744</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09951653 -0.4304145  0.2032997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.98695218 -1.3041161 -0.6667058</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="trophicSDM-1.png" alt="" width="700" height="433"></span>
-</code></pre></div>
+    
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
