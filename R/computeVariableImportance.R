@@ -28,7 +28,7 @@ computeVariableImportance = function(tSDM, groups = NULL){
 
   if(!is.null(tSDM$model.call$penal)) {if(tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs penalisation")}}
   if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class SDMfit" )
-  if(!is.null(tSDM$model.call$sp.formula)) stop("This built-in function only works without composite variables")
+  if(!is.null(tSDM$model.call$sp.formula)) warning("If you use composite variables, you should group together species that belong to the same composite variable. For example, if sp.formula = 'richness' and sp.partition = NULL, you should put all species in the same group in the argument 'groups'. If you define a partition of species in sp.partition, then species in the same group in sp.partition should put all species in the same group in the argument 'groups'")
   
   if(is.null(groups)) {
     groups = as.list(c(colnames(tSDM$data$X)[-1], colnames(tSDM$data$Y)))

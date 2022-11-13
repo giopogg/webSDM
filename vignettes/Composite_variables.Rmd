@@ -1,0 +1,146 @@
+---
+title: "Composite variables and biotic-abiotic interactions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Composite variables and biotic-abiotic interactions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+knitr::opts_chunk$set(fig.width=7, fig.height=6) 
+```
+
+In this vignette we explain how to use composite variables in trophic SDM. These variables are useful especially in species-rich network, where some predators might have so many preys that assuming that each of them has a differential effect on predator distribution is not only a problem, but might seem ecologically unjustified. Instead, we could expect the richness or diversity of prey, or whether at least a prey is available, to be important. Hence, we implemented the use of composite variables, i.e., variables that summarize the information of a large number of variables from the graph in a few summary variables. Examples of composite variables are prey richness or diversity, or a binary variable set to one if the number of preys is above a certain threshold. These variables assume that all species have the same impact on the predator. An alternative is to group species in the metaweb to represent trophic groups that clump together species that feed on, or are eaten by, the same type of species. We can then construct composite variables (e.g., their richness) for each of those trophic groups to better represent the variety of resources for species like generalist or top predators.
+In `webSDM` it is possible to define an extremely large set of composite variables using the arguments `sp.formula` and `sp.partition`. In general, `sp.formula` allows the definition of the composite variables, while `sp.partition` allow to define the groups of preys (or predator) for which each composite variable is calculate.
+Hereafter we don't provide a complete analyses of a case-study using composite variables, but rather focus on the description of how to implement them in `webSDM`.
+Finally, we will see how to include an interaction between preys and the environment.
+
+```{r setup}
+library(webSDM)
+data(X ,Y, G)
+```
+
+## Composite variables
+`sp.formula` needs to be a righ hand side formula including richness (i.e. the sum of its preys) and any transformations of richness. Notice that only "richness" is allowed for now. However, we will see how this already allow to build an extremely large set of composite variable. We start with a simple case where we model species as a function of the richness of their prey, with a polynomial of degree two.
+
+```{r fit I}
+m = trophicSDM(Y,X,G,
+               env.formula = "~ X_1 + X_1^2", 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.formula = "richness + I(richness^2)",
+               mode = "prey", method = "glm")
+```
+Notice that for predators that feed on a single prey (with presence-absence data), their richness and the square of their richness is exactly the same variable. In this case, `trophicSDM()` remove the redundant variable but prints a warning message.
+We can see the formulas created by the argment `$form.all` of the fitted model.
+```{r form I}
+m$form.all
+```
+
+We now set as composite variable a dummy variable specifying whether there is at least one avaible prey or not. To do so we define `sp.formula = "I(richness>0)"`.
+
+```{r fit II}
+m = trophicSDM(Y,X,G,
+               env.formula = "~ X_1 + X_1^2", 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.formula = "I(richness>0)",
+               mode = "prey", method = "glm")
+```
+Which leads to the following formulas:
+```{r form II}
+m$form.all
+```
+## Composite variables and groups of preys
+A halfway between considering that each species has a differential effect on the predator (i.e., no composite variable), or that every prey has the same effect (i.e., modelling predator as a function of prey richness), is to create group of species that we assume to have the same effect on the predator. Then, we can model predator as a function of composite variables calculated on each of these groups. To do so, we rely on the argument `sp.partition`. This parameters has to be a list, where each element contain the species of the given group.  
+For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 are alone in their group and Y5 and Y6 form another group.
+```{r sp.partion}
+sp.partition = list(c("Y1","Y2"),c("Y3"),c("Y4"), c("Y5","Y6"))
+```
+Then, we can specifiy whatever `sp.formula`, for example using richness (with a quadratic term).
+```{r fit III}
+m = trophicSDM(Y,X,G, "~ X_1 + X_1^2", 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.partition = sp.partition,
+               sp.formula = "richness + I(richness^2)",
+               mode = "prey", method = "glm")
+```
+Which leads to the following formulas:
+```{r formIII}
+m$form.all
+```
+
+## Custom formula
+In case we want to specify a composite variable that cannot be created from a function of richness, the user can specify directly the list of formula in the `sp.formula` argument. In this case, `trophicSDM` will not create a new formula from the argument `G` and will not check that the user-defined formula actually derives from `G`. For example, we might want to quantify the effect of the prey Y5 on the predator Y6 when the prey Y3 is not available. To do so, we define for species Y6 an interaction term between species Y5 and one minus Y3 (i.e. a dummy variable that takes the value of 1 when species Y5 is present and Y3 is absent). To do so, we define `sp.formula` as a list describing the biotic formula for each species.
+```{r def custom}
+sp.formula = list(Y1 = "",
+                  Y2 = "",
+                  Y3 = "",
+                  Y4 = "Y3",
+                  Y5 = "Y1",
+                  Y6 = "I(Y5*(1-Y3))")
+
+m = trophicSDM(Y,X,G, "~ X_1 + X_1^2", 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.formula = sp.formula,
+               mode = "prey", method = "glm")
+
+m$form.all
+```
+## On computeVariableImpontance with composite variable
+When computing the importance of variables using the function `computeVariableImportance`, you should be careful with the definition of groups. Indeed, the variables compute the variable importance of each group as the sum of the standardised regression coefficients containing variables of the groups. Therefore, if we compute the effect of the variable `richness`, we should put all species in the same group in the argument `groups` of `computeVariableImportance`. Otherwise, the effect of each variable will be computed separately. For example, if `sp.formula = "richness"` and `sp.partition = NULL`, you should put all species in the same group in the argument `groups`. 
+```{r varimpo I}
+m = trophicSDM(Y,X,G,
+               env.formula = "~ X_1 + X_1^2", 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.formula = "richness + I(richness^2)",
+               mode = "prey", method = "glm")
+
+computeVariableImportance(m, groups = list("abiotic" = c("X_1", "X_2"),
+                                           "biotic" = c("Y1", "Y2", "Y3",
+                                                        "Y4", "Y5", "Y6")))
+```
+
+If you use composite variables, you should group together species that belong to the same composite variable.If you define a partition of species in sp.partition, then species in the same group in sp.partition should put all species in the same grup in the argument 'groups'.
+
+```{r varImpo II}
+sp.partition = list(c("Y1","Y2"),c("Y3"),c("Y4"), c("Y5","Y6"))
+
+m = trophicSDM(Y,X,G, "~ X_1 + X_1^2", 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.partition = sp.partition,
+               sp.formula = "richness + I(richness^2)",
+               mode = "prey", method = "glm")
+
+computeVariableImportance(m, groups = list("abiotic" = c("X_1", "X_2"),
+                                           "Group1" = c("Y1", "Y2"),
+                                           "Group2" = c("Y3"),
+                                           "Group3" = c("Y4", "Y5", "Y6")))
+```
+
+## Interaction with biotic and abiotic terms
+
+Assuming that the effect of prey on predators does not vary with environmental conditions might be a too strong assumption. In order to integrate species plasticity, it is possible to define a `sp.formula` that includes both biotic and abiotic terms. For example, we hereafter define an interaction between the prey and the environmental variable X_2.
+
+```{r intBioAbio}
+sp.formula = list(Y1 = "",
+                  Y2 = "",
+                  Y3 = "",
+                  Y4 = "I(X_2*Y3)",
+                  Y5 = "I(X_2*Y1)",
+                  Y6 = "I(X_2*Y3) + I(X_2*Y5)")
+
+m = trophicSDM(Y,X,G,
+               env.formula = "~ X_1 + X_1^2", 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.formula = sp.formula,
+               mode = "prey", method = "glm")
+
+computeVariableImportance(m, groups = list("abiotic" = c("X_1", "X_2"),
+                                           "biotic" = c("Y1", "Y2", "Y3",
+                                                        "Y4", "Y5", "Y6")))
+```

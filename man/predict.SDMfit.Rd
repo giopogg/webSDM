@@ -4,7 +4,7 @@
 \alias{predict.SDMfit}
 \title{Predicts with a local model}
 \usage{
-\method{predict}{SDMfit}(object, newdata, pred_samples = 100, prob.cov = TRUE, ...)
+\method{predict}{SDMfit}(object, newdata, pred_samples = NULL, prob.cov = TRUE, ...)
 }
 \arguments{
 \item{object}{A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object}

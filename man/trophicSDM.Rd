@@ -97,6 +97,54 @@ print(m)
 m$model$Y5
 coef(m$model$Y5)
 plot(m$model$Y5)
+
+Fit a sparse model in the Bayesian framework with the horshoe prior
+m = trophicSDM(Y,X,G, env.formula, 
+               family = binomial(link = "logit"), penal = "horshoe", 
+               mode = "prey", method = "stan_glm")
+
+# Fit frequentist glm
+m = trophicSDM(Y,X,G, env.formula, 
+               family = binomial(link = "logit"), penal = NULL, 
+               mode = "prey", method = "glm")
+               
+# With elasticnet penalty   
+m = trophicSDM(Y,X,G, env.formula, 
+               family = binomial(link = "logit"), penal = "elasticnet", 
+               mode = "prey", method = "glm")
+
+#### Composite variables
+
+# Model species as a function of a quadratic polynomial of prey richness
+m = trophicSDM(Y,X,G, env.formula, 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.formula = "richness + I(richness^2)",
+               mode = "prey", method = "glm")
+m$form.all
+# Notice that for predators that feed on a single prey (with presence-absence data),
+# their richness and the square of their richness is exactly the same variable
+# In this case, trophicSDM() remove the redundant variable but prints a warning message
+
+# Model species as a function of a dummy variable saying whether they have at leaste one prey
+m = trophicSDM(Y,X,G, env.formula, 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.formula = "I(richness>0)",
+               mode = "prey", method = "glm")
+m$form.all
+# Define group of preys and use model species as a function the richness (with a quadratic term)
+# of these groups of preys separetely
+
+# Species Y1 and Y2 belong to the same group, species Y3 and Y4 are both alone in their group and 
+# species Y5 and Y6 form another group
+sp.partition = list(c("Y1","Y2"),c("Y3"),c("Y4"), c("Y5","Y6"))
+
+m = trophicSDM(Y,X,G, env.formula, 
+               family = binomial(link = "logit"), penal = NULL, 
+               sp.partition = sp.partition,
+               sp.formula = "richness + I(richness^2)",
+               mode = "prey", method = "glm")
+m$form.all
+
 }
 \author{
 Giovanni Poggiato and Jérémy Andréletti
