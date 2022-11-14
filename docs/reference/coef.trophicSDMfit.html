@@ -114,104 +114,101 @@
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span><span class="co"># unstandardised regression coefficients</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean        2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.3565861 -0.01433201  0.7418182</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.3291004 -1.74074818 -0.8912266</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.7026445  1.16915504  2.1873284</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.3462987 -0.01536259  0.6865959</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.3661542 -1.80090389 -0.8691231</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.7211807  1.29917353  2.1668688</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%       97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.2713200 -0.6166334  0.14636352</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          2.5927917  2.0419872  3.08830647</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.5098388 -0.9863390 -0.08745422</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%      97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.2655798 -0.6655579 0.12381706</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          2.5909821  2.0239532 3.11023208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.4963262 -1.0271885 0.01155836</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6124571 -1.0076089 -0.2089716</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.7589770  1.2799250  2.2736795</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.3544931  0.8077884  1.7916777</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.5974376 -0.9767862 -0.2278316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.7423373  1.2610379  2.2235306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.3164955  0.8621046  1.7792852</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6147727 -1.1431252 -0.1671408</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.4725945  0.9434470  2.0518569</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2730505 -2.8769892 -1.6007827</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9606222  1.5795805  2.3335783</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1110749 -0.4047558  0.2118720</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9744260 -1.3021047 -0.6774548</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    mean       2.5%      97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.63274929 -1.0872539 -0.1587879</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.48087901  0.9336967  1.9895662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27193162 -2.9086077 -1.8024883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.96377684  1.6186637  2.3241763</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09752094 -0.4100062  0.2144019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.98148043 -1.3027964 -0.6413840</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%       97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.8016783  0.4678545  1.14849878</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.1047682 -1.5653808 -0.65527329</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.1034198 -0.5450092  0.37703212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.3028988 -0.5972153 -0.02235561</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%        97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.7928656  0.4022780  1.211849496</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.1296014 -1.5633631 -0.671618627</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.1006786 -0.5660359  0.338088924</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.2929379 -0.5639164 -0.008642056</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean        2.5%       97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.3283389  0.89430622  1.70544099</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -0.2219162 -0.67695144  0.23245806</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          0.5600326  0.09117711  1.06145829</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9761839 -1.29741277 -0.65149904</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y5          -0.3799569 -0.65638688 -0.09912253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%       97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.3015698  0.8507434  1.78364378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -0.2201200 -0.6756530  0.23620182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          0.5860988  0.1446835  1.07472383</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9743728 -1.3607589 -0.65497722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y5          -0.3788207 -0.7077982 -0.08057117</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co">#standardised regression coefficients with 90% credible intervals</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span>, standardised <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean          5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.3565861  0.05418043  0.6594438</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.3291004 -1.67982959 -0.9846960</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.7026445  1.24753001  2.1271114</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.3462987  0.03786604  0.6361135</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.3661542 -1.72220508 -0.9464740</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.7211807  1.34971654  2.0881625</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean         5%         95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.2713200 -0.5513414  0.07166972</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          2.5927917  2.1392348  3.03961529</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.5098388 -0.8895762 -0.14105925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.2655798 -0.5790655  0.05461180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          2.5909821  2.1370050  3.01231900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.4963262 -0.9532486 -0.09270323</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean         5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6124571 -0.9301559 -0.3123582</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.7589770  1.3460257  2.1824902</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.3544931  0.9077569  1.7337990</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.5974376 -0.9245686 -0.3012602</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.7423373  1.3349807  2.1470766</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          1.3164955  0.9261441  1.7391685</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean         5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6147727 -1.0447122 -0.2283101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.4725945  1.0389221  1.9488873</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2730505 -2.7639413 -1.7647440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9606222  1.6314354  2.2726100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1110749 -0.3697387  0.1568938</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9744260 -1.2478028 -0.7178709</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    mean         5%        95%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.63274929 -1.0389992 -0.2108417</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.48087901  0.9983203  1.8774803</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.27193162 -2.8008562 -1.8617598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.96377684  1.6708827  2.2585985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.09752094 -0.3854802  0.1760819</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.98148043 -1.2471193 -0.6913030</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean         5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.8016783  0.5226505  1.0965614</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.1047682 -1.5023626 -0.7035241</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.1034198 -0.4655402  0.2962413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.3028988 -0.5435648 -0.0810252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean         5%         95%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.7928656  0.4642271  1.14672616</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -1.1296014 -1.4923353 -0.73504495</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -0.1006786 -0.4696140  0.27571395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.2929379 -0.5322603 -0.03662909</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean         5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.3283389  0.9691760  1.6535009</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -0.2219162 -0.6034438  0.1750486</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          0.5600326  0.1940471  1.0057042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9761839 -1.2481568 -0.7020937</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y5          -0.3799569 -0.6128910 -0.1401015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.3015698  0.9235765  1.6988842</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1         -0.2201200 -0.6108375  0.1772221</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2          0.5860988  0.2177804  1.0118183</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9743728 -1.2928124 -0.7184929</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y5          -0.3788207 -0.6408444 -0.1292948</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Run the same model using glm as fitting method</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span>, <span class="va">env.formula</span>, </span></span>

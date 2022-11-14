@@ -59,10 +59,11 @@
 #' plot(m$model$Y5)
 #' 
 #' # Fit a sparse model in the Bayesian framework with the horshoe prior
+#' \dontrun{
 #' m = trophicSDM(Y,X,G, env.formula, 
 #'                family = binomial(link = "logit"), penal = "horshoe", 
 #'                mode = "prey", method = "stan_glm")
-#' 
+#' }
 #' # Fit frequentist glm
 #' m = trophicSDM(Y,X,G, env.formula, 
 #'                family = binomial(link = "logit"), penal = NULL, 
@@ -228,7 +229,7 @@ trophicSDM = function(Y, X, G,
                                          method = method, penal = penal,
                                          iter = iter, family = family))
 
-  if(!is.null(penal)){ if(object$penal == "coeff.signs"){
+  if(!is.null(penal)){ if(penal == "coeff.signs"){
   trophicSDMfit$coef = lapply(trophicSDMfit$model,function(x) x$coef)
   }}
   

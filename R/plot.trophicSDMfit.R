@@ -20,7 +20,9 @@
 #' # Plot all species
 #' plot(m)
 #' # Plot just the first three species
+#' \dontrun{
 #' plot(m, species = c("Y1","Y2","Y3"))
+#' }
 #' @method plot trophicSDMfit
 #' @export
 

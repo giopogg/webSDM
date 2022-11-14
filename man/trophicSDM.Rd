@@ -99,10 +99,11 @@ coef(m$model$Y5)
 plot(m$model$Y5)
 
 # Fit a sparse model in the Bayesian framework with the horshoe prior
+\dontrun{
 m = trophicSDM(Y,X,G, env.formula, 
                family = binomial(link = "logit"), penal = "horshoe", 
                mode = "prey", method = "stan_glm")
-
+}
 # Fit frequentist glm
 m = trophicSDM(Y,X,G, env.formula, 
                family = binomial(link = "logit"), penal = NULL, 

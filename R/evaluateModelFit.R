@@ -31,8 +31,9 @@
 #' evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 #' 
 #' # Note that this is equivalent to:
+#' \dontrun{
 #' evaluateModelFit(m)
-#' 
+#' }
 #' # If we fitted the model using "glm"
 #' m = trophicSDM(Y, X, G, env.formula, iter = 50,
 #'                family = binomial(link = "logit"), penal = NULL, 

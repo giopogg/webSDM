@@ -195,7 +195,227 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># define abiotic part of the model</span></span></span>
+<span class="r-in"><span><span class="va">env.formula</span> <span class="op">=</span> <span class="st">"~ X_1 + X_2"</span></span></span>
+<span class="r-in"><span><span class="co"># Run the model with bottom-up control using stan_glm as fitting method and no penalisation</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
+<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A trophicSDM fit with no penalty, fitted using stan_glm </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  with a bottom-up approach </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Number of species : 6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Number of links : 6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * Useful fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     $coef </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * Useful S3 methods</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     print(), coef(), plot(), predict(), evaluateModelFit() </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     predictFundamental(), plotG(), plotG_inferred(), computeVariableImportance() </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * Local models (i.e. single species SDM) can be accessed through </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     $model</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Access local models (e.g. species "Y5")</span></span></span>
+<span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Local SDMfit for species Y5 with no penalty , fitted using stan_glm </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * Useful S3 methods</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     print(), coef(), plot(), predict()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     $model gives the stanreg class object </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%      97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6316391 -1.0493405 -0.1838875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.5061838  0.9463464  2.0773356</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2723743 -2.9143114 -1.7523083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9626465  1.6140960  2.3316009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1108447 -0.4528242  0.1861449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -1.0024491 -1.2919756 -0.6764151</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="trophicSDM-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit a sparse model in the Bayesian framework with the horshoe prior</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="st">"horshoe"</span>, </span></span>
+<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in trophicSDM(Y, X, G, env.formula, family = binomial(link = "logit"),     penal = "horshoe", mode = "prey", method = "stan_glm"):</span> object 'object' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit frequentist glm</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
+<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-in"><span>               </span></span>
+<span class="r-in"><span><span class="co"># With elasticnet penalty   </span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="st">"elasticnet"</span>, </span></span>
+<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in trophicSDM(Y, X, G, env.formula, family = binomial(link = "logit"),     penal = "elasticnet", mode = "prey", method = "glm"):</span> object 'object' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#### Composite variables</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Model species as a function of a quadratic polynomial of prey richness</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
+<span class="r-in"><span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span></span>
+<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I(Y1 + Y2 + Y3)+I(I(Y1 + Y2 + Y3)^2)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I(Y3)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I(Y3 + Y5)+I(I(Y3 + Y5)^2)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co"># Notice that for predators that feed on a single prey (with presence-absence data),</span></span></span>
+<span class="r-in"><span><span class="co"># their richness and the square of their richness is exactly the same variable</span></span></span>
+<span class="r-in"><span><span class="co"># In this case, trophicSDM() remove the redundant variable but prints a warning message</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Model species as a function of a dummy variable saying whether they have at leaste one prey</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
+<span class="r-in"><span>               sp.formula <span class="op">=</span> <span class="st">"I(richness&gt;0)"</span>,</span></span>
+<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I(I(Y1 + Y2 + Y3) &gt; 0)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I(I(Y3) &gt; 0)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I(I(Y3 + Y5) &gt; 0)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Define group of preys and model species as a function of the richness (with a quadratic term)</span></span></span>
+<span class="r-in"><span><span class="co"># of these groups of preys separately</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Species Y1 and Y2 belong to the same group, species Y3 and Y4 are both alone in their group and </span></span></span>
+<span class="r-in"><span><span class="co"># species Y5 and Y6 form another group</span></span></span>
+<span class="r-in"><span><span class="va">sp.partition</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y1"</span>,<span class="st">"Y2"</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y3"</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y4"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y5"</span>,<span class="st">"Y6"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
+<span class="r-in"><span>               sp.partition <span class="op">=</span> <span class="va">sp.partition</span>,</span></span>
+<span class="r-in"><span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span></span>
+<span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
+<span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I((Y1 + Y2))+I(I((Y1 + Y2)^2))+I((Y3))"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I((Y3))"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1+X_2+I((Y3))+I((Y5))"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
