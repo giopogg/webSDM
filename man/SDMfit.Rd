@@ -32,17 +32,17 @@ SDMfit(
 
 \item{formula.foc}{The formula for the abiotic part of the species distribution model.}
 
-\item{sp.formula}{(optional) It allows to specify a particular definition of the biotic part of the model, e.g., using composite variables (e.g., richness), or an interaction of the biotic and abitic component. More details in 'Details'.}
+\item{sp.formula}{(optional) It allows to specify a particular definition of the biotic part of the model, e.g., using composite variables (e.g., richness), or an interaction of the biotic and abiotic component. More details in 'Details'.}
 
-\item{sp.partition}{(optional) a list to specify groups of species that are used to compute composite variables, e.g., a species can be modelled as a function of the richness of each group of preys. It has to be a list, each element is a vector containing the names of species in the group.}
+\item{sp.partition}{(optional) a list to specify groups of species that are used to compute composite variables, e.g., a species can be modeled as a function of the richness of each group of preys. It has to be a list, each element is a vector containing the names of species in the group.}
 
 \item{mode}{"prey" if bottom-up control (default), "predators" otherwise. Notice that G needs to be such that links point from predators to prey.}
 
-\item{method}{which SDM method to use. For now the available choises are: "glm" (frequentist) or "stan_glm" (full bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.}
+\item{method}{which SDM method to use. For now the available choices are: "glm" (frequentist) or "stan_glm" (full Bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.}
 
 \item{family}{the family parameter of the glm function (see glm). family=gaussian(link ="identity") for gaussian data or family=binomial(link = "logit") or binomial(link = "probit") for presence-absence data.}
 
-\item{penal}{(optional, default to NULL) Penalisation method to shrink regression coefficients.If NULL (default), the model does not penalise the regression coefficient. For now, available penalisation method are "horshoe" for stan_glm, "elasticnet" for glm and  "coeff.signs" (prey coefficients are set to posite and predator coefficients to negative) for glm and stan_glm.}
+\item{penal}{(optional, default to NULL) Penalisation method to shrink regression coefficients.If NULL (default), the model does not penalise the regression coefficient. For now, available penalisation method are "horshoe" for stan_glm, "elasticnet" for glm and  "coeff.signs" (prey coefficients are set to positive and predator coefficients to negative) for glm and stan_glm.}
 
 \item{iter}{(for method="stan_glm" only) Number of iterations for each MCMC chain if stan_glm is used}
 
@@ -70,12 +70,12 @@ A list containing 'm', a "SDMfit" object and 'form.all', a string describing the
 \item{log.lik}{The log.likelihood of the local model}
 }
 \description{
-SDMfit is used to fit a single species SDM, what we call a 'local model' of trophicSDM. It returns an object of class 'SDMfit'. Requires basically the same inputs of trophicSDM, with the requirement to specify with the parameter 'focal' the species that is modelled by the SDMfit.
+SDMfit is used to fit a single species SDM, what we call a 'local model' of trophicSDM. It returns an object of class 'SDMfit'. Requires basically the same inputs of trophicSDM, with the requirement to specify with the parameter 'focal' the species that is modeled by the SDMfit.
 }
 \details{
 "sp.formula" and "sp.partition" can be combined to define any kind of composite variables for the biotic part of the formula. "sp.formula" can be :
 \itemize{
-\item A string defining a formula as function of "richness". E.g., sp.formula="richness+I(richness)^2" (species are modelled as a function of a quadratic polyome of their prey richness), "I(richness>0)" (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey groups.\cr
+\item A string defining a formula as function of "richness". E.g., sp.formula="richness+I(richness)^2" (species are modeled as a function of a quadratic polynomial of their prey richness), "I(richness>0)" (species are modeled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey groups.\cr
 \item A more flexible option is to specify sp.formula as a list (whose names are species' names) that contains for each species the definition biotic part of the model. Notice that, in this case, the function does not check that the model is a DAG. This allow to define any kind of composite variable, or to model interactions between environmental covariates and preys (or predators).
 }
 }
@@ -87,5 +87,5 @@ mySDM = SDMfit("Y6", Y, X, G, "~X_1 + X_2", mode = "prey",
 mySDM$m
 }
 \author{
-Giovanni Poggiato and Jérémy Andréletti
+Giovanni Poggiato and Jérémy Andréoletti
 }

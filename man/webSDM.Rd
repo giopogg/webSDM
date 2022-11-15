@@ -7,6 +7,3 @@
 \description{
 Package to fit a trophic Species Distribution Model, analyse it and predict. See Poggiato et al. In prep.
 }
-\author{
-Giovanni Poggiato \email{giov.poggiato@gmail.com} and Jérémy Andréoletti
-}

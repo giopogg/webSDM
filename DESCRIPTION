@@ -1,19 +1,18 @@
 Package: webSDM
-Title: Including known interactions in SDM
-Version: 1.0
-Maintainer: Giovanni Poggiato <giov.poggiato@gmail.com>
-Description: Package to fit a trophic Species Distribution Model, analyse it and predict. See Poggiato et al. In prep.
+Title: Including Known Interactions in Species Distribution Models
+Version: 1.1-1
+Description: Package to fit a trophic Species Distribution Model, analyse it and use it to predict. Trophic Species Distribution Models combine knowledge of trophic interactions with Bayesian structural equation models that model each species as a function of its prey (or predators) and environmental conditions. It exploit the topological ordering of the known trophic interaction network to predict species distribution in space and/or time, where the prey (or predator) distribution is unavailable. 
 License: GPL-3
 Encoding: UTF-8
 Imports: GGally, Matrix, abind, bayesplot, brms, broom.mixed, dismo, dplyr, ggplot2, glmnet, gridExtra, igraph, jtools, rstanarm, rstantools, utils
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Authors@R: 
-    c(person("Giovanni", "Poggiato", , "giov.poggiato@gmai.com", role = c("aut","cre"),
+    c(person("Giovanni", "Poggiato",, "giov.poggiato@gmail.com", role = c("aut","cre","cph"),
            comment = c(ORCID = "0000-0003-1957-9764")),
-      person("Jérémy", "Andréoletti", role = c("aut", "ctb"),
+      person("Jérémy", "Andréoletti", role = c("aut"),
            comment = c(ORCID = "0000-0003-1957-9764")))
-URL: https://github.com/giopogg/trophicSDM
+URL: https://github.com/giopogg/webSDM
 Suggests: 
     knitr,
     rmarkdown,

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">webSDM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1-1</span>
       </span>
     </div>
 
@@ -56,14 +56,14 @@
       <a href="../articles/Composite_variables.html">Composite variables and biotic-abiotic interactions</a>
     </li>
     <li>
-      <a href="../articles/Differences_with_SDMs.html">Subtles and obvious differences between SDM and trophic SDM</a>
+      <a href="../articles/Differences_with_SDMs.html">Subtle and obvious differences between SDM and trophic SDM</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/giopogg/trophicSDM/" class="external-link">
+  <a href="https://github.com/giopogg/webSDM/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -84,7 +84,7 @@
       <h1 data-toc-skip>Introduction to trophic SDM</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/giopogg/trophicSDM/blob/HEAD/vignettes/Introduction.Rmd" class="external-link"><code>vignettes/Introduction.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/giopogg/webSDM/blob/HEAD/vignettes/Introduction.Rmd" class="external-link"><code>vignettes/Introduction.Rmd</code></a></small>
       <div class="hidden name"><code>Introduction.Rmd</code></div>
 
     </div>
@@ -99,7 +99,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
 <span><span class="co"># Run to install webSDM</span></span>
 <span><span class="co"># install_github("giopogg/webSDM")</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/trophicSDM" class="external-link">webSDM</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/webSDM" class="external-link">webSDM</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org" class="external-link">igraph</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">gridExtra</span><span class="op">)</span></span>
@@ -383,7 +383,7 @@ We hereafter use this function to compute the relative importance of the abiotic
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">tab</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Var2</span>, y <span class="op">=</span> <span class="va">value</span>, fill <span class="op">=</span> <span class="va">Var1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Introduction_files/figure-html/varImpo-1.png" width="672"></p>
-<p>We clearly see that our model correctly retrived the simulated pattern, with the importance of biotic variables with respect to the abiotic ones becomes greater as the trophic level increases.</p>
+<p>We clearly see that our model correctly retrieved the simulated pattern, with the importance of biotic variables with respect to the abiotic ones becomes greater as the trophic level increases.</p>
 <p>Finally, we can visualise the effect of each trophic interactions with the function <code>plotG_inferred</code>, which plots the metaweb <code>G</code> together with the variable importance (i.e. the standardised regression coefficient) of each link. The parameter <code>level</code> sets the confidence level with which coefficients are deemed as significant or non-significant.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotG_inferred.html">plotG_inferred</a></span><span class="op">(</span><span class="va">m</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
@@ -427,7 +427,7 @@ We hereafter use this function to compute the relative importance of the abiotic
 <div class="section level2">
 <h2 id="predictions-with-trophic-sdm">Predictions with trophic SDM<a class="anchor" aria-label="anchor" href="#predictions-with-trophic-sdm"></a>
 </h2>
-<p>We showed how to fit and analyse a trophic SDM and how to predict a single species (Y6 in the previous section), when we can fix the distribution of its prey. However, the distribution of prey is tipically unavaible when we want to predict the distribution of species at unobserved sites and/or under future environmental conditions. Intuitively, in a simple network of two trophic level we would need to predict the prey first and use these predictions to predict the predator. To generalize this idea to complex networks, we predict species following the topological ordering of the metaweb. This order that exists for every DAG guarantees that when predicting a given species, all its prey will have already been predicted.<br>
+<p>We showed how to fit and analyse a trophic SDM and how to predict a single species (Y6 in the previous section), when we can fix the distribution of its prey. However, the distribution of prey is typically unavailable when we want to predict the distribution of species at unobserved sites and/or under future environmental conditions. Intuitively, in a simple network of two trophic level we would need to predict the prey first and use these predictions to predict the predator. To generalize this idea to complex networks, we predict species following the topological ordering of the metaweb. This order that exists for every DAG guarantees that when predicting a given species, all its prey will have already been predicted.<br>
 The function <code>predict</code> computes the topological order of species, and then predicts them sequentially. As any <code>predict</code> function, it takes into account the values of the environmental variables in the argument <code>Xnew</code>. We can provide to the function the number of samples from the posterior distribution.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, Xnew <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, pred_samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -523,7 +523,7 @@ The function <code>predict</code> computes the topological order of species, and
 <div class="section level3">
 <h3 id="cross-validation">Cross-validation<a class="anchor" aria-label="anchor" href="#cross-validation"></a>
 </h3>
-<p>We now compare the two approaches in K-fild cross validation with the function <code>trophicSDM_CV</code>. This function creates a partition based on the specified number of fold (but can also takes a user-specified partition in the argument <code>partition</code>) and run a cross validation. This can take a bit of time. Set <code>run.parallel = TRUE</code> if you want to reduce computation time.</p>
+<p>We now compare the two approaches in K-fold cross validation with the function <code>trophicSDM_CV</code>. This function creates a partition based on the specified number of fold (but can also takes a user-specified partition in the argument <code>partition</code>) and run a cross validation. This can take a bit of time. Set <code>run.parallel = TRUE</code> if you want to reduce computation time.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3-fold cross validation</span></span>
 <span><span class="va">CV</span> <span class="op">=</span> <span class="fu"><a href="../reference/trophicSDM_CV.html">trophicSDM_CV</a></span><span class="op">(</span><span class="va">m</span>, K <span class="op">=</span> <span class="fl">3</span>, prob.cov <span class="op">=</span> <span class="cn">T</span>, iter <span class="op">=</span> <span class="fl">2000</span>,</span>
@@ -607,7 +607,7 @@ The function <code>predict</code> computes the topological order of species, and
 <div class="section level2">
 <h2 id="fundamental-niche">Fundamental niche<a class="anchor" aria-label="anchor" href="#fundamental-niche"></a>
 </h2>
-<p>We also implemented a function to predict species fundamental niches, defined as the probability of presence of species along the enviromental gradient when the biotic constrain is realised, i.e., when all its prey are set to present (viceversa, when modelling species top-down, when the predator are absent). We here compute the probability of presence of species at environmental conditions X_1= 0.5, X_2 = 0.5 when the preys are available.</p>
+<p>We also implemented a function to predict species fundamental niches, defined as the probability of presence of species along the environmental gradient when the biotic constrain is realised, i.e., when all its prey are set to present (vice-versa, when modeling species top-down, when the predator are absent). We here compute the probability of presence of species at environmental conditions X_1= 0.5, X_2 = 0.5 when the preys are available.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">preds</span> <span class="op">=</span> <span class="fu"><a href="../reference/predictFundamental.html">predictFundamental</a></span><span class="op">(</span><span class="va">m</span>, Xnew <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Take the posterior mean</span></span>
@@ -639,7 +639,7 @@ The function <code>predict</code> computes the topological order of species, and
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <p>Grace, J. B., Johnson, D. J., Lefcheck, J. S., and Byrnes, J. E. K.. 2018. Quantifying relative importance: computing standardized effects in models with binary outcomes. Ecosphere 9(6):e02283.</p>
-<p>Vehtari, A., Gelman, A., and Gabry, J. (2017). Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC. Statistics and Computing. 27(5), 1413–1432. <a href="doi:10.1007/s11222-016-9696-4" class="uri">doi:10.1007/s11222-016-9696-4</a> (journal version, preprint arXiv:1507.04544).</p>
+<p>Vehtari, A., Gelman, A., and Gabry, J. (2017). Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC. Statistics and Computing. 27(5), 1413–1432.</p>
 </div>
   </div>
 

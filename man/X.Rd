@@ -3,7 +3,7 @@
 \docType{data}
 \name{X}
 \alias{X}
-\title{Simulated environemntal covariates X}
+\title{Simulated environmental covariates X}
 \format{
 A site x covariates matrix X
 }
@@ -11,7 +11,7 @@ A site x covariates matrix X
 data(X)
 }
 \description{
-Simulated environemntal covariates X
+Simulated environmental covariates X
 }
 \examples{
 data(X)

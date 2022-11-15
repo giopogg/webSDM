@@ -29,7 +29,7 @@
 
 \item{verbose}{Whether to print advances of the algorithm}
 
-\item{fullPost}{Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fillPost = TRUE) or just the posterior mean, and 2.5\% and 97.5\% quantiles,}
+\item{fullPost}{Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fullPost = TRUE) or just the posterior mean, and 2.5\% and 97.5\% quantiles,}
 
 \item{filter.table}{Optional, default to NULL, should be provided only if the users wants to filter some species predictions. A sites x species matrix of zeros and ones.}
 

@@ -15,7 +15,7 @@ plotG_inferred(tSDM, level = 0.9)
 A ggnet object.
 }
 \description{
-Plot the metaweb G with links colored accordingly to the inferred prey-predator regression coefficients of a fitted trophicSDM model. Plots the metaweb G, where each predator-prey link is colored according to whether the related regression coefficient if inferred as positive (in red), negative (in blue) or non-significant (dashed grey line) according to the confidence level specified in "level". Estimates of the significant standardised regression coefficients are pasted on the links. Only works if species are modelled as a function of their preys or predators without composite variables (i.e., the function only works if tSDM is fitted with sp.formula = NULL and sp.partition = NULL)
+Plot the metaweb G with links colored accordingly to the inferred prey-predator regression coefficients of a fitted trophicSDM model. Plots the metaweb G, where each predator-prey link is colored according to whether the related regression coefficient if inferred as positive (in red), negative (in blue) or non-significant (dashed grey line) according to the confidence level specified in "level". Estimates of the significant standardised regression coefficients are pasted on the links. Only works if species are modeled as a function of their preys or predators without composite variables (i.e., the function only works if tSDM is fitted with sp.formula = NULL and sp.partition = NULL)
 }
 \examples{
 data(Y, X, G)

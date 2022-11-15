@@ -30,7 +30,7 @@
 #' # Run a 3-fold (K=3) cross validation. Predictions is done using presence-absences of preys
 #' # (prob.cov = FALSE, see ?predict.trophicSDM) with 50 draws from the posterior distribution
 #' # (pred_samples = 50)
-#' \dontrun{
+#' \donttest{
 #' CV = trophicSDM_CV(m, K = 3, prob.cov = FALSE, pred_samples = 10, run.parallel = FALSE)
 #' # Use predicted values to evaluate model goodness of fit in cross validation
 #' Ypred = CV$meanPred[,colnames(Y)]
@@ -52,7 +52,7 @@ trophicSDM_CV = function(tSDM, K, partition = NULL, prob.cov = FALSE,
                          pred_samples = NULL,
                          iter = NULL, chains = NULL, run.parallel = TRUE, verbose = FALSE){
 
-  if(class(tSDM) != "trophicSDMfit") stop("tSDM needs to be a trophicSDMfit object")
+  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
 
   # set MCMC parameters
   if(tSDM$model.call$method == "glm"){ iter = 1; pred_samples = 1

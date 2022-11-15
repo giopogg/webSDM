@@ -20,7 +20,7 @@ env.formula = "~ X_1 + X_2"
 m = trophicSDM(Y,X,G, env.formula, 
                family = binomial(link = "logit"), penal = NULL, iter = 50,
                mode = "prey", method = "stan_glm")
-\dontrun{brms::loo(m)}
+\donttest{brms::loo(m)}
 }
 \author{
 Giovanni Poggiato

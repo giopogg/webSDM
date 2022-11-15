@@ -18,7 +18,7 @@ summary.SDMfit = function(object, ...){
   
   SDM = object
 
-  if(class(SDM) != "SDMfit") stop("SDM is not an object of class SDMfit" )
+  if(inherits(SDM, "SDMfit")) stop("SDM is not an object of class SDMfit" )
   cat("==================================================================\n")
 
   model = paste0("Local SDMfit for species ", SDM$sp.name, " with ",

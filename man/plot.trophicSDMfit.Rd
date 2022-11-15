@@ -28,7 +28,7 @@ m = trophicSDM(Y, X, G, env.formula, iter = 50,
 # Plot all species
 plot(m)
 # Plot just the first three species
-\dontrun{
+\donttest{
 plot(m, species = c("Y1","Y2","Y3"))
 }
 }

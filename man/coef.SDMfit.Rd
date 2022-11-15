@@ -19,7 +19,7 @@
 A table containing the inferred coefficients (with credible intervals or p-values when available).
 }
 \description{
-Gets regression coefficients (eventually standardised) of a local model, i.e. a SDMfit object. p-values or credible intervales are returned when available.
+Gets regression coefficients (eventually standardised) of a local model, i.e. a SDMfit object. p-values or credible intervals are returned when available.
 }
 \examples{
 data(Y, X, G)

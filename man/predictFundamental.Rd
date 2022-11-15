@@ -21,13 +21,13 @@ predictFundamental(
 
 \item{verbose}{Whether to print advances of the algorithm.}
 
-\item{fullPost}{Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fillPost = TRUE) or just the posterior mean, and 2.5\% and 97.5\% quantiles.}
+\item{fullPost}{Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fullPost = TRUE) or just the posterior mean, and 2.5\% and 97.5\% quantiles.}
 }
 \value{
 A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites.
 }
 \description{
-Compues predicted values of the fundamental niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
+Computes predicted values of the fundamental niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
 }
 \examples{
 data(Y, X, G)

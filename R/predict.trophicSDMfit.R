@@ -7,7 +7,7 @@
 #' @param pred_samples Number of samples to draw from species posterior predictive distribution when method = "stan_glm". If NULL, set by the default to the number of iterations/10.
 #' @param run.parallel Whether to use parallelise code when possible. Can speed up computation time.
 #' @param verbose Whether to print advances of the algorithm
-#' @param fullPost Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fillPost = TRUE) or just the posterior mean, and 2.5% and 97.5% quantiles,
+#' @param fullPost Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fullPost = TRUE) or just the posterior mean, and 2.5% and 97.5% quantiles,
 #' @param filter.table Optional, default to NULL, should be provided only if the users wants to filter some species predictions. A sites x species matrix of zeros and ones.
 #' @param ... 	additional arguments
 #' @return A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites.
@@ -50,7 +50,7 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
   tSDM = object
   ############################################################
   # checks & errors
-  if(class(tSDM) != "trophicSDMfit") stop("You must provide a trophicSDMfit object")
+  if(inherits(tSDM) != "trophicSDMfit") stop("You must provide a trophicSDMfit object")
 
   if(is.null(pred_samples)){
 

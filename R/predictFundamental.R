@@ -1,11 +1,11 @@
 #' Predicts species fundamental niche
 #' 
-#' Compues predicted values of the fundamental niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
+#' Computes predicted values of the fundamental niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @param Xnew a matrix specifying the environmental covariates for the predictions to be made. If NULL (default), predictions are done on the training dataset (e.g. by setting Xnew = tSDM$data$X).
 #' @param pred_samples Number of samples to draw from species posterior predictive distribution when method = "stan_glm". If NULL, set by the default to the number of iterations/10.
 #' @param verbose Whether to print advances of the algorithm.
-#' @param fullPost Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fillPost = TRUE) or just the posterior mean, and 2.5% and 97.5% quantiles.
+#' @param fullPost Optional parameter for stan_glm only. Whether to give back the full posterior predictive distribution (default, fullPost = TRUE) or just the posterior mean, and 2.5% and 97.5% quantiles.
 #' @return A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites.
 #' @export
 #' @author Giovanni Poggiato and Jérémy Andréoletti
@@ -48,7 +48,7 @@
 predictFundamental = function(tSDM, Xnew = NULL, pred_samples = NULL,
                               verbose = FALSE, fullPost = TRUE){
 
-  if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class trophicSDMfit" )
+  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
 
   if(is.null(Xnew)) Xnew = tSDM$data$X
 

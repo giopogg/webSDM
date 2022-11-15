@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.SDMfit.R
 \name{plot.SDMfit}
 \alias{plot.SDMfit}
-\title{Plots the regression coeffiecients of a local model}
+\title{Plots the regression coefficients of a local model}
 \usage{
 \method{plot}{SDMfit}(x, level = 0.95, ...)
 }
@@ -14,7 +14,7 @@
 \item{...}{additional arguments}
 }
 \description{
-Plots the regression coeffiecients of a local SDMfit model
+Plots the regression coefficients of a local SDMfit model
 }
 \examples{
 data(Y, X, G)

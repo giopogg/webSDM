@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">webSDM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1-1</span>
       </span>
     </div>
 
@@ -38,11 +38,11 @@
       <a href="../articles/Composite_variables.html">Composite variables and biotic-abiotic interactions</a>
     </li>
     <li>
-      <a href="../articles/Differences_with_SDMs.html">Subtles and obvious differences between SDM and trophic SDM</a>
+      <a href="../articles/Differences_with_SDMs.html">Subtle and obvious differences between SDM and trophic SDM</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/giopogg/trophicSDM/" class="external-link">
+  <a href="https://github.com/giopogg/webSDM/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -57,7 +57,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Predicts with a local model</h1>
-    <small class="dont-index">Source: <a href="https://github.com/giopogg/trophicSDM/blob/HEAD/R/predict.SDMfit.R" class="external-link"><code>R/predict.SDMfit.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/giopogg/webSDM/blob/HEAD/R/predict.SDMfit.R" class="external-link"><code>R/predict.SDMfit.R</code></a></small>
     <div class="hidden name"><code>predict.SDMfit.Rd</code></div>
     </div>
 
@@ -85,7 +85,7 @@
 
 
 <dt>prob.cov</dt>
-<dd><p>Only for preence-absence data. If set to FALSE, it gives back also predicted presence-absences (which is then used by trophicSDM.predict to predict the predators).</p></dd>
+<dd><p>Only for presence-absence data. If set to FALSE, it gives back also predicted presence-absences (which is then used by trophicSDM.predict to predict the predators).</p></dd>
 
 
 <dt>...</dt>
@@ -96,7 +96,7 @@
     <h2>Value</h2>
     
 
-<p>A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites. If prob.cov = TRUE, it returns a list contaning:</p><ul><li><p>predictions.probPredicted probabilities of presence</p></li>
+<p>A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites. If prob.cov = TRUE, it returns a list containing:</p><ul><li><p>predictions.probPredicted probabilities of presence</p></li>
 <li><p>predictions.probPredicted presence-absences</p></li>
 </ul></div>
     <div id="author">
@@ -119,9 +119,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span><span class="co"># In order to predict non-basal species, we need to also provide</span></span></span>
 <span class="r-in"><span><span class="co"># the predicted occurrences of its preys. Here we compute the probability of</span></span></span>
@@ -130,11 +130,11 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y4</span>, newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span>, Y3 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, pred_samples <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictions.prob</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4653395 0.4617272 0.4569686 0.4877582 0.4472648 0.4995289 0.5126069</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]      [,2]      [,3]      [,4]      [,5]      [,6]     [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.485951 0.4890948 0.4515877 0.4712144 0.4574777 0.4663045 0.492979</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    iterations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.4639123 0.4973847 0.4815131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 0.5027586 0.5185651 0.4757655</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictions.bin</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>

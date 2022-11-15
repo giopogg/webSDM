@@ -1,6 +1,6 @@
-#' Plots the regression coeffiecients of a local model
+#' Plots the regression coefficients of a local model
 #' 
-#' Plots the regression coeffiecients of a local SDMfit model
+#' Plots the regression coefficients of a local SDMfit model
 #' @param x A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param level the confidence level of the confidence intervals
 #' @param ... 	additional arguments
@@ -29,7 +29,7 @@ plot.SDMfit = function(x, level = 0.95,...){
 
   SDM = x
   
-  if(class(SDM) != "SDMfit") stop("SDM is not an object of class SDMfit" )
+  if(inherits(SDM, "SDMfit")) stop("SDM is not an object of class SDMfit" )
 
   if(SDM$method == "glm"){
 

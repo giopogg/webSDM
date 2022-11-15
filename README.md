@@ -10,7 +10,7 @@ Giovanni Poggiato
 webSDM implements the trophic SDM model described in Poggiato et al.,
 “Integrating trophic food webs in species distribution models improves
 ecological niche estimation and prediction”. Trophic SDM integrate a
-known trophic interaction network in SDM, thus oroviding more realistic
+known trophic interaction network in SDM, thus providing more realistic
 and ecologically sound predictions. We here after present a quick
 introduction to some of the feature of the package, but we refer to the
 vignettes and the help functions for a more complete documentation of
@@ -25,6 +25,9 @@ library(devtools)
 install_github("giopogg/webSDM")
 ## Downloading GitHub repo giopogg/webSDM@HEAD
 ## Skipping 2 packages ahead of CRAN: StanHeaders, rstan
+## Installing 1 packages: plyr
+## Downloading GitHub repo paul-buerkner/brms@HEAD
+## Installing 1 packages: V8
 library(webSDM)
 ## Registered S3 method overwritten by 'GGally':
 ##   method from   
@@ -49,7 +52,7 @@ x covariates matrix) and G is an `igraph` object describing the
 interaction network (with links going from predators to prey). We
 specify, for every species, a quadratic relationship with respect to the
 environment, and we fit a model assuming bottom-up control (i.e.,
-predators are modelled as a function of preys). We fit the trophicSDM in
+predators are modeled as a function of preys). We fit the trophicSDM in
 the Bayesian framework.
 
 ``` r
@@ -76,13 +79,13 @@ m$form.all
 ## [1] "y ~ X_1 + X_2"
 ## 
 ## $Y5
-## [1] "y ~ X_1 + X_2+Y1+Y2+Y3"
+## [1] "y ~ X_1+X_2+Y1+Y2+Y3"
 ## 
 ## $Y4
-## [1] "y ~ X_1 + X_2+Y3"
+## [1] "y ~ X_1+X_2+Y3"
 ## 
 ## $Y6
-## [1] "y ~ X_1 + X_2+Y3+Y5"
+## [1] "y ~ X_1+X_2+Y3+Y5"
 ```
 
 We can have a first look to regression coefficients using the function
@@ -101,45 +104,45 @@ with the function `coef`.
 coef(m, standardise = T, level = 0.9)
 ## $Y1
 ##               estimate         5%        95%
-## (Intercept)  0.3562149  0.3562149  0.3562149
-## X_1         -0.2014647 -0.2604956 -0.1436094
-## X_2          0.2554151  0.1937473  0.3159938
+## (Intercept)  0.3579785  0.3579785  0.3579785
+## X_1         -0.2046204 -0.2581289 -0.1507982
+## X_2          0.2550685  0.1927555  0.3167255
 ## 
 ## $Y2
 ##                estimate         5%         95%
-## (Intercept) -0.24979347 -0.2497935 -0.24979347
-## X_1          0.38275398  0.3229011  0.45082125
-## X_2         -0.07791224 -0.1311278 -0.01871129
+## (Intercept) -0.27418710 -0.2741871 -0.27418710
+## X_1          0.38494658  0.3230859  0.45113422
+## X_2         -0.07451045 -0.1262927 -0.01844076
 ## 
 ## $Y3
 ##               estimate         5%        95%
-## (Intercept) -0.6018835 -0.6018835 -0.6018835
-## X_1          0.2653408  0.2055345  0.3216305
-## X_2          0.1958249  0.1337946  0.2639825
+## (Intercept) -0.5879114 -0.5879114 -0.5879114
+## X_1          0.2645129  0.2007260  0.3262837
+## X_2          0.1954173  0.1306161  0.2625365
 ## 
 ## $Y5
 ##                estimate          5%         95%
-## (Intercept) -0.64779230 -0.64779230 -0.64779230
-## X_1          0.20323300  0.14004437  0.26087663
-## X_2         -0.30565183 -0.37097541 -0.24290578
-## Y1           0.44458437  0.37791324  0.51034823
-## Y2          -0.02181675 -0.08456258  0.03748773
-## Y3          -0.20632689 -0.26510604 -0.14831954
+## (Intercept) -0.62455617 -0.62455617 -0.62455617
+## X_1          0.20118853  0.14522254  0.26381736
+## X_2         -0.30476466 -0.36915856 -0.24523493
+## Y1           0.44149251  0.37271295  0.51996169
+## Y2          -0.02182216 -0.07798091  0.03246396
+## Y3          -0.20867017 -0.26749779 -0.15107126
 ## 
 ## $Y4
-##                estimate         5%         95%
-## (Intercept)  0.78836717  0.7883672  0.78836717
-## X_1         -0.17847005 -0.2331681 -0.11012682
-## X_2         -0.01380052 -0.0764206  0.04672100
-## Y3          -0.07569101 -0.1295458 -0.01520788
+##                estimate          5%         95%
+## (Intercept)  0.81087991  0.81087991  0.81087991
+## X_1         -0.17537046 -0.23262792 -0.11708815
+## X_2         -0.01573358 -0.07228362  0.04171549
+## Y3          -0.07727005 -0.12803793 -0.01765965
 ## 
 ## $Y6
 ##                estimate          5%         95%
-## (Intercept)  1.31567391  1.31567391  1.31567391
-## X_1         -0.03349156 -0.08985247  0.02697293
-## X_2          0.08725338  0.02590899  0.16075345
-## Y3          -0.24235979 -0.30849456 -0.17930790
-## Y5          -0.10309014 -0.16706182 -0.03837826
+## (Intercept)  1.32794077  1.32794077  1.32794077
+## X_1         -0.03391749 -0.09782827  0.02242149
+## X_2          0.09007290  0.03310870  0.15240385
+## Y3          -0.24091000 -0.30688487 -0.17868017
+## Y5          -0.09929429 -0.16268869 -0.03896562
 ```
 
 We can visualise the biotic coefficients with the function
@@ -205,19 +208,19 @@ Ypred = do.call(cbind,
 Ypred = Ypred[,colnames(Y)]
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 ##         auc        tss species
-## 1 0.6732725 0.28030560      Y1
-## 2 0.7049140 0.31314479      Y2
-## 3 0.6689169 0.27724486      Y3
-## 4 0.5989422 0.17304892      Y4
-## 5 0.6243296 0.22047079      Y5
-## 6 0.5448663 0.07774837      Y6
+## 1 0.6733744 0.28064516      Y1
+## 2 0.7049049 0.31464180      Y2
+## 3 0.6689794 0.27546580      Y3
+## 4 0.5970780 0.16303148      Y4
+## 5 0.6196847 0.20630517      Y5
+## 6 0.5456740 0.08833226      Y6
 
 m$log.lik
-## [1] -3638.918
+## [1] -3638.561
 m$AIC
-## [1] 7337.835
+## [1] 7337.122
 loo(m)
-## [1] -3651.445
+## [1] -3650.704
 ```
 
 We can also evaluate the quality of model predictions using K-fold
@@ -233,24 +236,24 @@ evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 ```
 
 We can now evaluate species probabilities of presence for the
-enviromental conditions X_1 = 0.5 and X_2 = 0.5.
+environmental conditions X_1 = 0.5 and X_2 = 0.5.
 
 ``` r
 Pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), fullPost = F)
 t(do.call(cbind, Pred))
 ##    predictions.mean predictions.q025 predictions.q975
-## Y1 0.6331431        0.6035287        0.6641208       
-## Y2 0.6827973        0.6567078        0.715115        
-## Y3 0.7183925        0.6959038        0.7412682       
-## Y5 0.4540656        0.1067405        0.7156716       
-## Y4 0.4962124        0.4350453        0.5902856       
-## Y6 0.6370469        0.490708         0.8478799
+## Y1 0.6347592        0.6021979        0.6771479       
+## Y2 0.6858699        0.6443526        0.7173587       
+## Y3 0.7195125        0.6943108        0.7541284       
+## Y5 0.3715789        0.08845326       0.7382257       
+## Y4 0.488158         0.4306166        0.5685854       
+## Y6 0.6415191        0.5085278        0.7978324
 ```
 
 We can also obtain an estimation of the fundamental niche, that
 corresponds, in the bottom-up approach, to the probability of presence
 of a species given that its preys are present. We can for example
-compute the probability of presence of species for the enviromental
+compute the probability of presence of species for the environmental
 conditions X_1 = 0.5 and X_2 = 0.5 assuming all their preys to be
 present.
 
@@ -299,12 +302,6 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                family = binomial(link = "logit"),
                mode = "prey", method = "stan_glm", penal = "horshoe")
 ## [1] "--- Species Y1 ---"
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#tail-ess
 ## [1] "--- Species Y2 ---"
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
@@ -318,14 +315,10 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
 ## [1] "--- Species Y4 ---"
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
 ## [1] "--- Species Y6 ---"
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
-
 ## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#tail-ess
@@ -361,13 +354,13 @@ m$form.all
 ## [1] "y ~ X_1 + X_2"
 ## 
 ## $Y5
-## [1] "y ~ X_1 + X_2+I(Y1+Y2+Y3)"
+## [1] "y ~ X_1+X_2+I(Y1 + Y2 + Y3)"
 ## 
 ## $Y4
-## [1] "y ~ X_1 + X_2+I(Y3)"
+## [1] "y ~ X_1+X_2+I(Y3)"
 ## 
 ## $Y6
-## [1] "y ~ X_1 + X_2+I(Y3+Y5)"
+## [1] "y ~ X_1+X_2+I(Y3 + Y5)"
 ```
 
 ## Author

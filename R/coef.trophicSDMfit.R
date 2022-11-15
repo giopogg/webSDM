@@ -1,6 +1,6 @@
 #' Gets regression coefficients from a fitted trophicSDM model.
 #'
-#' Gets regression coefficients (eventually standardised) of a fitted trophicSDM. p-values or credible intervales are returned when available. 
+#' Gets regression coefficients (eventually standardised) of a fitted trophicSDM. p-values or credible intervals are returned when available. 
 #' @param object A trophicSDMfit object obtained with trophicSDM()
 #' @param standardise Whether to standardise regression coefficients. Default to FALSE. If TRUE, coefficients are standardised using the latent variable standardisation (see Grace et al. 2018) for more details.
 #' @param level The confidence level of credible intervals, only available for stan_glm method. Default to 0.95.
@@ -39,7 +39,7 @@ coef.trophicSDMfit = function(object, standardise = F, level = 0.95, ...){
   
   tSDM = object
 
-  if(class(tSDM) != "trophicSDMfit") stop("object is not of class trophicSDMfit" )
+  if(inherits(tSDM, "trophicSDMfit")) stop("object is not of class trophicSDMfit" )
   if(!is.null(tSDM$model.call$penal)){if(tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs penalisation")}}
   
   lapply(tSDM$model, function(x) coef(x, standardise = standardise, level = level))

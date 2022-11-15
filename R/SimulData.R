@@ -15,7 +15,7 @@
 #' data(Y)
 NULL
 
-#' Simulated environemntal covariates X
+#' Simulated environmental covariates X
 #' @name X
 #' @docType data
 #'

@@ -1,6 +1,6 @@
 #' Plot the metaweb G according to the inferred coefficients
 #' 
-#' Plot the metaweb G with links colored accordingly to the inferred prey-predator regression coefficients of a fitted trophicSDM model. Plots the metaweb G, where each predator-prey link is colored according to whether the related regression coefficient if inferred as positive (in red), negative (in blue) or non-significant (dashed grey line) according to the confidence level specified in "level". Estimates of the significant standardised regression coefficients are pasted on the links. Only works if species are modelled as a function of their preys or predators without composite variables (i.e., the function only works if tSDM is fitted with sp.formula = NULL and sp.partition = NULL)
+#' Plot the metaweb G with links colored accordingly to the inferred prey-predator regression coefficients of a fitted trophicSDM model. Plots the metaweb G, where each predator-prey link is colored according to whether the related regression coefficient if inferred as positive (in red), negative (in blue) or non-significant (dashed grey line) according to the confidence level specified in "level". Estimates of the significant standardised regression coefficients are pasted on the links. Only works if species are modeled as a function of their preys or predators without composite variables (i.e., the function only works if tSDM is fitted with sp.formula = NULL and sp.partition = NULL)
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @param level The confidence level used to decide whether regression coefficients are non-significant or not. Default to 0.9.
 #' @return A ggnet object.
@@ -24,7 +24,7 @@
 plotG_inferred = function(tSDM, level = 0.90){
 
   #########Checks
-  if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class trophicSDMfit" )
+  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
   if(!is.null(tSDM$model.call$penal)){ if(tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs oenalisation")}}
   
   if(!is.null(tSDM$model.call$sp.formula)) stop("plotG_inferred only works without composite variables")

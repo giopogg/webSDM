@@ -4,20 +4,20 @@
 #' @param Y The sites x species matrix containing observed species distribution (e.g. presence-absence).
 #' @param X The design matrix, i.e. sites x predictor matrix containing the value of each explanatory variable (e.g. the environmental conditions) at each site.
 #' @param G The species interaction network (aka metaweb). Needs to be an igraph object. Links must go from predator to preys. It needs to be a directed acyclic graph.
-#' @param env.formula The definition of the abitic part of the model. It can be :
+#' @param env.formula The definition of the abiotic part of the model. It can be :
 #' \itemize{
 #' \item a string specifying the formula (e.g. "~ X_1 + X_2"). In this case, the same environmental variables are used for every species.
 #' 
 #' \item A list that contains for each species the formula that describes the abiotic part of the model. In this case, different species can be modeled as a function of different environmental covariates. The names of the list must coincide with the names of the species.
 #' }
-#' @param method which SDM method to use. For now the available choises are: \code{"glm"} (frequentist) or \code{"stan_glm"} (full bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.
+#' @param method which SDM method to use. For now the available choices are: \code{"glm"} (frequentist) or \code{"stan_glm"} (full bayesian MCMC, default). Notice that using "glm" does not allow error propagation when predicting.
 #' @param mode  "prey" if bottom-up control (default), "predators" otherwise. Notice that G needs to be such that links point from predators to prey.
 #' @param family the family parameter of the glm function (see \code{glm}). \code{gaussian(link = "identity")} for gaussian data. \code{binomial(link = "logit")} or \code{binomial(link = "probit")} for presence-absence data.
 #' @param iter (for \code{"stan_glm"} only) Number of iterations for each MCMC chain if stan_glm is used
 #' @param chains (for \code{"stan_glm"} only) Number of MCMC chains (default to 2)
-#' @param penal Penalisation method to shrink regression coefficients. If \code{NULL} (default), the model does not penalise the regression coefficient. For now, available penalization method are  \code{"horshoe"} for method stan_glm, \code{"elasticnet"} for method glm. It is also possible to constrain the sign of biotic coefficients (prey coefficients are set to posite and predator coefficients to negative) by setting \code{"coeff.signs"} for methods glm and stan_glm.
+#' @param penal Penalisation method to shrink regression coefficients. If \code{NULL} (default), the model does not penalise the regression coefficient. For now, available penalization method are  \code{"horshoe"} for method stan_glm, \code{"elasticnet"} for method glm. It is also possible to constrain the sign of biotic coefficients (prey coefficients are set to positive and predator coefficients to negative) by setting \code{"coeff.signs"} for methods glm and stan_glm.
 #' @param sp.formula (optional) It allows to specify a particular definition of the biotic part of the model, e.g., using composite variables (e.g., richness), or an interaction of the biotic and abitic component. More details in 'Details'.
-#' @param sp.partition (optional) a list to specify groups of species that are used to compute composite variables, e.g., a species can be modelled as a function of the richness of each group of preys. It has to be a list, each element is a vector containing the names of species in the group. More details in 'Details'.
+#' @param sp.partition (optional) a list to specify groups of species that are used to compute composite variables, e.g., a species can be modeled as a function of the richness of each group of preys. It has to be a list, each element is a vector containing the names of species in the group. More details in 'Details'.
 #' @param run.parallel Whether species models are fitted in parallel (can speed computational up time). Default to \code{FALSE}.
 #' @param verbose Whether to print algorithm progresses
 #' @return A "trophicSDMfit" object, containing:
@@ -39,10 +39,10 @@
 #'
 #' @details "sp.formula" and "sp.partition" can be combined to define any kind of composite variables for the biotic part of the formula. "sp.formula" can be :
 #' \itemize{
-#' \item A string defining a formula as function of "richness", e.g., \code{"richness+I(richness)^2"} (species are modelled as a function of a quadratic polyome of their prey richness), \code{"I(richness>0)"} (species are modelled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey (or predator) groups.
+#' \item A string defining a formula as function of "richness", e.g., \code{"richness+I(richness)^2"} (species are modeled as a function of a quadratic polynomial of their prey richness), \code{"I(richness>0)"} (species are modeled as a function of a dummy variable that is equal to 1 when at least one species is present). Importantly, when group of preys (or predators) are specified by "sp.partition", species are modeled as a function of the composite variable specified by "sp.formula" for each of their prey (or predator) groups.
 #'  \item A more flexible option is to specify sp.formula as a list (whose names are species' names) that contains for each species the definition of the biotic part of the model. Notice that, in this case, the function does not check that the model is a DAG. This allow to define any kind of composite variable, or to model interactions between environmental covariates and preys (or predators).
 #'}
-#' @author Giovanni Poggiato and Jérémy Andréletti
+#' @author Giovanni Poggiato and Jérémy Andréoletti
 #' @examples
 #' data(Y, X, G)
 #' # define abiotic part of the model
@@ -59,7 +59,7 @@
 #' plot(m$model$Y5)
 #' 
 #' # Fit a sparse model in the Bayesian framework with the horshoe prior
-#' \dontrun{
+#' \donttest{
 #' m = trophicSDM(Y,X,G, env.formula, 
 #'                family = binomial(link = "logit"), penal = "horshoe", 
 #'                mode = "prey", method = "stan_glm")

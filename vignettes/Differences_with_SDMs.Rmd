@@ -1,8 +1,8 @@
 ---
-title: "Subtles and obvious differences between SDM and trophic SDM"
+title: "Subtle and obvious differences between SDM and trophic SDM"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Subtles and obvious differences between SDM and trophic SDM}
+  %\VignetteIndexEntry{Subtle and obvious differences between SDM and trophic SDM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   
@@ -181,7 +181,7 @@ cor(B, pred_trophic)^2
 ```
 The relationship between the coefficients of the two models does not hold anymore more, and predictions are now different, with trophic SDM reaching a far better predictive accuracy than classic SDM for species $y_B$ (R2 of 0.83 and 0.96 respectively).
 
-### Non-continous observable entities (presence-absence, counts) 
+### Non-continuous observable entities (presence-absence, counts) 
 Let’s now consider here the case of presence-absences (i.e. binary data), without modifying the other two conditions. Therefore, we use a (generalized) linear model like logistic regression, and we model a linear relationship (at the link level) between predator and prey. Thus, for SDM we have:  
 $$
 \begin{aligned}

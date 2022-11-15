@@ -13,12 +13,12 @@
 
 \item{pred_samples}{Number of samples to draw from species posterior predictive distribution when method = "stan_glm". If NULL, set by the default to the number of iterations/10.}
 
-\item{prob.cov}{Only for preence-absence data. If set to FALSE, it gives back also predicted presence-absences (which is then used by trophicSDM.predict to predict the predators).}
+\item{prob.cov}{Only for presence-absence data. If set to FALSE, it gives back also predicted presence-absences (which is then used by trophicSDM.predict to predict the predators).}
 
 \item{...}{additional arguments}
 }
 \value{
-A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites. If prob.cov = TRUE, it returns a list contaning:
+A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites. If prob.cov = TRUE, it returns a list containing:
 \itemize{
 \item{predictions.prob}{Predicted probabilities of presence}
 \item{predictions.prob}{Predicted presence-absences}

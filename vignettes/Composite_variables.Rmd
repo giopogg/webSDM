@@ -37,12 +37,12 @@ m = trophicSDM(Y, X, G,
                mode = "prey", method = "glm")
 ```
 Notice that for predators that feed on a single prey (with presence-absence data), their richness and the square of their richness is exactly the same variable. In this case, `trophicSDM()` removes the redundant variable but prints a warning message.
-We can see the formulas created by the argment `$form.all` of the fitted model.
+We can see the formulas created by the argument `$form.all` of the fitted model.
 ```{r form I}
 m$form.all
 ```
 
-We now set as composite variable a dummy variable specifying whether there is at least one avaible prey or not. To do so we define `sp.formula = "I(richness>0)"`.
+We now set as composite variable a dummy variable specifying whether there is at least one available prey or not. To do so we define `sp.formula = "I(richness>0)"`.
 
 ```{r fit II}
 m = trophicSDM(Y,X,G,
@@ -56,12 +56,12 @@ Which leads to the following formulas:
 m$form.all
 ```
 ## Composite variables and groups of preys
-A halfway between considering that each species has a differential effect on the predator (i.e., no composite variable), or that every prey has the same effect (i.e., modelling predator as a function of prey richness), is to create group of species that we assume to have the same effect on the predator. Then, we can model predator as a function of composite variables calculated on each of these groups. To do so, we rely on the argument `sp.partition`. This parameters has to be a list, where each element contain the species of the given group.  
+A halfway between considering that each species has a differential effect on the predator (i.e., no composite variable), or that every prey has the same effect (i.e., modeling predator as a function of prey richness), is to create group of species that we assume to have the same effect on the predator. Then, we can model predator as a function of composite variables calculated on each of these groups. To do so, we rely on the argument `sp.partition`. This parameters has to be a list, where each element contain the species of the given group.  
 For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 are alone in their group and Y5 and Y6 to form another group.
 ```{r sp.partion}
 sp.partition = list(c("Y1","Y2"),c("Y3"),c("Y4"), c("Y5","Y6"))
 ```
-Then, we can specifiy whatever `sp.formula`, for example using richness (with a quadratic term).
+Then, we can specify whatever `sp.formula`, for example using richness (with a quadratic term).
 ```{r fit III}
 m = trophicSDM(Y,X,G, "~ X_1 + X_1^2", 
                family = binomial(link = "logit"), penal = NULL, 
@@ -91,7 +91,7 @@ m = trophicSDM(Y,X,G, "~ X_1 + X_1^2",
 
 m$form.all
 ```
-## On computeVariableImpontance with composite variable
+## On computeVariableImportance with composite variable
 When computing the importance of variables using the function `computeVariableImportance`, you should be careful with the definition of groups. Indeed, the function computes the variable importance of each group as the sum of the standardised regression coefficients containing some variables from the groups. Therefore, if species from different groups of variable are merged in the same composite variable, `computeVariableImportance` will sum the regression coefficient of the composite variable in different groups, leading to wrong results. For example, if `sp.formula = "richness"` and `sp.partition = NULL`, you should put all species in the same group in the argument `groups`. 
 ```{r varimpo I}
 m = trophicSDM(Y,X,G,

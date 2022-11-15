@@ -13,12 +13,12 @@
 #' m = trophicSDM(Y,X,G, env.formula, 
 #'                family = binomial(link = "logit"), penal = NULL, iter = 50,
 #'                mode = "prey", method = "stan_glm")
-#' \dontrun{brms::loo(m)}
+#' \donttest{brms::loo(m)}
 #' @method loo trophicSDMfit
 #' @export
 loo.trophicSDMfit = function(tSDM){
   
-  if(class(tSDM) != "trophicSDMfit") stop("tSDM needs to be a trophicSDMfit object")
+  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
   
   if(tSDM$model.call$method != "stan_glm") stop("loo is available only for stan_glm method")
   

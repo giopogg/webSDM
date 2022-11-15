@@ -13,7 +13,7 @@
 #' env.formula = "~ X_1 + X_2"
 #' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 #' # (set iter = 1000 to obtain reliable results)
-#' m = trophicSDM(Y, X, G, env.formula, 
+#' m = trophicSDM(Y, X, G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
 #' #Compute the importance of each variable
@@ -27,7 +27,7 @@
 computeVariableImportance = function(tSDM, groups = NULL){
 
   if(!is.null(tSDM$model.call$penal)) {if(tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs penalisation")}}
-  if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class SDMfit" )
+  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class SDMfit" )
   if(!is.null(tSDM$model.call$sp.formula)) warning("If you use composite variables, you should group together species that belong to the same composite variable. For example, if sp.formula = 'richness' and sp.partition = NULL, you should put all species in the same group in the argument 'groups'. If you define a partition of species in sp.partition, then species in the same group in sp.partition should put all species in the same group in the argument 'groups'")
   
   if(is.null(groups)) {

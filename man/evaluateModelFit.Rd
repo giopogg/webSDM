@@ -17,7 +17,7 @@ evaluateModelFit(tSDM, Ynew = NULL, Ypredicted = NULL)
 A table specifying the goodness of fit metrics for each species. For presence-absence data, the model computes TSS and AUC. For Gaussian data, the R2.
 }
 \description{
-Evalute goodness of fit by comparing a true versus a predicted dataset of species distribution. Ypredicted is tipically predicted using a prediction method of trophicSDM (in cross-validation if \code{trophicSDM_CV()} is used).
+Evaluate goodness of fit by comparing a true versus a predicted dataset of species distribution. Ypredicted is typically predicted using a prediction method of trophicSDM (in cross-validation if \code{trophicSDM_CV()} is used).
 }
 \examples{
 data(Y, X, G)
@@ -41,7 +41,7 @@ Ypred = Ypred[,colnames(Y)]
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 
 # Note that this is equivalent to:
-\dontrun{
+\donttest{
 evaluateModelFit(m)
 }
 # If we fitted the model using "glm"

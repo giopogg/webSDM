@@ -56,7 +56,7 @@ m = trophicSDM(Y, X, G, env.formula, iter = 50,
 # Run a 3-fold (K=3) cross validation. Predictions is done using presence-absences of preys
 # (prob.cov = FALSE, see ?predict.trophicSDM) with 50 draws from the posterior distribution
 # (pred_samples = 50)
-\dontrun{
+\donttest{
 CV = trophicSDM_CV(m, K = 3, prob.cov = FALSE, pred_samples = 10, run.parallel = FALSE)
 # Use predicted values to evaluate model goodness of fit in cross validation
 Ypred = CV$meanPred[,colnames(Y)]

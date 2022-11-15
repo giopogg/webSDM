@@ -1,6 +1,6 @@
 #' Evaluates prediction goodness of fit
 #' 
-#' Evalute goodness of fit by comparing a true versus a predicted dataset of species distribution. Ypredicted is tipically predicted using a prediction method of trophicSDM (in cross-validation if \code{trophicSDM_CV()} is used).
+#' Evaluate goodness of fit by comparing a true versus a predicted dataset of species distribution. Ypredicted is typically predicted using a prediction method of trophicSDM (in cross-validation if \code{trophicSDM_CV()} is used).
 #' @param tSDM A trophicSDMfit object obtained with \code{trophicSDM()}.
 #' @param Ynew A sites x species matrix containing the true species occurrences state. If set to NULL (default), it is set to the species distribution data Y on which the model is fitted.
 #' @param Ypredicted A sites x species matrix containing the predicted species occurrences state. If set to NULL (default), it is set to the fitted values, i.e. predictions on the dataset used to train the model.
@@ -31,7 +31,7 @@
 #' evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 #' 
 #' # Note that this is equivalent to:
-#' \dontrun{
+#' \donttest{
 #' evaluateModelFit(m)
 #' }
 #' # If we fitted the model using "glm"
@@ -51,7 +51,7 @@
 
 evaluateModelFit = function(tSDM, Ynew = NULL, Ypredicted = NULL){
 
-  if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class trophicSDMfit" )
+  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
 
   if(is.null(Ynew)){
 

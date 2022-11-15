@@ -4,7 +4,6 @@
 #'
 #' @docType package
 #'
-#' @author Giovanni Poggiato \email{giov.poggiato@gmail.com} and Jérémy Andréoletti
 #'
 #' @name webSDM
 #' 
