@@ -48,7 +48,7 @@
 predictFundamental = function(tSDM, Xnew = NULL, pred_samples = NULL,
                               verbose = FALSE, fullPost = TRUE){
 
-  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
 
   if(is.null(Xnew)) Xnew = tSDM$data$X
 

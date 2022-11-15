@@ -37,7 +37,7 @@
 predict.SDMfit = function(object, newdata, pred_samples = NULL, prob.cov = TRUE,...){
 
   SDM = object 
-  if(inherits(SDM, "SDMfit")) stop("you need to provide a SDMfit object")
+  if(!inherits(SDM, "SDMfit")) stop("you need to provide a SDMfit object")
   
   if(is.null(pred_samples)){
     
@@ -65,7 +65,7 @@ predict.SDMfit = function(object, newdata, pred_samples = NULL, prob.cov = TRUE,
       }
       # retrieve a unique presence/absence prediction
       if(!prob.cov) {
-        if (inherits(SDM$model,'brmsfit')){  # brms package
+        if(inherits(SDM$model,'brmsfit')){  # brms package
           predictions=t(posterior_predict(SDM$model, newdata=as.data.frame(newdata), nsamples=pred_samples))
         }else{  # rstan package
           predictions=t(posterior_predict(SDM$model, newdata=as.data.frame(newdata), draws=pred_samples))

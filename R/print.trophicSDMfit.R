@@ -19,7 +19,7 @@ print.trophicSDMfit = function(x, ...){
 
   tSDM = x
   
-  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
 
   summary(tSDM)
   

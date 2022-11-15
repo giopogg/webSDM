@@ -51,7 +51,7 @@
 
 evaluateModelFit = function(tSDM, Ynew = NULL, Ypredicted = NULL){
 
-  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
 
   if(is.null(Ynew)){
 

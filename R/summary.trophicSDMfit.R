@@ -20,7 +20,7 @@ summary.trophicSDMfit = function(object,  ...){
   
   tSDM = object
 
-  if(class(tSDM) != "trophicSDMfit") stop("tSDM is not an object of class trophicSDMfit" )
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
 
     model = paste0("A trophicSDM fit with ", ifelse(is.null(tSDM$model.call$penal), "no", tSDM$model.call$penal)," penalty, ",
     "fitted using ", tSDM$model.call$method,

@@ -18,7 +18,7 @@ print.SDMfit = function(x, ...){
 
   SDM = x
   
-  if(inherits(SDM, "SDMfit")) stop("SDM is not an object of class SDMfit" )
+  if(!inherits(SDM, "SDMfit")) stop("SDM is not an object of class SDMfit" )
 
   summary(SDM)
   

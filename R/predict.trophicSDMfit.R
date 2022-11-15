@@ -50,7 +50,7 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
   tSDM = object
   ############################################################
   # checks & errors
-  if(inherits(tSDM) != "trophicSDMfit") stop("You must provide a trophicSDMfit object")
+  if(!inherits(tSDM, "trophicSDMfit")) stop("You must provide a trophicSDMfit object")
 
   if(is.null(pred_samples)){
 

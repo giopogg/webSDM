@@ -52,7 +52,7 @@ trophicSDM_CV = function(tSDM, K, partition = NULL, prob.cov = FALSE,
                          pred_samples = NULL,
                          iter = NULL, chains = NULL, run.parallel = TRUE, verbose = FALSE){
 
-  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
 
   # set MCMC parameters
   if(tSDM$model.call$method == "glm"){ iter = 1; pred_samples = 1

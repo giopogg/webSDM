@@ -18,7 +18,7 @@
 #' @export
 loo.trophicSDMfit = function(tSDM){
   
-  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
   
   if(tSDM$model.call$method != "stan_glm") stop("loo is available only for stan_glm method")
   

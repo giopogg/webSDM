@@ -215,8 +215,8 @@ SDMfit = function(focal, Y, X, G, formula.foc, sp.formula = NULL, sp.partition =
   
   if(!useBRMS){
     SDM$data = as.data.frame(cbind(y = SDM$data$y, model.matrix(as.formula(SDM$form.all),SDM$data)))
-  
-  SDM$coef = coef(SDM) # add coefficients by calling coef.SDMfit
+    
+    SDM$coef = coef(SDM) # add coefficients by calling coef.SDMfit
   }
   
   # Add AIC and log.lik

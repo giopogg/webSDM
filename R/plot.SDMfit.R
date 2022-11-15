@@ -29,7 +29,7 @@ plot.SDMfit = function(x, level = 0.95,...){
 
   SDM = x
   
-  if(inherits(SDM, "SDMfit")) stop("SDM is not an object of class SDMfit" )
+  if(!inherits(SDM, "SDMfit")) stop("SDM is not an object of class SDMfit" )
 
   if(SDM$method == "glm"){
 

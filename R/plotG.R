@@ -22,7 +22,7 @@
 plotG = function(tSDM){
 
   #########Checks
-  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
 
   G = tSDM$data$G
 

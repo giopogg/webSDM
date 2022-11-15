@@ -30,7 +30,7 @@ plot.trophicSDMfit = function(x, species = NULL, ...){
   
   tSDM = x
   #########Checks
-  if(inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
+  if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )
   
   if(!is.null(species) &
      !all(species %in% tSDM$data$sp.name)) stop("species must be either NULL or a subset of tSDM$data$sp.name")

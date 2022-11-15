@@ -39,7 +39,7 @@ coef.trophicSDMfit = function(object, standardise = F, level = 0.95, ...){
   
   tSDM = object
 
-  if(inherits(tSDM, "trophicSDMfit")) stop("object is not of class trophicSDMfit" )
+  if(!inherits(tSDM, "trophicSDMfit")) stop("object is not of class trophicSDMfit" )
   if(!is.null(tSDM$model.call$penal)){if(tSDM$model.call$penal == "coeff.signs"){stop("This function is not available for coeff.signs penalisation")}}
   
   lapply(tSDM$model, function(x) coef(x, standardise = standardise, level = level))
