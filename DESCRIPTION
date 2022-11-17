@@ -22,5 +22,6 @@ Suggests:
     randomForest,
     network,
     sna,
-    scales
+    scales,
+    intergraph
 VignetteBuilder: knitr
