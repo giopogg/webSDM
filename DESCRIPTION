@@ -12,12 +12,15 @@ Authors@R:
            comment = c(ORCID = "0000-0003-1957-9764")),
       person("Jérémy", "Andréoletti", role = c("aut"),
            comment = c(ORCID = "0000-0003-1957-9764")))
-URL: https://github.com/giopogg/webSDM
+URL: https://github.com/giopogg/webSDM, https://giopogg.github.io/webSDM/
 Suggests: 
     knitr,
     rmarkdown,
     reshape2,
     devtools,
     loo,
-    randomForest
+    randomForest,
+    network,
+    sna,
+    scales
 VignetteBuilder: knitr

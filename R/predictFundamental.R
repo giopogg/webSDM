@@ -17,24 +17,21 @@
 #' env.formula = "~ X_1 + X_2"
 #' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 #' # (set iter = 1000 to obtain reliable results)
-#' m = trophicSDM(Y, X, G, env.formula, 
+#' m = trophicSDM(Y, X, G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
 #' # Obtain 100 draws from the posterior predictive distribution of species fundamental niche
-#' (pred_samples = 100)
+#' # (pred_samples = 50)
 #' # Since we don't specify Xnew, the function sets Xnew = X by default
-#' Ypred = predictFundamental(m, fullPost = TRUE, pred_samples = 100)
+#' Ypred = predictFundamental(m, fullPost = TRUE, pred_samples = 50)
 #' # We can ask the function to only give back posterior mean and 95% credible intervals with
 #' # fullPost = FALSE
-#' Ypred = predictFundamental(m, fullPost = FALSE, pred_samples = 100)
-#' 
-#' 
-#' 
+#' \donttest{
+#' Ypred = predictFundamental(m, fullPost = FALSE, pred_samples = 50)
+#' }
 #' #' We can now evaluate species probabilities of presence for the enviromental
 #' # conditions c(0.5, 0.5)
-#' predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
-#' 
-#' 
+#' predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), pred_samples = 50)
 #' 
 #' # If we fit the model using in a frequentist  way (e.g. glm)
 #' m = trophicSDM(Y, X, G, env.formula, 

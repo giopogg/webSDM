@@ -26,7 +26,9 @@ env.formula = "~ X_1 + X_2"
 m = trophicSDM(Y, X, G, env.formula, 
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
+\donttest{
 plotG_inferred(m)
+}
 }
 \author{
 Giovanni Poggiato

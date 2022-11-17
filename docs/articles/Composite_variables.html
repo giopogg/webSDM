@@ -95,6 +95,8 @@
 In <code>webSDM</code> it is possible to define an extremely large set of composite variables using the arguments <code>sp.formula</code> and <code>sp.partition</code>. In general, <code>sp.formula</code> allows the definition of the composite variables, while <code>sp.partition</code> allow to define the groups of preys (or predator) for which each composite variable is calculate. Hereafter we don’t provide a complete analyses of a case-study using composite variables, but rather focus on the description of how to implement them in <code>webSDM</code>. Finally, we will see how to include an interaction between preys and the environment.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/webSDM" class="external-link">webSDM</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'sna::degree' by 'igraph::degree' when</span></span>
+<span><span class="co">#&gt; loading 'webSDM'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">X</span> ,<span class="va">Y</span>, <span class="va">G</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="composite-variables">Composite variables<a class="anchor" aria-label="anchor" href="#composite-variables"></a>

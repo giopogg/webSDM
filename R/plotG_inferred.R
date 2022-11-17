@@ -19,7 +19,9 @@
 #' m = trophicSDM(Y, X, G, env.formula, 
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
+#' \donttest{
 #' plotG_inferred(m)
+#' }
 
 plotG_inferred = function(tSDM, level = 0.90){
 
@@ -68,8 +70,7 @@ plotG_inferred = function(tSDM, level = 0.90){
 
   edge.color_loc = sapply(1:length(igraph::E(G)), function(x) ifelse(edge_attr(G)$weight[x]>0, "#CC0000", "#0000CC"))
   edge.color_loc[which(edge_attr(G)$weight == 0)] = "grey"
-
-
+  
   ggnet2(G, mode = layout, arrow.size = 8, node.alpha = 0.5, label=T, arrow.gap = 0.04,
          edge.label = as.character(signif(edge_attr(G)$weight,1)), edge.color =  edge.color_loc,
          edge.alpha = ifelse(edge.color_loc == "grey", 0.5, 1),

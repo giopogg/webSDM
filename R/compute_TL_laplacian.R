@@ -16,6 +16,13 @@ compute_TL_laplacian <- function(G){
   if (igraph::vcount(G) == 1) return(setNames(0, igraph::V(G)$name))
   A = as.matrix(igraph::get.adjacency(G))
   names_loc = rownames(A)
+  
+  
+  if (isNamespaceLoaded("sna")) { unloadNamespace("sna") }
+  if (!isNamespaceLoaded("igraph")) { 
+    if(!requireNamespace('igraph', quietly = TRUE)) stop("Package 'igraph' not found")
+  }
+  
   u  = igraph::degree(G)
   v =  igraph::degree(G,mode ='in') - igraph::degree(G,mode = 'out')
 

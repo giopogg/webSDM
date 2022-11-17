@@ -46,7 +46,9 @@
 #' 
 #' evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 #' # Note that this is equivalent to:
+#' \donttest{
 #' evaluateModelFit(m)
+#' }
 #' @export
 
 evaluateModelFit = function(tSDM, Ynew = NULL, Ypredicted = NULL){

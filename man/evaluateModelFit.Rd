@@ -56,7 +56,9 @@ Ypred = Ypred[,colnames(Y)]
 
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 # Note that this is equivalent to:
+\donttest{
 evaluateModelFit(m)
+}
 }
 \references{
 Grace, J. B., Johnson, D. J., Lefcheck, J. S., and Byrnes, J. E. K.. 2018. Quantifying relative importance: computing standardized effects in models with binary outcomes. Ecosphere 9(6):e02283.

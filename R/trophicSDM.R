@@ -48,7 +48,8 @@
 #' # define abiotic part of the model
 #' env.formula = "~ X_1 + X_2"
 #' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
-#' m = trophicSDM(Y,X,G, env.formula, 
+#' # Increase the number of iterations to obtain reliable results.
+#' m = trophicSDM(Y,X,G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
 #' print(m)
@@ -56,8 +57,9 @@
 #' # Access local models (e.g. species "Y5")
 #' m$model$Y5
 #' coef(m$model$Y5)
+#' \donttest{
 #' plot(m$model$Y5)
-#' 
+#' }
 #' # Fit a sparse model in the Bayesian framework with the horshoe prior
 #' \donttest{
 #' m = trophicSDM(Y,X,G, env.formula, 
