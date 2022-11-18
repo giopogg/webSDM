@@ -4,6 +4,7 @@
 #' @param x A trophicSDMfit object obtained with trophicSDM()
 #' @param species A vector of species names to be plot. If NULL (default), all species are plotted.
 #' @param ... additional arguments
+#' @return A plot of the regression coefficients of the fitted tropic SDM
 #' @author Giovanni Poggiato
 #' @import ggplot2
 #' @importFrom  grDevices devAskNewPage

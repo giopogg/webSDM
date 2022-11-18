@@ -1,6 +1,7 @@
 #' Prints a SDMfit object
 #' @param x A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param ... 	additional arguments
+#' @return Prints a summary of the local SDM
 #' @author Giovanni Poggiato
 #' @method print SDMfit
 #' @export

@@ -9,6 +9,9 @@ compute_TL_laplacian(G)
 \arguments{
 \item{G}{The metaweb, it has to be an igraph object}
 }
+\value{
+The trophic level of each node of G. By ordering species according to their trophic level, we obtain one topological ordering of the graph.
+}
 \description{
 Method to compute trophic levels from an igraph object G with the method described in MacKay et al 2020.
 }

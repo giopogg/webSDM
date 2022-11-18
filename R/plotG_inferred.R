@@ -3,7 +3,7 @@
 #' Plot the metaweb G with links colored accordingly to the inferred prey-predator regression coefficients of a fitted trophicSDM model. Plots the metaweb G, where each predator-prey link is colored according to whether the related regression coefficient if inferred as positive (in red), negative (in blue) or non-significant (dashed grey line) according to the confidence level specified in "level". Estimates of the significant standardised regression coefficients are pasted on the links. Only works if species are modeled as a function of their preys or predators without composite variables (i.e., the function only works if tSDM is fitted with sp.formula = NULL and sp.partition = NULL)
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @param level The confidence level used to decide whether regression coefficients are non-significant or not. Default to 0.9.
-#' @return A ggnet object.
+#' @return A ggnet object
 #' @author Giovanni Poggiato
 #' @import ggplot2
 #' @importFrom igraph E get.edge.ids edge_attr edge_attr<- layout_with_sugiyama

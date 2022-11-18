@@ -9,6 +9,9 @@
 \arguments{
 \item{tSDM}{A trophicSDMfit object obtained with trophicSDM()}
 }
+\value{
+The value of the loo for the whole model
+}
 \description{
 Only works if method = 'stan_glm'. The global loo is computed by summing the loo of all the local models (since the likelihood factorises, the log-likelihood can be summed)This is an implementation of the methods described in Vehtari, Gelman, and Gabry (2017) and Vehtari, Simpson, Gelman, Yao, and Gabry (2019).
 }

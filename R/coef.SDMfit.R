@@ -37,7 +37,7 @@
 #' m$model$Y5$coef
 #' @export
 
-coef.SDMfit = function(object, standardise = F, level = 0.95, ...){
+coef.SDMfit = function(object, standardise = FALSE, level = 0.95, ...){
   
   SDM = object
   if(!is.null(object$penal)){ if(object$penal == "coeff.signs"){stop("This function is not available for coeff.signs penalisation")}}

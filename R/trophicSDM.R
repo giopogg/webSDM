@@ -201,7 +201,7 @@ trophicSDM = function(Y, X, G,
 
 
     for(j in 1:vcount(G)){
-      print(paste("--- Species", names(sortedV[j]), "---"))
+      if(verbose) print(paste("--- Species", names(sortedV[j]), "---"))
 
       if(custom.formula){
         sp.form = sp.formula[[names(sortedV[j])]]

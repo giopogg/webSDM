@@ -95,8 +95,6 @@
 In <code>webSDM</code> it is possible to define an extremely large set of composite variables using the arguments <code>sp.formula</code> and <code>sp.partition</code>. In general, <code>sp.formula</code> allows the definition of the composite variables, while <code>sp.partition</code> allow to define the groups of preys (or predator) for which each composite variable is calculate. Hereafter we don’t provide a complete analyses of a case-study using composite variables, but rather focus on the description of how to implement them in <code>webSDM</code>. Finally, we will see how to include an interaction between preys and the environment.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/webSDM" class="external-link">webSDM</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: replacing previous import 'sna::degree' by 'igraph::degree' when</span></span>
-<span><span class="co">#&gt; loading 'webSDM'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">X</span> ,<span class="va">Y</span>, <span class="va">G</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="composite-variables">Composite variables<a class="anchor" aria-label="anchor" href="#composite-variables"></a>
@@ -108,13 +106,7 @@ In <code>webSDM</code> it is possible to define an extremely large set of compos
 <span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span>
 <span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span></code></pre></div>
+<span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span></code></pre></div>
 <p>Notice that for predators that feed on a single prey (with presence-absence data), their richness and the square of their richness is exactly the same variable. In this case, <code><a href="../reference/trophicSDM.html">trophicSDM()</a></code> removes the redundant variable but prints a warning message. We can see the formulas created by the argument <code>$form.all</code> of the fitted model.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span>
@@ -141,13 +133,7 @@ In <code>webSDM</code> it is possible to define an extremely large set of compos
 <span>               env.formula <span class="op">=</span> <span class="st">"~ X_1 + X_1^2"</span>, </span>
 <span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>               sp.formula <span class="op">=</span> <span class="st">"I(richness&gt;0)"</span>,</span>
-<span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span></code></pre></div>
+<span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></code></pre></div>
 <p>Which leads to the following formulas:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span>
@@ -183,14 +169,8 @@ For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 a
 <span>               sp.partition <span class="op">=</span> <span class="va">sp.partition</span>,</span>
 <span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span>
 <span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
 <span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
 <span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span></code></pre></div>
 <p>Which leads to the following formulas:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -230,12 +210,6 @@ For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 a
 <span>               sp.formula <span class="op">=</span> <span class="va">sp.formula</span>,</span>
 <span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span>
 <span><span class="co">#&gt; $Y1</span></span>
@@ -266,13 +240,7 @@ For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 a
 <span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span>
 <span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
 <span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/computeVariableImportance.html">computeVariableImportance</a></span><span class="op">(</span><span class="va">m</span>, groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"abiotic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X_1"</span>, <span class="st">"X_2"</span><span class="op">)</span>,</span>
 <span>                                           <span class="st">"biotic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y1"</span>, <span class="st">"Y2"</span>, <span class="st">"Y3"</span>,</span>
@@ -296,14 +264,8 @@ For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 a
 <span>               sp.partition <span class="op">=</span> <span class="va">sp.partition</span>,</span>
 <span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span>
 <span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
 <span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
 <span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/computeVariableImportance.html">computeVariableImportance</a></span><span class="op">(</span><span class="va">m</span>, groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"abiotic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X_1"</span>, <span class="st">"X_2"</span><span class="op">)</span>,</span>
@@ -340,13 +302,7 @@ For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 a
 <span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span>
 <span>               sp.formula <span class="op">=</span> <span class="va">sp.formula</span>,</span>
 <span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span></code></pre></div>
+<span><span class="co">#&gt; We don't check that G and the graph induced by the sp.formula specified by the user match, nor that the latter is a graph. Please be careful about their consistency.</span></span></code></pre></div>
 </div>
   </div>
 

@@ -2,6 +2,7 @@
 #' 
 #' @param object A trophicSDMfit object obtained with trophicSDM()
 #' @param ... 	additional arguments
+#' @return Prints a summary of the fitted trophic SDM
 #' @author Giovanni Poggiato
 #' @examples
 #' data(Y, X, G)

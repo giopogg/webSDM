@@ -35,7 +35,7 @@
 #' @method coef trophicSDMfit
 #' @export
 
-coef.trophicSDMfit = function(object, standardise = F, level = 0.95, ...){
+coef.trophicSDMfit = function(object, standardise = FALSE, level = 0.95, ...){
   
   tSDM = object
 

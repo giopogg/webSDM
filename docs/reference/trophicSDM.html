@@ -203,8 +203,13 @@
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, iter <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.12, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.16, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -214,8 +219,7 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Markov chains did not converge! Do not analyze results!</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.05, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.14, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -224,14 +228,6 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.06, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
@@ -241,18 +237,13 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.06, indicating chains have not mixed.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.06, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.08, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -279,21 +270,21 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Access local models (e.g. species "Y5")</span></span></span>
 <span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================== </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Local SDMfit for species Y5 with no penalty , fitted using stan_glm </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================== </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * Useful S3 methods</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     print(), coef(), plot(), predict()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     $model gives the stanreg class object </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ==================================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================== </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.65477281 -1.1187266 -0.1759516</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.47820860  0.9976460  2.0932570</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.32347975 -2.8297005 -1.8560482</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.95662477  1.6961890  2.2711871</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.08330052 -0.4473498  0.2515655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.97425488 -1.3392697 -0.6427021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%      97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6451184 -1.0147932 -0.2431827</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.5102459  1.0430679  1.9891961</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2679449 -2.8425627 -1.6702695</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9594773  1.5964374  2.3243560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1138639 -0.4449558  0.1948938</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -1.0024733 -1.2935486 -0.6664139</span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="trophicSDM-1.png" alt="" width="700" height="433"></span>
@@ -303,27 +294,18 @@
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="st">"horshoe"</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
@@ -335,23 +317,11 @@
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span>               </span></span>
 <span class="r-in"><span><span class="co"># With elasticnet penalty   </span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">trophicSDM</span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="st">"elasticnet"</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#### Composite variables</span></span></span>
 <span class="r-in"><span></span></span>
@@ -360,13 +330,7 @@
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
@@ -395,12 +359,6 @@
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               sp.formula <span class="op">=</span> <span class="st">"I(richness&gt;0)"</span>,</span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "y ~ X_1 + X_2"</span>
@@ -433,14 +391,8 @@
 <span class="r-in"><span>               sp.partition <span class="op">=</span> <span class="va">sp.partition</span>,</span></span>
 <span class="r-in"><span>               sp.formula <span class="op">=</span> <span class="st">"richness + I(richness^2)"</span>,</span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y1 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y2 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y3 ---"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y5 ---"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y4 ---"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--- Species Y6 ---"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Formula was modified since it led to identical columns of the design matrix (e.g. Y_1 or Y_1^2 for binary data)</span>
 <span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">form.all</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>

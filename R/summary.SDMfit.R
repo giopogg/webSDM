@@ -1,6 +1,7 @@
 #' Summary of a fitted SDMfit model
 #' @param object A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param ... 	additional arguments
+#' @return Prints a summary of the local SDM
 #' @author Giovanni Poggiato
 #' @examples
 #' data(Y, X, G)

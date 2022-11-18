@@ -50,7 +50,7 @@
 #' @export
 trophicSDM_CV = function(tSDM, K, partition = NULL, prob.cov = FALSE,
                          pred_samples = NULL,
-                         iter = NULL, chains = NULL, run.parallel = TRUE, verbose = FALSE){
+                         iter = NULL, chains = NULL, run.parallel = FALSE, verbose = FALSE){
 
   if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
 

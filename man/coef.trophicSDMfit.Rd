@@ -4,7 +4,7 @@
 \alias{coef.trophicSDMfit}
 \title{Gets regression coefficients from a fitted trophicSDM model.}
 \usage{
-\method{coef}{trophicSDMfit}(object, standardise = F, level = 0.95, ...)
+\method{coef}{trophicSDMfit}(object, standardise = FALSE, level = 0.95, ...)
 }
 \arguments{
 \item{object}{A trophicSDMfit object obtained with trophicSDM()}

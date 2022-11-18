@@ -13,6 +13,9 @@
 
 \item{...}{additional arguments}
 }
+\value{
+A plot of the regression coefficients of the fitted local SDM
+}
 \description{
 Plots the regression coefficients of a local SDMfit model
 }

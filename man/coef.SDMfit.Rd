@@ -4,7 +4,7 @@
 \alias{coef.SDMfit}
 \title{Gets regression coefficients from a local model, i.e. a SDMfit object.}
 \usage{
-\method{coef}{SDMfit}(object, standardise = F, level = 0.95, ...)
+\method{coef}{SDMfit}(object, standardise = FALSE, level = 0.95, ...)
 }
 \arguments{
 \item{object}{A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object}

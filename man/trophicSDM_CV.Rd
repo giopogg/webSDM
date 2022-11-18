@@ -12,7 +12,7 @@ trophicSDM_CV(
   pred_samples = NULL,
   iter = NULL,
   chains = NULL,
-  run.parallel = TRUE,
+  run.parallel = FALSE,
   verbose = FALSE
 )
 }

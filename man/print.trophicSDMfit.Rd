@@ -11,6 +11,9 @@
 
 \item{...}{additional arguments}
 }
+\value{
+Prints a summary of the fitted trophic SDM
+}
 \description{
 Prints a fitted trophicSDM model
 }

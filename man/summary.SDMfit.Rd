@@ -11,6 +11,9 @@
 
 \item{...}{additional arguments}
 }
+\value{
+Prints a summary of the local SDM
+}
 \description{
 Summary of a fitted SDMfit model
 }

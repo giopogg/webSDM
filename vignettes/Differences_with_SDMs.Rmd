@@ -78,10 +78,16 @@ A = 3*X + 2*X^2 + rnorm(100, sd = 5)
 # Simulate data for the predator species B
 B = 2*X -3*X^2 + 3*A  + rnorm(100, sd = 5)
 
+oldpar = par()
 par(mfrow=c(1,3))
 plot(X,A, main = "Species A realised \n and fundamental niche")
 plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
+
+par(mfrow = oldpar$mfrow)
+
+
+
 ```
 
 We now run both a classic SDM and a trophic SDM
@@ -113,7 +119,6 @@ The coefficient of classic SDM for species $y_B$ are equal to the environmental 
 As a consequence, the predictions of both models coincide when the predicted value of species  $y_A$ is used to predict  $y_B$.
 However, unlike the traditional SDM, our trophic model allows to retrieve the correct fundamental niche of species 𝑦𝐵
 ```{r fundamental}
-par(mfrow = c(1,1))
 # Fundamental niche infered by SDM 
 plot(X, m_SDM$fitted.values, ylim = c(-65, 120), ylab = "B",
      main = "Fundamental niche of yB")
@@ -155,10 +160,12 @@ We provide a simple example to demonstrate the analytic computations with a simu
 ```{r simQuadr}
 B = 2*X -3*X^2 + 3*A^2  + rnorm(100, sd = 5)
 
+oldpar = par()
 par(mfrow=c(1,3))
 plot(X,A, main = "Species A realised \n and fundamental niche")
 plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
+par(mfrow = oldpar$mfrow)
 
 # Fit a trophic SDM
 m_trophic = lm(B ~ X + I(X^2) + I(A^2))
@@ -214,10 +221,14 @@ V_B = -3*X +1*X^2 + 3*A
 prob_B = 1/(1 + exp(-V_B))
 B = rbinom(n = 100, size = 1, prob = prob_B)
 
+oldpar = par()
 par(mfrow=c(1,3))
 plot(X,prob_A, main = "Species A realised \n and fundamental niche")
 plot(X,prob_B, main = "Species B realised niche")
 plot(X, 1/(1+exp(-(-3*X +1*X^2))), main = "Species B fundamental niche")
+
+par(mfrow = oldpar$mfrow)
+
 ```
 We then fit a classic SDM and a trophic SDM
 ```{r fitbinary, warning = F}
@@ -259,10 +270,14 @@ Data are simulated exactly as in the very first examples (continuous observable 
 A = 3*X + 2*X^2 + rnorm(100, sd = 5)
 # Simulate data for the predator species B
 B = 2*X -3*X^2 + 3*A  + rnorm(100, sd = 5)
+
+oldpar = par()
 par(mfrow=c(1,3))
 plot(X,A, main = "Species A realised \n and fundamental niche")
 plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
+
+par(mfrow = oldpar$mfrow)
 ```
 
 We infer statistical models with random forest

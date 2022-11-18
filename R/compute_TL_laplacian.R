@@ -2,6 +2,7 @@
 #' 
 #' Method to compute trophic levels from an igraph object G with the method described in MacKay et al 2020.
 #' @param G The metaweb, it has to be an igraph object
+#' @return The trophic level of each node of G. By ordering species according to their trophic level, we obtain one topological ordering of the graph.
 #' @references MacKay, R. S., Johnson, S., & Sansom, B. (2020). How directed is a directed network?. Royal Society open science, 7(9), 201138.
 #' @importFrom igraph get.adjacency degree V vcount
 #' @importFrom stats setNames

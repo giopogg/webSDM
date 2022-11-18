@@ -4,6 +4,7 @@
 #' @param x A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param level the confidence level of the confidence intervals
 #' @param ... 	additional arguments
+#' @return A plot of the regression coefficients of the fitted local SDM
 #' @author Giovanni Poggiato
 #' @examples
 #' data(Y, X, G)

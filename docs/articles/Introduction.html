@@ -188,7 +188,7 @@
 </h2>
 <p>Now that we simulate the data, we can fit a species distribution model with the function <code>trophicSDM</code>. The function requires the species distribution data <code>Y</code> (a sites x species matrix), the environmental variables <code>X</code> and an igraph object <code>G</code> representing the trophic interaction network. Importantly, <code>G</code> must be acyclic and arrows must point from predator to prey. Finally, the user has to specify a formula for the environmental part of the model and the description of the error distribution and link function to be used in the model (parameter <code>family</code>), just as with any <code>glm</code>.<br>
 By default, <code>trophicSDM</code> models each species as a function of their prey (set <code>mode = "predator"</code> to model species as a function of their predators) and of the environmental variables (as defined in <code>env.formula</code>). Trophic SDM can be also fitted as a function of the summary variables of preys (i.e. composite variables like prey richness), instead of each prey species directly. We cover this topic in the vignette ‘Composite variables’.<br>
-The algorithm behind trophic SDM fits a set of generalised linear model (glm), one for each species. These glm can be fitted in the frequentist framework by relying on the function <code>glm</code> (set <code>method = "glm"</code>), or in the Bayesian framework by relying on the function <code>rstanarm</code> (set <code>method = "stan_glm"</code>, the default choice). Model fitting is parallelised if <code>run.parallel = T</code>. These glm can be penalised to shrink regression coefficients (by default the model is run without penalisation). In the Bayesian framework set <code>penal = "horshoe"</code> to implement penalised glm using horshoe prior. In the frequentist framework set <code>penal = "elasticnet"</code> to implement penalised glm with elasticnet. See the examples in <code><a href="../reference/trophicSDM.html">?trophicSDM</a></code>. Hereafter, we only fit trophic SDM in the Bayesian framework with no penalisation. However, all the functions and analyses (except for MCMC diagnostic) presented in this vignette applies straightforwardly with or without penalisation and in the frequentist framework.</p>
+The algorithm behind trophic SDM fits a set of generalised linear model (glm), one for each species. These glm can be fitted in the frequentist framework by relying on the function <code>glm</code> (set <code>method = "glm"</code>), or in the Bayesian framework by relying on the function <code>rstanarm</code> (set <code>method = "stan_glm"</code>, the default choice). Model fitting is parallelised if <code>run.parallel = TRUE</code>. These glm can be penalised to shrink regression coefficients (by default the model is run without penalisation). In the Bayesian framework set <code>penal = "horshoe"</code> to implement penalised glm using horshoe prior. In the frequentist framework set <code>penal = "elasticnet"</code> to implement penalised glm with elasticnet. See the examples in <code><a href="../reference/trophicSDM.html">?trophicSDM</a></code>. Hereafter, we only fit trophic SDM in the Bayesian framework with no penalisation. However, all the functions and analyses (except for MCMC diagnostic) presented in this vignette applies straightforwardly with or without penalisation and in the frequentist framework.</p>
 <p>Hereafter we model species as a function of preys and the two environmental covariates in the Bayesian framework without penalisation. We though need to specify the parameters of the MCMC chains. We need to decide how many chains to sample (<code>chains</code>), how many samples to obtain per chain (<code>iter</code>), and if we wish to see the progress of the MCMC sampling (<code>verbose</code>).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iter</span> <span class="op">=</span> <span class="fl">1000</span></span>
@@ -528,26 +528,8 @@ The function <code>predict</code> computes the topological order of species, and
 <code class="sourceCode R"><span><span class="co"># 3-fold cross validation</span></span>
 <span><span class="va">CV</span> <span class="op">=</span> <span class="fu"><a href="../reference/trophicSDM_CV.html">trophicSDM_CV</a></span><span class="op">(</span><span class="va">m</span>, K <span class="op">=</span> <span class="fl">3</span>, prob.cov <span class="op">=</span> <span class="cn">T</span>, iter <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>                   pred_samples <span class="op">=</span> <span class="fl">500</span>, run.parallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; [1] "Fold 1 out of 3 \n"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; [1] "Fold 2 out of 3 \n"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; [1] "Fold 3 out of 3 \n"</span></span>
 <span><span class="co"># Transfom in a table</span></span>
 <span><span class="va">Ypred</span> <span class="op">=</span> <span class="va">CV</span><span class="op">$</span><span class="va">meanPred</span></span>
@@ -563,26 +545,8 @@ The function <code>predict</code> computes the topological order of species, and
 <span><span class="va">CV_classic</span> <span class="op">=</span> <span class="fu"><a href="../reference/trophicSDM_CV.html">trophicSDM_CV</a></span><span class="op">(</span><span class="va">m_classic</span>, K <span class="op">=</span> <span class="fl">3</span>, prob.cov <span class="op">=</span> <span class="cn">T</span>, iter <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>                           pred_samples <span class="op">=</span> <span class="fl">500</span>, run.parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                           partition <span class="op">=</span> <span class="va">CV</span><span class="op">$</span><span class="va">partition</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; [1] "Fold 1 out of 3 \n"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; [1] "Fold 2 out of 3 \n"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y1 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y2 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y3 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y4 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y5 ---"</span></span>
-<span><span class="co">#&gt; [1] "--- Species Y6 ---"</span></span>
 <span><span class="co">#&gt; [1] "Fold 3 out of 3 \n"</span></span>
 <span></span>
 <span><span class="va">Ypred_classic</span> <span class="op">=</span> <span class="va">CV_classic</span><span class="op">$</span><span class="va">meanPred</span></span>
