@@ -11,6 +11,16 @@ fig_height: 4
 output: github_document
 always_allow_html: true
 ---
+
+<!-- badges: start -->
+
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/webSDM)](https://cran.r-project.org/package=webSDM)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![](https://img.shields.io/github/last-commit/giopogg/webSDM.svg)](https://github.com/giopogg/webSDM/commits/master)
+<!-- badges: end -->
+
+
 ```{r chunk-name, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,

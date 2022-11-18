@@ -3,6 +3,17 @@ R package ‘webSDM’
 Giovanni Poggiato
 09/11/22
 
+<!-- badges: start -->
+
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/webSDM)](https://cran.r-project.org/package=webSDM)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![](https://img.shields.io/github/last-commit/giopogg/webSDM.svg)](https://github.com/giopogg/webSDM/commits/master)
+<!-- badges: end -->
+
 # <img src="man/figures/logo_webSDM.png" align="right" width="300px"/>
 
 # webSDM - including known trophic interactions in SDM
@@ -23,11 +34,8 @@ library(devtools)
 ## Le chargement a nécessité le package : usethis
 # Run to install webSDM
 install_github("giopogg/webSDM")
-## Downloading GitHub repo giopogg/webSDM@HEAD
-## Skipping 2 packages ahead of CRAN: StanHeaders, rstan
-## Installing 1 packages: plyr
-## Downloading GitHub repo paul-buerkner/brms@HEAD
-## Installing 1 packages: V8
+## Skipping install of 'webSDM' from a github remote, the SHA1 (2d974554) has not changed since last install.
+##   Use `force = TRUE` to force installation
 library(webSDM)
 ## Registered S3 method overwritten by 'GGally':
 ##   method from   
@@ -104,45 +112,45 @@ with the function `coef`.
 coef(m, standardise = T, level = 0.9)
 ## $Y1
 ##               estimate         5%        95%
-## (Intercept)  0.3579785  0.3579785  0.3579785
-## X_1         -0.2046204 -0.2581289 -0.1507982
-## X_2          0.2550685  0.1927555  0.3167255
+## (Intercept)  0.3491164  0.3491164  0.3491164
+## X_1         -0.2018259 -0.2545109 -0.1470349
+## X_2          0.2560292  0.2009604  0.3138463
 ## 
 ## $Y2
-##                estimate         5%         95%
-## (Intercept) -0.27418710 -0.2741871 -0.27418710
-## X_1          0.38494658  0.3230859  0.45113422
-## X_2         -0.07451045 -0.1262927 -0.01844076
+##                estimate         5%        95%
+## (Intercept) -0.25854385 -0.2585438 -0.2585438
+## X_1          0.38365242  0.3262623  0.4440859
+## X_2         -0.07637906 -0.1266674 -0.0208488
 ## 
 ## $Y3
 ##               estimate         5%        95%
-## (Intercept) -0.5879114 -0.5879114 -0.5879114
-## X_1          0.2645129  0.2007260  0.3262837
-## X_2          0.1954173  0.1306161  0.2625365
+## (Intercept) -0.5822164 -0.5822164 -0.5822164
+## X_1          0.2616346  0.1974213  0.3352374
+## X_2          0.1929402  0.1363884  0.2595137
 ## 
 ## $Y5
 ##                estimate          5%         95%
-## (Intercept) -0.62455617 -0.62455617 -0.62455617
-## X_1          0.20118853  0.14522254  0.26381736
-## X_2         -0.30476466 -0.36915856 -0.24523493
-## Y1           0.44149251  0.37271295  0.51996169
-## Y2          -0.02182216 -0.07798091  0.03246396
-## Y3          -0.20867017 -0.26749779 -0.15107126
+## (Intercept) -0.62064307 -0.62064307 -0.62064307
+## X_1          0.20001697  0.13791144  0.26724911
+## X_2         -0.30821601 -0.37457412 -0.23913655
+## Y1           0.44226923  0.38407382  0.51775735
+## Y2          -0.02748016 -0.08702105  0.03773534
+## Y3          -0.20678205 -0.26984935 -0.14863247
 ## 
 ## $Y4
 ##                estimate          5%         95%
-## (Intercept)  0.81087991  0.81087991  0.81087991
-## X_1         -0.17537046 -0.23262792 -0.11708815
-## X_2         -0.01573358 -0.07228362  0.04171549
-## Y3          -0.07727005 -0.12803793 -0.01765965
+## (Intercept)  0.80064573  0.80064573  0.80064573
+## X_1         -0.17563391 -0.22748096 -0.12280468
+## X_2         -0.01330918 -0.07177217  0.04931017
+## Y3          -0.07722939 -0.12955453 -0.01659925
 ## 
 ## $Y6
 ##                estimate          5%         95%
-## (Intercept)  1.32794077  1.32794077  1.32794077
-## X_1         -0.03391749 -0.09782827  0.02242149
-## X_2          0.09007290  0.03310870  0.15240385
-## Y3          -0.24091000 -0.30688487 -0.17868017
-## Y5          -0.09929429 -0.16268869 -0.03896562
+## (Intercept)  1.32665766  1.32665766  1.32665766
+## X_1         -0.03430026 -0.09317871  0.02901105
+## X_2          0.08822142  0.01573081  0.14684686
+## Y3          -0.23709878 -0.30552672 -0.17036770
+## Y5          -0.10003579 -0.15845059 -0.04134544
 ```
 
 We can visualise the biotic coefficients with the function
@@ -178,9 +186,9 @@ methods
 
 ``` r
 m$model$Y5
-## ==================================================================
+## ================================================================== 
 ## Local SDMfit for species Y5 with no penalty , fitted using stan_glm 
-## ==================================================================
+## ================================================================== 
 ## * Useful S3 methods
 ##     print(), coef(), plot(), predict()
 ##     $model gives the stanreg class object 
@@ -207,20 +215,20 @@ Ypred = do.call(cbind,
 
 Ypred = Ypred[,colnames(Y)]
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
-##         auc        tss species
-## 1 0.6733744 0.28064516      Y1
-## 2 0.7049049 0.31464180      Y2
-## 3 0.6689794 0.27546580      Y3
-## 4 0.5970780 0.16303148      Y4
-## 5 0.6196847 0.20630517      Y5
-## 6 0.5456740 0.08833226      Y6
+##         auc       tss species
+## 1 0.6732343 0.2776740      Y1
+## 2 0.7049230 0.3131268      Y2
+## 3 0.6690468 0.2812838      Y3
+## 4 0.6000544 0.1759933      Y4
+## 5 0.6253636 0.2145019      Y5
+## 6 0.5571227 0.1094386      Y6
 
 m$log.lik
-## [1] -3638.561
+## [1] -3638.537
 m$AIC
-## [1] 7337.122
+## [1] 7337.073
 loo(m)
-## [1] -3650.704
+## [1] -3650.652
 ```
 
 We can also evaluate the quality of model predictions using K-fold
@@ -242,12 +250,12 @@ environmental conditions X_1 = 0.5 and X_2 = 0.5.
 Pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), fullPost = F)
 t(do.call(cbind, Pred))
 ##    predictions.mean predictions.q025 predictions.q975
-## Y1 0.6347592        0.6021979        0.6771479       
-## Y2 0.6858699        0.6443526        0.7173587       
-## Y3 0.7195125        0.6943108        0.7541284       
-## Y5 0.3715789        0.08845326       0.7382257       
-## Y4 0.488158         0.4306166        0.5685854       
-## Y6 0.6415191        0.5085278        0.7978324
+## Y1 0.6291438        0.6044526        0.6509437       
+## Y2 0.6867122        0.659755         0.712756        
+## Y3 0.7143493        0.6903731        0.7424741       
+## Y5 0.4164285        0.09463          0.7468931       
+## Y4 0.4995371        0.4405382        0.6071129       
+## Y6 0.638142         0.4966137        0.8298025
 ```
 
 We can also obtain an estimation of the fundamental niche, that
@@ -269,12 +277,6 @@ Notice that we can also fit a trophic SDM in the frequentist approach.
 m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                family = binomial(link = "logit"),
                mode = "prey", method = "glm")
-## [1] "--- Species Y1 ---"
-## [1] "--- Species Y2 ---"
-## [1] "--- Species Y3 ---"
-## [1] "--- Species Y5 ---"
-## [1] "--- Species Y4 ---"
-## [1] "--- Species Y6 ---"
 ```
 
 All the above-mentioned functions are also available in the frequentist
@@ -291,31 +293,34 @@ model by specifying `penal = "horshoe"` if we set `method = "stan_glm"`
 m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                family = binomial(link = "logit"),
                mode = "prey", method = "glm", penal = "elasticnet")
-## [1] "--- Species Y1 ---"
-## [1] "--- Species Y2 ---"
-## [1] "--- Species Y3 ---"
-## [1] "--- Species Y5 ---"
-## [1] "--- Species Y4 ---"
-## [1] "--- Species Y6 ---"
 
 m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                family = binomial(link = "logit"),
                mode = "prey", method = "stan_glm", penal = "horshoe")
-## [1] "--- Species Y1 ---"
-## [1] "--- Species Y2 ---"
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
-## [1] "--- Species Y3 ---"
+
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
-## [1] "--- Species Y5 ---"
+## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+## Running the chains for more iterations may help. See
+## https://mc-stan.org/misc/warnings.html#tail-ess
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
-## [1] "--- Species Y4 ---"
-## [1] "--- Species Y6 ---"
+## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+## Running the chains for more iterations may help. See
+## https://mc-stan.org/misc/warnings.html#tail-ess
+## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+## Running the chains for more iterations may help. See
+## https://mc-stan.org/misc/warnings.html#bulk-ess
+
+## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+## Running the chains for more iterations may help. See
+## https://mc-stan.org/misc/warnings.html#bulk-ess
+
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
@@ -337,12 +342,6 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                sp.formula = "richness",
                family = binomial(link = "logit"),
                mode = "prey", method = "glm")
-## [1] "--- Species Y1 ---"
-## [1] "--- Species Y2 ---"
-## [1] "--- Species Y3 ---"
-## [1] "--- Species Y5 ---"
-## [1] "--- Species Y4 ---"
-## [1] "--- Species Y6 ---"
 m$form.all
 ## $Y1
 ## [1] "y ~ X_1 + X_2"
