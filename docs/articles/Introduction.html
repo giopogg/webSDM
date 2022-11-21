@@ -100,7 +100,6 @@
 <span><span class="co"># Run to install webSDM</span></span>
 <span><span class="co"># install_github("giopogg/webSDM")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/webSDM" class="external-link">webSDM</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org" class="external-link">igraph</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">gridExtra</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/reshape" class="external-link">reshape2</a></span><span class="op">)</span></span>
@@ -123,7 +122,7 @@
 <span><span class="va">A</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>,nrow<span class="op">=</span><span class="va">S</span>,ncol<span class="op">=</span><span class="va">S</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ensure that the graph is connected</span></span>
-<span><span class="kw">while</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/components.html" class="external-link">is.connected</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="kw">while</span><span class="op">(</span><span class="op">!</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/components.html" class="external-link">is.connected</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">A</span> <span class="op">=</span> <span class="va">A_w</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>,nrow<span class="op">=</span><span class="va">S</span>,ncol<span class="op">=</span><span class="va">S</span><span class="op">)</span></span>
 <span>  <span class="co"># Create links (i.e. zeros and ones of the adjacency matrix)</span></span>
 <span>  <span class="kw">for</span><span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">S</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
@@ -135,10 +134,12 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Y"</span>,<span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">S</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># Build an igraph object from A</span></span>
-<span><span class="va">G</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
+<span><span class="va">G</span> <span class="op">=</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_files/figure-html/simulate%20graph-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/simulate_graph-1.png" alt=""><p class="caption">plot of chunk simulate_graph</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="simulate-data-1">Simulate data<a class="anchor" aria-label="anchor" href="#simulate-data-1"></a>
@@ -261,11 +262,15 @@ The algorithm behind trophic SDM fits a set of generalised linear model (glm), o
 <span><span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-diagnostics.html" class="external-link">mcmc_neff</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">mcmc.diag</span><span class="op">$</span><span class="va">neff.ratio</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_files/figure-html/mcmc%20convergence%20I-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/mcmc-convergence-I-1.png" alt=""><p class="caption">plot of chunk mcmc-convergence-I</p>
+</div>
 <p>We observe that the effective sample sizes are very close to the theoretical value of the actual number of samples, as the ratio is close to 1. In few cases the ratio is lower, and we might consider running the chains for longer, or thin them, to improve convergence. This indicates that there is very little autocorrelation among consecutive samples. The potential scale reduction factors are very close to one, which indicates that two chains gave consistent results. We can have a closer look to the MCMC chains by looking at the traceplots of the parameters of a given model, for example here for species Y5 who feeds on species Y1, Y2, Y3 and Y4. To do so, we first assess the local model of species Y5, and in particular its field <code>$model</code> that gives us the output of the function <code>stan_glm</code>. We can then exploit the plot method of this object.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">$</span><span class="va">model</span>, <span class="st">"trace"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_files/figure-html/mcmc%20convergence%20II-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/mcmc-convergence-II-1.png" alt=""><p class="caption">plot of chunk mcmc-convergence-II</p>
+</div>
 <p>Again, we see that the chains mix very well and that there’s little autocorrelation among samples within the same chain.</p>
 </div>
 <div class="section level3">
@@ -274,7 +279,9 @@ The algorithm behind trophic SDM fits a set of generalised linear model (glm), o
 <p>We now analyse the estimates of the regression coefficients. We can have a first glance of the regression coefficients with the function plot. This function plots the posterior distribution of the regression coefficients of each species.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_files/figure-html/estimates%20I-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/estimates-I-1.png" alt=""><p class="caption">plot of chunk estimates-I</p>
+</div>
 <p>We can visually see that the regression coefficients for the environmental part of the model match the simulated parameters, as species Y1 to Y3 have a positive response to X_1 and a negative one to X_2, viceversa for species Y3 to Y6. We also remark that the environmental coefficients are less important for basal species than for predators. Indeed, the posterior mean of the regression coefficients of the environmental part gets closer to zero and their posterior distribution tend to overlap zero more and more as we move from species Y1 to species Y6. We can quantify this visual assessment by looking at the posterior mean and quantile of the regression coefficients. The parameter <code>level</code> set the probability of the quantile (default 0.95).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
@@ -382,12 +389,16 @@ We hereafter use this function to compute the relative importance of the abiotic
 <span><span class="va">tab</span><span class="op">$</span><span class="va">Var2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">tab</span><span class="op">$</span><span class="va">Var2</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">tab</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Var2</span>, y <span class="op">=</span> <span class="va">value</span>, fill <span class="op">=</span> <span class="va">Var1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_files/figure-html/varImpo-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/varImpo-1.png" alt=""><p class="caption">plot of chunk varImpo</p>
+</div>
 <p>We clearly see that our model correctly retrieved the simulated pattern, with the importance of biotic variables with respect to the abiotic ones becomes greater as the trophic level increases.</p>
 <p>Finally, we can visualise the effect of each trophic interactions with the function <code>plotG_inferred</code>, which plots the metaweb <code>G</code> together with the variable importance (i.e. the standardised regression coefficient) of each link. The parameter <code>level</code> sets the confidence level with which coefficients are deemed as significant or non-significant.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotG_inferred.html">plotG_inferred</a></span><span class="op">(</span><span class="va">m</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_files/figure-html/plotG-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/plotG-1.png" alt=""><p class="caption">plot of chunk plotG</p>
+</div>
 <p>We see that the model correctly retrieves that preys have a posite effect on the predators and that this effect becomes more important for predators at higher trophic positions.</p>
 </div>
 <div class="section level3">
@@ -403,7 +414,9 @@ We hereafter use this function to compute the relative importance of the abiotic
 <span></span>
 <span><span class="co"># The inferred model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">SDM</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introduction_files/figure-html/SDMfit-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/SDMfit-1.png" alt=""><p class="caption">plot of chunk SDMfit</p>
+</div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># The regression coefficients</span></span>

@@ -1,13 +1,14 @@
 
 ## Resubmission
-This is a resubmission. In this version I have:
+This is a resubmission. After the manual check by the CRAN's team I:
 
 * Added a reference in the DESCRIPTION according to the suggested syntax.
-* Added the field \value to the Rd files where it was missing
+* Added the field \value to the Rd files when it was missing
 * Wrote TRUE and FALSE instead of T and F
 * Set the print call in trophicSDM.R within if (verbose) as suggested
 * Reset to user's par() after changing it
 * Ensured that I do not use more than two cores in examples, vignettes, etc.
+* Precompiled vignette to reduce check time
 
 ## R CMD check results
 

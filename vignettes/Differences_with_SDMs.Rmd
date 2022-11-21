@@ -23,7 +23,7 @@ G=graph_from_edgelist(as.matrix(data.frame(from = c("x","x","A"), to =  c("A","B
 plot(G)
 ```
 
-![plot of chunk igraph](figure/igraph-1.png)
+![plot of chunk igraph](fig/igraph-1.png)
 
 We now assume that data on species distributions are continuous observable entities (e.g. basal area, biomass), that we can model with a linear regression. We name $y_{iA}$ and $y_{iB}$ the observations of species $y_A$ and $y_B$, respectively, and we assume that the environment has a quadratic effect on both species.
 Therefore, using classical SDMs, model equations are:  
@@ -83,7 +83,7 @@ plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
 ```
 
-![plot of chunk simGauss](figure/simGauss-1.png)
+![plot of chunk simGauss](fig/simGauss-1.png)
 
 ```r
 
@@ -137,7 +137,7 @@ legend(-0.1, 120, legend=c("Fundamental niche inferred by SDM",
        col=c("black","red", "blue"), cex = 0.5)
 ```
 
-![plot of chunk fundamental](figure/fundamental-1.png)
+![plot of chunk fundamental](fig/fundamental-1.png)
 
 ## Does this always hold?
 We showed that SDM and trophic SDM estimate the same realized niche, and thus lead to the same predictions, when all the following conditions hold:  
@@ -176,7 +176,7 @@ plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
 ```
 
-![plot of chunk simQuadr](figure/simQuadr-1.png)
+![plot of chunk simQuadr](fig/simQuadr-1.png)
 
 ```r
 par(mfrow = oldpar$mfrow)
@@ -248,7 +248,7 @@ plot(X,prob_B, main = "Species B realised niche")
 plot(X, 1/(1+exp(-(-3*X +1*X^2))), main = "Species B fundamental niche")
 ```
 
-![plot of chunk simlogi](figure/simlogi-1.png)
+![plot of chunk simlogi](fig/simlogi-1.png)
 
 ```r
 
@@ -309,7 +309,7 @@ plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
 ```
 
-![plot of chunk simRF](figure/simRF-1.png)
+![plot of chunk simRF](fig/simRF-1.png)
 
 ```r
 
@@ -320,16 +320,6 @@ We infer statistical models with random forest
 
 ```r
 library(randomForest)
-#> randomForest 4.7-1.1
-#> Type rfNews() to see new features/changes/bug fixes.
-#> 
-#> Attachement du package : 'randomForest'
-#> L'objet suivant est masqué depuis 'package:ggplot2':
-#> 
-#>     margin
-#> L'objet suivant est masqué depuis 'package:gridExtra':
-#> 
-#>     combine
 
 # Species A
 m_A  = randomForest(A ~ X + I(X^2))

@@ -245,13 +245,11 @@ For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 a
 <span><span class="fu"><a href="../reference/computeVariableImportance.html">computeVariableImportance</a></span><span class="op">(</span><span class="va">m</span>, groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"abiotic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X_1"</span>, <span class="st">"X_2"</span><span class="op">)</span>,</span>
 <span>                                           <span class="st">"biotic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y1"</span>, <span class="st">"Y2"</span>, <span class="st">"Y3"</span>,</span>
 <span>                                                        <span class="st">"Y4"</span>, <span class="st">"Y5"</span>, <span class="st">"Y6"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in computeVariableImportance(m, groups = list(abiotic = c("X_1", :</span></span>
-<span><span class="co">#&gt; If you use composite variables, you should group together species that belong</span></span>
-<span><span class="co">#&gt; to the same composite variable. For example, if sp.formula = 'richness' and</span></span>
-<span><span class="co">#&gt; sp.partition = NULL, you should put all species in the same group in the</span></span>
-<span><span class="co">#&gt; argument 'groups'. If you define a partition of species in sp.partition, then</span></span>
-<span><span class="co">#&gt; species in the same group in sp.partition should put all species in the same</span></span>
-<span><span class="co">#&gt; group in the argument 'groups'</span></span>
+<span><span class="co">#&gt; Warning in computeVariableImportance(m, groups = list(abiotic = c("X_1", : If you use composite variables, you</span></span>
+<span><span class="co">#&gt; should group together species that belong to the same composite variable. For example, if sp.formula = 'richness' and</span></span>
+<span><span class="co">#&gt; sp.partition = NULL, you should put all species in the same group in the argument 'groups'. If you define a partition</span></span>
+<span><span class="co">#&gt; of species in sp.partition, then species in the same group in sp.partition should put all species in the same group</span></span>
+<span><span class="co">#&gt; in the argument 'groups'</span></span>
 <span><span class="co">#&gt;         Y1 Y2 Y3         Y5         Y4         Y6</span></span>
 <span><span class="co">#&gt; abiotic  0  0  0 0.05380788 0.17251449 0.04623329</span></span>
 <span><span class="co">#&gt; biotic   0  0  0 0.08470730 0.07633953 0.38116851</span></span></code></pre></div>
@@ -272,13 +270,11 @@ For example, we can put species Y1 and Y2 in the same group, species Y3 and Y4 a
 <span>                                           <span class="st">"Group1"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y1"</span>, <span class="st">"Y2"</span><span class="op">)</span>,</span>
 <span>                                           <span class="st">"Group2"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y3"</span><span class="op">)</span>,</span>
 <span>                                           <span class="st">"Group3"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y4"</span>, <span class="st">"Y5"</span>, <span class="st">"Y6"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in computeVariableImportance(m, groups = list(abiotic = c("X_1", :</span></span>
-<span><span class="co">#&gt; If you use composite variables, you should group together species that belong</span></span>
-<span><span class="co">#&gt; to the same composite variable. For example, if sp.formula = 'richness' and</span></span>
-<span><span class="co">#&gt; sp.partition = NULL, you should put all species in the same group in the</span></span>
-<span><span class="co">#&gt; argument 'groups'. If you define a partition of species in sp.partition, then</span></span>
-<span><span class="co">#&gt; species in the same group in sp.partition should put all species in the same</span></span>
-<span><span class="co">#&gt; group in the argument 'groups'</span></span>
+<span><span class="co">#&gt; Warning in computeVariableImportance(m, groups = list(abiotic = c("X_1", : If you use composite variables, you</span></span>
+<span><span class="co">#&gt; should group together species that belong to the same composite variable. For example, if sp.formula = 'richness' and</span></span>
+<span><span class="co">#&gt; sp.partition = NULL, you should put all species in the same group in the argument 'groups'. If you define a partition</span></span>
+<span><span class="co">#&gt; of species in sp.partition, then species in the same group in sp.partition should put all species in the same group</span></span>
+<span><span class="co">#&gt; in the argument 'groups'</span></span>
 <span><span class="co">#&gt;         Y1 Y2 Y3        Y5         Y4         Y6</span></span>
 <span><span class="co">#&gt; abiotic  0  0  0 0.1016899 0.17251449 0.03603087</span></span>
 <span><span class="co">#&gt; Group1   0  0  0 0.8621983 0.00000000 0.00000000</span></span>

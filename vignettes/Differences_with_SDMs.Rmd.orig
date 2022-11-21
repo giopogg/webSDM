@@ -11,9 +11,10 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
-)
-knitr::opts_chunk$set(fig.width=7, fig.height=6) 
+  comment = "#>",
+  fig.width=7,
+  fig.height=6,
+  fig.path="fig/") 
 ```
 
 ## Compare trophic and classical SDMs: difference and equalities

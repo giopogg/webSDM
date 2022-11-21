@@ -101,10 +101,11 @@
 <p>Let’s consider a very simple case with one environmental covariate <span class="math inline">\(x\)</span>, and two species <span class="math inline">\(y_A\)</span> and <span class="math inline">\(y_B\)</span>. We assume species <span class="math inline">\(y_A\)</span> to be basal and species <span class="math inline">\(y_B\)</span> to feed on <span class="math inline">\(y_A\)</span>. This leads to the following directed acyclic graph that resumes the dependencies across variables, assuming bottom-up control.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org" class="external-link">igraph</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: package 'igraph' was built under R version 4.1.2</span></span>
 <span><span class="va">G</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_edgelist.html" class="external-link">graph_from_edgelist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"x"</span>,<span class="st">"A"</span><span class="op">)</span>, to <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differences_with_SDMs_files/figure-html/igraph-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/igraph-1.png" alt=""><p class="caption">plot of chunk igraph</p>
+</div>
 <p>We now assume that data on species distributions are continuous observable entities (e.g. basal area, biomass), that we can model with a linear regression. We name <span class="math inline">\(y_{iA}\)</span> and <span class="math inline">\(y_{iB}\)</span> the observations of species <span class="math inline">\(y_A\)</span> and <span class="math inline">\(y_B\)</span>, respectively, and we assume that the environment has a quadratic effect on both species. Therefore, using classical SDMs, model equations are:<br><span class="math display">\[
 \begin{aligned}
 y_{iA} &amp;= \beta^{SDM}_{0A} + \beta^{SDM}_{1A} x_i + \beta^{SDM}_{2A}x_i^2 + \epsilon_{iA}, \ \ \epsilon_{iA} \sim N(0, \sigma_A^{SDM}) \\
@@ -146,7 +147,9 @@ However, our trophic model allows a separation of the direct effect of the envir
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differences_with_SDMs_files/figure-html/simGauss-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/simGauss-1.png" alt=""><p class="caption">plot of chunk simGauss</p>
+</div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="va">oldpar</span><span class="op">$</span><span class="va">mfrow</span><span class="op">)</span></span></code></pre></div>
@@ -185,7 +188,9 @@ However, our trophic model allows a separation of the direct effect of the envir
 <span>                           <span class="st">"Fundamental niche inferred by trophic SDM"</span>,</span>
 <span>                           <span class="st">"True fundamenta niche"</span><span class="op">)</span>, pch <span class="op">=</span><span class="fl">1</span>,</span>
 <span>       col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>,<span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differences_with_SDMs_files/figure-html/fundamental-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/fundamental-1.png" alt=""><p class="caption">plot of chunk fundamental</p>
+</div>
 </div>
 </div>
 </div>
@@ -221,7 +226,9 @@ E[y_{iB} | \ x_i, E[y_{iA}] ] &amp;= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i +
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differences_with_SDMs_files/figure-html/simQuadr-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/simQuadr-1.png" alt=""><p class="caption">plot of chunk simQuadr</p>
+</div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="va">oldpar</span><span class="op">$</span><span class="va">mfrow</span><span class="op">)</span></span>
 <span></span>
@@ -285,7 +292,9 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">prob_A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">prob_B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span> <span class="op">+</span><span class="fl">1</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differences_with_SDMs_files/figure-html/simlogi-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/simlogi-1.png" alt=""><p class="caption">plot of chunk simlogi</p>
+</div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="va">oldpar</span><span class="op">$</span><span class="va">mfrow</span><span class="op">)</span></span></code></pre></div>
@@ -338,15 +347,15 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differences_with_SDMs_files/figure-html/simRF-1.png" width="672"></p>
+<div class="figure">
+<img src="fig/simRF-1.png" alt=""><p class="caption">plot of chunk simRF</p>
+</div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="va">oldpar</span><span class="op">$</span><span class="va">mfrow</span><span class="op">)</span></span></code></pre></div>
 <p>We infer statistical models with random forest</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/" class="external-link">randomForest</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; randomForest 4.7-1.1</span></span>
-<span><span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span></span>
 <span></span>
 <span><span class="co"># Species A</span></span>
 <span><span class="va">m_A</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">A</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>

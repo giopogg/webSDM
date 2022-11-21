@@ -60,7 +60,7 @@ G = igraph::graph_from_adjacency_matrix(A)
 plot(G)
 ```
 
-![plot of chunk simulate graph](figure/simulate graph-1.png)
+![plot of chunk simulate_graph](fig/simulate_graph-1.png)
 
 ### Simulate data
 We now simulate species distribution at 300 locations along two environmental gradients. We simulate species such that species Y1 to Y3 have a negative dependence to the first environmental variable X_1 and a positive dependence to X_2, viceversa for species Y4 to Y6. Moreover, the strength of the environmental term decreases along the trophic level, while the effect of the prey increases. Finally, preys always have a positive effect on predators.
@@ -191,7 +191,7 @@ p2 = mcmc_neff(m$mcmc.diag$neff.ratio)
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-![plot of chunk mcmc convergence I](figure/mcmc convergence I-1.png)
+![plot of chunk mcmc-convergence-I](fig/mcmc-convergence-I-1.png)
 
 We observe that the effective sample sizes are very close to the theoretical value of the actual number of samples, as the ratio is close to 1. In few cases the ratio is lower, and we might consider running the chains for longer, or thin them, to improve convergence. This indicates that there is very little autocorrelation among consecutive samples. The potential scale reduction factors are very close to one, which indicates that two chains gave consistent results.
 We can have a closer look to the MCMC chains by looking at the traceplots of the parameters of a given model, for example here for species Y5 who feeds on species Y1, Y2, Y3 and Y4. To do so, we first assess the local model of species Y5, and in particular its field `$model` that gives us the output of the function `stan_glm`. We can then exploit the plot method of this object.
@@ -200,7 +200,7 @@ We can have a closer look to the MCMC chains by looking at the traceplots of the
 plot(m$model$Y5$model, "trace")
 ```
 
-![plot of chunk mcmc convergence II](figure/mcmc convergence II-1.png)
+![plot of chunk mcmc-convergence-II](fig/mcmc-convergence-II-1.png)
 
 Again, we see that the chains mix very well and that there's little autocorrelation among samples within the same chain.
 
@@ -211,7 +211,7 @@ We now analyse the estimates of the regression coefficients. We can have a first
 plot(m)
 ```
 
-![plot of chunk estimates I](figure/estimates I-1.png)
+![plot of chunk estimates-I](fig/estimates-I-1.png)
 
 We can visually see that the regression coefficients for the environmental part of the model match the simulated parameters, as species Y1 to Y3 have a positive response to X_1 and a negative one to X_2, viceversa for species Y3 to Y6. We also remark that the environmental coefficients are less important for basal species than for predators. Indeed, the posterior mean of the regression coefficients of the environmental part gets closer to zero and their posterior distribution tend to overlap zero more and more as we move from species Y1 to species Y6.  We can quantify this visual assessment by looking at the posterior mean and quantile of the regression coefficients. The parameter `level` set the probability of the quantile (default 0.95).
 
@@ -329,7 +329,7 @@ ggplot(tab, aes(x = Var2, y = value, fill = Var1)) + geom_bar(stat="identity") +
   theme_classic()
 ```
 
-![plot of chunk varImpo](figure/varImpo-1.png)
+![plot of chunk varImpo](fig/varImpo-1.png)
 
 We clearly see that our model correctly retrieved the simulated pattern, with the importance of biotic variables with respect to the abiotic ones becomes greater as the trophic level increases.
 
@@ -339,7 +339,7 @@ Finally, we can visualise the effect of each trophic interactions with the funct
 plotG_inferred(m, level = 0.9)
 ```
 
-![plot of chunk plotG](figure/plotG-1.png)
+![plot of chunk plotG](fig/plotG-1.png)
 
 We see that the model correctly retrieves that preys have a posite effect on the predators and that this effect becomes more important for predators at higher trophic positions.
 
@@ -358,7 +358,7 @@ SDM$form.all
 plot(SDM)
 ```
 
-![plot of chunk SDMfit](figure/SDMfit-1.png)
+![plot of chunk SDMfit](fig/SDMfit-1.png)
 
 ```r
 
