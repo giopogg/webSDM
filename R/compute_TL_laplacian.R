@@ -19,7 +19,7 @@ compute_TL_laplacian <- function(G){
   names_loc = rownames(A)
   
   
-  if (isNamespaceLoaded("sna")) { unloadNamespace("sna") }
+  if (isNamespaceLoaded("sna")) { try(unloadNamespace("sna")) }
   if (!isNamespaceLoaded("igraph")) { 
     if(!requireNamespace('igraph', quietly = TRUE)) stop("Package 'igraph' not found")
   }

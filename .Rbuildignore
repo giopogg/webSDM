@@ -8,6 +8,7 @@
 ^docs
 ^_pkgdown.yml
 ^README.Rmd
-
+^vignettes/Introduction\.Rmd\.orig$
+^vignettes/precompile\.R$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
