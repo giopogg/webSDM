@@ -8,7 +8,13 @@ vignette: >
   
 ---
   
-
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_chunk$set(fig.width=7, fig.height=6) 
+```
 
 ## Compare trophic and classical SDMs: difference and equalities
 Here, we present the differences between a classic SDM and our trophic SDM, starting from the simplest case when these two approaches coincide to more realistic cases where they do not.
@@ -16,14 +22,11 @@ Here, we present the differences between a classic SDM and our trophic SDM, star
 ### The simplest case
 Let’s consider a very simple case with one environmental covariate $x$, and two species $y_A$ and $y_B$. We assume species $y_A$ to be basal and species $y_B$ to feed on $y_A$. This leads to the following directed acyclic graph that resumes the dependencies across variables, assuming bottom-up control.
 
-
-```r
+```{r igraph, warnings = FALSE,  message =FALSE}
 library(igraph)
 G=graph_from_edgelist(as.matrix(data.frame(from = c("x","x","A"), to =  c("A","B","B"))))
 plot(G)
 ```
-
-![plot of chunk igraph](figure/igraph-1.png)
 
 We now assume that data on species distributions are continuous observable entities (e.g. basal area, biomass), that we can model with a linear regression. We name $y_{iA}$ and $y_{iB}$ the observations of species $y_A$ and $y_B$, respectively, and we assume that the environment has a quadratic effect on both species.
 Therefore, using classical SDMs, model equations are:  
@@ -66,8 +69,7 @@ We hereafter present a short example confirming the analytic derivation of these
 
 First, we simulate species distribution data accordingly to the directed acyclic graph presented above. Therefore, the environment has a quadratic effect on species $y_A$ and species $y_B$, with a linear effect of $y_A$ on $y_B$.
 
-
-```r
+```{r simGauss}
 set.seed(1712)
 # Create the environmental gradient
 X = seq(0,5,length.out=100)
@@ -81,20 +83,16 @@ par(mfrow=c(1,3))
 plot(X,A, main = "Species A realised \n and fundamental niche")
 plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
-```
-
-![plot of chunk simGauss](figure/simGauss-1.png)
-
-```r
 
 par(mfrow = oldpar$mfrow)
+
+
 
 ```
 
 We now run both a classic SDM and a trophic SDM
 
-
-```r
+```{r fitGauss}
 # For species A, the two models coincide
 m_A = lm(A ~ X + I(X^2))
 
@@ -107,24 +105,20 @@ m_SDM = lm(B ~ X + I(X^2))
 ```
 We can now test the relationships between the coefficients of SDM and trophic SDM.
 
-
-```r
+```{r equalGauss}
 # Show the equality of coefficients
 all.equal(coef(m_SDM), coef(m_trophic)[-4] + coef(m_trophic)[4]*coef(m_A))
-#> [1] TRUE
 
 # Prediction coincide
 pred_SDM = m_SDM$fitted.values
 pred_trophic = predict(m_trophic, newdata = data.frame(X = X, A = m_A$fitted.values))
 
 all.equal(pred_SDM, pred_trophic)
-#> [1] TRUE
 ```
 The coefficient of classic SDM for species $y_B$ are equal to the environmental coefficients of trophic SDM for species $y_B$ plus the indirect effect of the environment on species $y_B$ (given by the product of the biotic term and the environmental coefficients of species $y_A$).
 As a consequence, the predictions of both models coincide when the predicted value of species  $y_A$ is used to predict  $y_B$.
 However, unlike the traditional SDM, our trophic model allows to retrieve the correct fundamental niche of species 𝑦𝐵
-
-```r
+```{r fundamental}
 # Fundamental niche infered by SDM 
 plot(X, m_SDM$fitted.values, ylim = c(-65, 120), ylab = "B",
      main = "Fundamental niche of yB")
@@ -136,8 +130,6 @@ legend(-0.1, 120, legend=c("Fundamental niche inferred by SDM",
                            "True fundamenta niche"), pch =1,
        col=c("black","red", "blue"), cex = 0.5)
 ```
-
-![plot of chunk fundamental](figure/fundamental-1.png)
 
 ## Does this always hold?
 We showed that SDM and trophic SDM estimate the same realized niche, and thus lead to the same predictions, when all the following conditions hold:  
@@ -165,8 +157,7 @@ In order to correctly infer the realised niche, classic SDMs should be specified
 #### Simulation
 We provide a simple example to demonstrate the analytic computations with a simulation. We use the same example of above, but we now simulate a quadratic relationship of $y_B$ with respect to $y_A$.
 
-
-```r
+```{r simQuadr}
 B = 2*X -3*X^2 + 3*A^2  + rnorm(100, sd = 5)
 
 oldpar = par()
@@ -174,11 +165,6 @@ par(mfrow=c(1,3))
 plot(X,A, main = "Species A realised \n and fundamental niche")
 plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
-```
-
-![plot of chunk simQuadr](figure/simQuadr-1.png)
-
-```r
 par(mfrow = oldpar$mfrow)
 
 # Fit a trophic SDM
@@ -186,24 +172,19 @@ m_trophic = lm(B ~ X + I(X^2) + I(A^2))
 ```
 We now compare the regression coefficients and predictions from the two models
 
-
-```r
+```{r compareQuadr}
 # Show the equality of coefficients
 all.equal(coef(m_SDM), coef(m_trophic)[-4] + coef(m_trophic)[4]*coef(m_A))
-#> [1] "Mean relative difference: 0.185587"
 
 # Prediction are now different
 pred_SDM = m_SDM$fitted.values
 pred_trophic = predict(m_trophic, newdata = data.frame(X = X, A = m_A$fitted.values))
 
 all.equal(pred_SDM, pred_trophic)
-#> [1] "Mean relative difference: 53.61947"
 
 #Compare R2
 cor(B, pred_SDM)^2
-#> [1] 0.8339402
 cor(B, pred_trophic)^2
-#> [1] 0.9605349
 ```
 The relationship between the coefficients of the two models does not hold anymore more, and predictions are now different, with trophic SDM reaching a far better predictive accuracy than classic SDM for species $y_B$ (R2 of 0.83 and 0.96 respectively).
 
@@ -228,8 +209,7 @@ $$
   
 #### Simulations
 We now confirm this analytic derivation with a simple example. The code is very similar to the previous one, but we now generate binary data from a logistic model.
-
-```r
+```{r simlogi}
 # Generate the link layer basal species
 V_A= 3*X - 2*X^2
 # Transform to probability
@@ -246,17 +226,12 @@ par(mfrow=c(1,3))
 plot(X,prob_A, main = "Species A realised \n and fundamental niche")
 plot(X,prob_B, main = "Species B realised niche")
 plot(X, 1/(1+exp(-(-3*X +1*X^2))), main = "Species B fundamental niche")
-```
-
-![plot of chunk simlogi](figure/simlogi-1.png)
-
-```r
 
 par(mfrow = oldpar$mfrow)
+
 ```
 We then fit a classic SDM and a trophic SDM
-
-```r
+```{r fitbinary, warning = F}
 # For species A, the two models coincide
 m_A = glm(A ~ X + I(X^2), family = binomial(link = "logit"))
 
@@ -265,38 +240,32 @@ m_trophic = glm(B ~ X + I(X^2) + A, family = binomial(link = "logit"))
 ```
 We now test the relationships between model coefficients and whether the equality of model predictions still holds
 
-
-```r
+```{r equalBin}
 # Equality of the coefficient does not hold anymore
 all.equal(coef(m_SDM), coef(m_trophic)[-4] + coef(m_trophic)[4]*coef(m_A))
-#> [1] "Mean relative difference: 1.098046"
 
 # Predictions do not coincide anymore
 pred_SDM = m_SDM$fitted.values
 pred_trophic = predict(m_trophic, newdata = data.frame(X = X, A = m_A$fitted.values))
 
 all.equal(pred_SDM, pred_trophic)
-#> [1] "Mean relative difference: 0.9825526"
 
 # Predictions are improved by trophic SDM
 
 ## AUC of species B for SDM
 dismo::evaluate(p = pred_SDM[which(B==1)],
                 a = pred_SDM[which(B==0)] )@auc
-#> [1] 0.6533333
 
 ## AUC of species B for trophic SDM
 dismo::evaluate(p = pred_trophic[which(B==1)],
                 a = pred_trophic[which(B==0)] )@auc
-#> [1] 0.8529167
 ```
 The relationship between the coefficients of the two models does not hold anymore more, and predictions are now different, with trophic SDM that largely improve classic SDM (AUC of species $y_B$ goes from 0.65 to 0.85).
 
 ### Non-linear statistical model
 We finally show how using a non-linear statistical model leads to different predictions from classical SDMs and a trophic SDM with the example of a random forest. Since we cannot provide any analytic derivation for random forest, we simply provide an example.
 Data are simulated exactly as in the very first examples (continuous observable entities).
-
-```r
+```{r simRF}
 # Simulate data for the basal species A 
 A = 3*X + 2*X^2 + rnorm(100, sd = 5)
 # Simulate data for the predator species B
@@ -307,29 +276,13 @@ par(mfrow=c(1,3))
 plot(X,A, main = "Species A realised \n and fundamental niche")
 plot(X,B, main = "Species B realised niche")
 plot(X, 2*X -3*X^2, main = "Species B fundamental niche")
-```
-
-![plot of chunk simRF](figure/simRF-1.png)
-
-```r
 
 par(mfrow = oldpar$mfrow)
 ```
 
 We infer statistical models with random forest
-
-```r
+```{r fitRF, warning=F, results = 'hide'}
 library(randomForest)
-#> randomForest 4.7-1.1
-#> Type rfNews() to see new features/changes/bug fixes.
-#> 
-#> Attachement du package : 'randomForest'
-#> L'objet suivant est masqué depuis 'package:ggplot2':
-#> 
-#>     margin
-#> L'objet suivant est masqué depuis 'package:gridExtra':
-#> 
-#>     combine
 
 # Species A
 m_A  = randomForest(A ~ X + I(X^2))
@@ -341,20 +294,16 @@ m_SDM <- randomForest(B ~ X + I(X^2))
 ```
 
 We now compare the predictions from the two models.
-
-```r
+```{r predictRF}
 # Prediction are now different
 pred_SDM = m_SDM$predicted
 pred_trophic = predict(m_trophic, newdata = data.frame(X = X, A = m_A$predicted))
 
 all.equal(pred_SDM, pred_trophic)
-#> [1] "Mean relative difference: 0.08021014"
 
 #Compare R2
 cor(B, pred_SDM)^2
-#> [1] 0.8075415
 cor(B, pred_trophic)^2
-#> [1] 0.8670482
 ```
 
 Predictions from the model are different, and trophic SDM has a larger R2 than classical SDMs.

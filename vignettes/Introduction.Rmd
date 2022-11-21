@@ -57,9 +57,10 @@ colnames(A) = rownames(A) = paste0("Y",as.character(1:S))
 # Build an igraph object from A
 G = igraph::graph_from_adjacency_matrix(A)
 
-igraph::plot(G)
-#> Error: 'plot' n’est un object exporté depuis 'namespace:igraph'
+plot(G)
 ```
+
+![plot of chunk simulate graph](figure/simulate graph-1.png)
 
 ### Simulate data
 We now simulate species distribution at 300 locations along two environmental gradients. We simulate species such that species Y1 to Y3 have a negative dependence to the first environmental variable X_1 and a positive dependence to X_2, viceversa for species Y4 to Y6. Moreover, the strength of the environmental term decreases along the trophic level, while the effect of the prey increases. Finally, preys always have a positive effect on predators.
@@ -128,7 +129,6 @@ m = trophicSDM(Y = Y, X = X, G = G,
                env.formula = "~ I(X_1^2) + I(X_2^2)",
                family = binomial(link = "logit"), 
                method = "stan_glm", chains = nchains, iter = iter, verbose = verbose)
-#> Error in unloadNamespace("sna"): l'espace de noms 'sna' est importé par 'bipartite' et ne peut, donc, pas être déchargé
 ```
 
 ### A trophicSDMfit object
@@ -141,7 +141,7 @@ m
 #>  with a bottom-up approach 
 #>  
 #>  Number of species : 6 
-#>  Number of links : 0 
+#>  Number of links : 10 
 #> ==================================================================
 #> * Useful fields
 #>     $coef 
@@ -158,19 +158,19 @@ m$form.all
 #> [1] "y ~ I(X_1^2) + I(X_2^2)"
 #> 
 #> $Y2
-#> [1] "y ~ I(X_1^2) + I(X_2^2)"
+#> [1] "y ~ I(X_1^2)+I(X_2^2)+Y1"
 #> 
 #> $Y3
-#> [1] "y ~ I(X_1^2) + I(X_2^2)"
+#> [1] "y ~ I(X_1^2)+I(X_2^2)+Y1+Y2"
 #> 
 #> $Y4
-#> [1] "y ~ I(X_1^2) + I(X_2^2)"
+#> [1] "y ~ I(X_1^2)+I(X_2^2)+Y1+Y3"
 #> 
 #> $Y5
-#> [1] "y ~ I(X_1^2) + I(X_2^2)"
+#> [1] "y ~ I(X_1^2)+I(X_2^2)+Y1+Y3+Y4"
 #> 
 #> $Y6
-#> [1] "y ~ I(X_1^2) + I(X_2^2)"
+#> [1] "y ~ I(X_1^2)+I(X_2^2)+Y3+Y5"
 ```
 
 ## Analyse a fitted trophicSDM
@@ -219,39 +219,49 @@ We can visually see that the regression coefficients for the environmental part 
 coef(m, level = 0.9)
 #> $Y1
 #>                  mean         5%       95%
-#> (Intercept)  1.102934  0.7601684  1.454545
-#> I(X_1^2)    -2.087212 -2.4379798 -1.785736
-#> I(X_2^2)     1.824126  1.5008507  2.194295
+#> (Intercept)  1.193315  0.8631366  1.551786
+#> I(X_1^2)    -2.153769 -2.4827322 -1.854351
+#> I(X_2^2)     1.904532  1.5618766  2.281827
 #> 
 #> $Y2
-#>                   mean         5%        95%
-#> (Intercept)  0.6310233  0.3235786  0.9422203
-#> I(X_1^2)    -1.4118736 -1.6721628 -1.1657792
-#> I(X_2^2)     1.6023344  1.3324804  1.9097407
+#>                   mean          5%        95%
+#> (Intercept)  0.4378192 -0.05096073  0.9425659
+#> I(X_1^2)    -1.3103497 -1.64827655 -0.9781233
+#> I(X_2^2)     1.6693748  1.28262664  2.0953004
+#> Y1           1.1014760  0.60271353  1.6253656
 #> 
 #> $Y3
-#>                  mean         5%       95%
-#> (Intercept)  1.123543  0.8035306  1.459674
-#> I(X_1^2)    -1.400497 -1.6192664 -1.181515
-#> I(X_2^2)     1.084625  0.8152213  1.346404
+#>                   mean         5%       95%
+#> (Intercept)  0.9246159  0.3048754  1.537713
+#> I(X_1^2)    -1.3782372 -1.7729318 -1.011603
+#> I(X_2^2)     1.2837309  0.8501504  1.799605
+#> Y1           0.8750454  0.2487845  1.523552
+#> Y2           1.3356857  0.7836524  1.874160
 #> 
 #> $Y4
-#>                   mean         5%        95%
-#> (Intercept)  0.5611083  0.2772490  0.8529893
-#> I(X_1^2)     0.7490008  0.5500772  0.9754609
-#> I(X_2^2)    -0.8798786 -1.0736615 -0.7078989
+#>                  mean         5%        95%
+#> (Intercept) -0.149971 -0.9501498  0.6711274
+#> I(X_1^2)     1.132746  0.7019883  1.5938620
+#> I(X_2^2)    -1.138931 -1.5981180 -0.6976561
+#> Y1           2.550784  1.6477388  3.4849039
+#> Y3           2.000125  1.2299528  2.9196692
 #> 
 #> $Y5
 #>                   mean          5%        95%
-#> (Intercept)  0.2666454 -0.02427801  0.5612933
-#> I(X_1^2)     0.6991289  0.50707635  0.9209853
-#> I(X_2^2)    -0.6110607 -0.78702125 -0.4414187
+#> (Intercept)  0.5543470 -0.78446747  2.0315709
+#> I(X_1^2)     0.9714739  0.01583068  1.9503350
+#> I(X_2^2)    -1.4183446 -2.61590362 -0.2213468
+#> Y1           2.9289062  0.28313833  6.4031659
+#> Y3           4.6412922  1.98733697  7.6986728
+#> Y4           2.0493295  0.68591358  3.5493089
 #> 
 #> $Y6
-#>                   mean         5%        95%
-#> (Intercept) -0.1016202 -0.3724492 0.17984681
-#> I(X_1^2)     0.2885038  0.1227377 0.45236887
-#> I(X_2^2)    -0.1215249 -0.2848940 0.05058294
+#>                   mean         5%       95%
+#> (Intercept) -0.2653839 -2.0546623 1.7166369
+#> I(X_1^2)     0.1022363 -0.8775113 0.9815609
+#> I(X_2^2)    -0.2503882 -1.2390232 0.8521640
+#> Y3           3.8033136  1.3748090 6.6390156
+#> Y5           3.6530362  1.9951208 5.4587375
 ```
 
 Notice that regression coefficients are directly available in the field `$coef` of an object trophicSDMfit (with `level = 0.95`). As we previously hinted, we see that the estimate of the regression coefficients of the environmental part get closer and closer to zero with credible interval that often overlap zero (implying they are not significant with a confidence level of 10%) for species with a higher trophic level. In order to be able to correctly quantify the effect of the different predictors across species (i.e., their relative importance), we need to standardise the regression coefficients (see Grace et al. 2018). To do so, we need to set `standardise = TRUE`. 
@@ -260,39 +270,49 @@ Notice that regression coefficients are directly available in the field `$coef` 
 coef(m, level = 0.9, standardise = T)
 #> $Y1
 #>               estimate         5%        95%
-#> (Intercept)  1.1029340  1.1029340  1.1029340
-#> I(X_1^2)    -0.5949291 -0.6949103 -0.5089978
-#> I(X_2^2)     0.5400303  0.4443251  0.6496183
+#> (Intercept)  1.1933152  1.1933152  1.1933152
+#> I(X_1^2)    -0.6032735 -0.6954163 -0.5194061
+#> I(X_2^2)     0.5524401  0.4530474  0.6618806
 #> 
 #> $Y2
-#>               estimate         5%        95%
-#> (Intercept)  0.6310233  0.6310233  0.6310233
-#> I(X_1^2)    -0.4691909 -0.5556896 -0.3874093
-#> I(X_2^2)     0.5530592  0.4599168  0.6591630
+#>               estimate          5%        95%
+#> (Intercept)  0.4378192  0.43781923  0.4378192
+#> I(X_1^2)    -0.3967764 -0.49910135 -0.2961777
+#> I(X_2^2)     0.5234732  0.40219885  0.6570325
+#> Y1           0.1815471  0.09934023  0.2678954
 #> 
 #> $Y3
-#>               estimate         5%        95%
-#> (Intercept)  1.1235428  1.1235428  1.1235428
-#> I(X_1^2)    -0.5117799 -0.5917242 -0.4317580
-#> I(X_2^2)     0.4116663  0.3094149  0.5110239
+#>               estimate          5%        95%
+#> (Intercept)  0.9246159  0.92461585  0.9246159
+#> I(X_1^2)    -0.4018688 -0.51695451 -0.2949649
+#> I(X_2^2)     0.3876289  0.25670715  0.5433997
+#> Y1           0.1388822  0.03948565  0.2418093
+#> Y2           0.2027708  0.11896649  0.2845168
 #> 
 #> $Y4
 #>               estimate         5%        95%
-#> (Intercept)  0.5611083  0.5611083  0.5611083
-#> I(X_1^2)     0.3160865  0.2321386  0.4116552
-#> I(X_2^2)    -0.3856658 -0.4706041 -0.3102842
+#> (Intercept) -0.1499710 -0.1499710 -0.1499710
+#> I(X_1^2)     0.4526599  0.2805236  0.6369279
+#> I(X_2^2)    -0.4713231 -0.6613485 -0.2887107
+#> Y1           0.5548413  0.3584128  0.7580292
+#> Y3           0.3802667  0.2338405  0.5550919
 #> 
 #> $Y5
-#>               estimate         5%        95%
-#> (Intercept)  0.2666454  0.2666454  0.2666454
-#> I(X_1^2)     0.3095830  0.2245398  0.4078239
-#> I(X_2^2)    -0.2810405 -0.3619687 -0.2030184
+#>               estimate           5%         95%
+#> (Intercept)  0.5543470  0.554346969  0.55434697
+#> I(X_1^2)     0.2802264  0.004566439  0.56258369
+#> I(X_2^2)    -0.4236835 -0.781414685 -0.06612002
+#> Y1           0.4598741  0.044456182  1.00537537
+#> Y3           0.6369546  0.272735138  1.05653878
+#> Y4           0.1881906  0.062987653  0.32593412
 #> 
 #> $Y6
-#>                estimate          5%         95%
-#> (Intercept) -0.10162025 -0.10162025 -0.10162025
-#> I(X_1^2)     0.13929782  0.05926125  0.21841654
-#> I(X_2^2)    -0.06094283 -0.14286993  0.02536656
+#>                estimate          5%        95%
+#> (Intercept) -0.26538390 -0.26538390 -0.2653839
+#> I(X_1^2)     0.03710176 -0.31845069  0.3562105
+#> I(X_2^2)    -0.09409905 -0.46564058  0.3202540
+#> Y3           0.65666409  0.23736872  1.1462645
+#> Y5           0.17503112  0.09559397  0.2615493
 ```
 
 This results confirms the previous analysis. We can analyse the relative importance of different group of variables with the function `computeVariableImportance`. This function can take as input the definition of groups of variables in the argument `groups` (by default, with `groups = NULL`, each explanatory variable is a different group). The variable importance of groups of variables is computed as the standardised regression coefficients summed across variable of the same group.  
@@ -317,8 +337,9 @@ Finally, we can visualise the effect of each trophic interactions with the funct
 
 ```r
 plotG_inferred(m, level = 0.9)
-#> Error in set_edge(edge.color, "edge.color"): incorrect edge.color value
 ```
+
+![plot of chunk plotG](figure/plotG-1.png)
 
 We see that the model correctly retrieves that preys have a posite effect on the predators and that this effect becomes more important for predators at higher trophic positions.
 
@@ -331,7 +352,7 @@ SDM = m$model$Y6
 
 # The formula used to fit the model
 SDM$form.all
-#> [1] "y ~ I(X_1^2) + I(X_2^2)"
+#> [1] "y ~ I(X_1^2)+I(X_2^2)+Y3+Y5"
 
 # The inferred model
 plot(SDM)
@@ -343,10 +364,12 @@ plot(SDM)
 
 # The regression coefficients
 coef(SDM, level = 0.9, standardise = T)
-#>                estimate          5%         95%
-#> (Intercept) -0.10162025 -0.10162025 -0.10162025
-#> I(X_1^2)     0.13929782  0.05926125  0.21841654
-#> I(X_2^2)    -0.06094283 -0.14286993  0.02536656
+#>                estimate          5%        95%
+#> (Intercept) -0.26538390 -0.26538390 -0.2653839
+#> I(X_1^2)     0.03710176 -0.31845069  0.3562105
+#> I(X_2^2)    -0.09409905 -0.46564058  0.3202540
+#> Y3           0.65666409  0.23736872  1.1462645
+#> Y5           0.17503112  0.09559397  0.2615493
 ```
 
 We can also predict the probability of presence of species Y6 at a site with X_1 = 0.5, X_2 = 0.5, assuming its preys to be present present.
@@ -356,7 +379,7 @@ preds = predict(SDM, newdata = data.frame(X_1 = 0.5, X_2 = 0.5, Y3 = 1, Y5 = 1))
 
 # Posterior mean of the probability of presence
 mean(preds$predictions.prob)
-#> [1] 0.4797845
+#> [1] 0.9979847
 ```
 
 We see that the species has a high probability of presence in this environmental conditions when its prey are present.
@@ -385,15 +408,15 @@ pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), pred_samples = 100,
 pred$Y2
 #> $predictions.mean
 #>         1 
-#> 0.6650566 
+#> 0.7984008 
 #> 
 #> $predictions.q025
 #>         1 
-#> 0.6003016 
+#> 0.5854847 
 #> 
 #> $predictions.q975
 #>         1 
-#> 0.7238832
+#> 0.8850332
 ```
 
 ## Model evaluation
@@ -414,15 +437,16 @@ We first compare model AIC and an approximation of the leave-one-out cross-valid
 ```r
 
 m$AIC
-#> [1] 3248.505
+#> [1] 1455.721
 m_classic$AIC
-#> [1] 1614.899
+#> [1] 1584.531
 
 
 loo(m)
-#> [1] -1609.482
+#> Warning: Found 1 observation(s) with a pareto_k > 0.7. We recommend calling 'loo' again with argument 'k_threshold = 0.7' in order to calculate the ELPD without the assumption that these observations are negligible. This will refit the model 1 times to compute the ELPDs for the problematic observations directly.
+#> [1] -707.6043
 loo(m_classic)
-#> [1] -793.4494
+#> [1] -777.2048
 ```
 
 We see that our trophic model has a lower AIC and a higher loo, which proves that including prey improves the model.
@@ -452,15 +476,15 @@ metrics_classic = evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred_classic)
 
 # Mean AUC
 mean(metrics$auc)
-#> [1] 0.4756711
+#> [1] 0.8084933
 mean(metrics_classic$auc)
-#> [1] 0.4763096
+#> [1] 0.7980231
 
 # Mean TSS
 mean(metrics$tss)
-#> [1] 0.08165067
+#> [1] 0.5446994
 mean(metrics_classic$tss)
-#> [1] 0.08275215
+#> [1] 0.5234593
 ```
 
 On the training dataset models have similar performances, with our trophic model that slightly improves SDM's TSS.
@@ -501,15 +525,15 @@ metrics_classic = evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred_classic)
 
 # Mean AUC
 mean(metrics$auc)
-#> [1] 0.4770328
+#> [1] 0.697824
 mean(metrics_classic$auc)
-#> [1] 0.6817758
+#> [1] 0.6669216
 
 # Mean TSS
 mean(metrics$tss)
-#> [1] 0.07990131
+#> [1] 0.4223416
 mean(metrics_classic$tss)
-#> [1] 0.378944
+#> [1] 0.3722708
 ```
 
 The increase in mean AUC and TSS is even higher in 3-fold cross-validation than on the fitted data. As we simulated the data with a strong biotic signal, trophic SDM proves to be a better tool than classic SDM.
@@ -523,22 +547,22 @@ preds = predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 # Take the posterior mean
 lapply(preds,mean)
 #> $Y1
-#> [1] 0.7361724
+#> [1] 0.7512132
 #> 
 #> $Y2
-#> [1] 0.6661574
+#> [1] 0.835708
 #> 
 #> $Y3
-#> [1] 0.7378806
+#> [1] 0.9535799
 #> 
 #> $Y4
-#> [1] 0.6302001
+#> [1] 0.9859788
 #> 
 #> $Y5
-#> [1] 0.5723563
+#> [1] 0.9998674
 #> 
 #> $Y6
-#> [1] 0.489621
+#> [1] 0.9984503
 ```
 
 ## Author
