@@ -23,3 +23,7 @@ This is a resubmission. After the manual check by the CRAN's team I:
   trophic (4:31, 4:158, 4:364)
   
   However, the word 'Trophic' (i.e., relating to feeding and nutrition) is not misspelled and is a common word in ecology.  Poggiato, Thuiller and Andréoletti are the names of the authors of the methodological paper describing the method implemented in the package.
+  
+Found the following (possibly) invalid DOIs:    DOI: 10.22541/au.166853394.45823739/v1      From: DESCRIPTION      Status: Not Found      Message: 404
+  
+  The DOI is valid.
