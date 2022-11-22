@@ -19,7 +19,7 @@
 #' m = trophicSDM(Y, X, G, env.formula, 
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
-#' \donttest{
+#' \dontrun{
 #' plotG_inferred(m)
 #' }
 

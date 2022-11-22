@@ -17,7 +17,7 @@
 #' m = trophicSDM(Y, X, G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
-#' \donttest{
+#' \dontrun{
 #' plotG(m)
 #' }
 
