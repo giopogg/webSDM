@@ -1,6 +1,6 @@
 
 ## Resubmission
-This is a resubmission. After the manual check by the CRAN's team I:
+This is a resubmission. After the manual check by the CRAN's team, I:
 
 * Added a reference in the DESCRIPTION according to the suggested syntax.
 * Added the field \value to the Rd files when it was missing
@@ -9,6 +9,8 @@ This is a resubmission. After the manual check by the CRAN's team I:
 * Reset to user's par() after changing it
 * Ensured that I do not use more than two cores in examples, vignettes, etc.
 * Precompiled vignette to reduce check time
+* Replaced \dontrun with \donttest in documentation
+* Remove "this package" and fixed a typo in package description
 
 ## R CMD check results
 

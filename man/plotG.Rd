@@ -24,7 +24,7 @@ env.formula = "~ X_1 + X_2"
 m = trophicSDM(Y, X, G, env.formula, iter = 100,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
-\dontrun{
+\donttest{
 plotG(m)
 }
 }

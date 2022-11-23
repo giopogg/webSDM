@@ -29,7 +29,7 @@ m = trophicSDM(Y, X, G, env.formula, iter = 100,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
 # Plot species Y6
-\dontrun{
+\donttest{
 plot(m$model$Y6)
 }
 }

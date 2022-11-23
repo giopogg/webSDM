@@ -16,7 +16,7 @@
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
 #' # Plot species Y6
-#' \dontrun{
+#' \donttest{
 #' plot(m$model$Y6)
 #' }
 #' @import ggplot2
