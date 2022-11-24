@@ -1,7 +1,7 @@
 Package: webSDM
 Title: Including Known Interactions in Species Distribution Models
 Version: 1.1-1
-Description: A collection of tool to fit and work with trophic Species Distribution Models. Trophic Species Distribution Models combine knowledge of trophic interactions with Bayesian structural equation models that model each species as a function of its prey (or predators) and environmental conditions. It exploits the topological ordering of the known trophic interaction network to predict species distribution in space and/or time, where the prey (or predator) distribution is unavailable. The method implemented by the package is described in Poggiato, Andréoletti, Pollock and Thuiller (2022) <doi:10.22541/au.166853394.45823739/v1>.
+Description: A collection of tools to fit and work with trophic Species Distribution Models. Trophic Species Distribution Models combine knowledge of trophic interactions with Bayesian structural equation models that model each species as a function of its prey (or predators) and environmental conditions. It exploits the topological ordering of the known trophic interaction network to predict species distribution in space and/or time, where the prey (or predator) distribution is unavailable. The method implemented by the package is described in Poggiato, Andréoletti, Pollock and Thuiller (2022) <doi:10.22541/au.166853394.45823739/v1>.
 License: GPL-3
 Encoding: UTF-8
 Imports: GGally, Matrix, abind, bayesplot, brms, broom.mixed, dismo, dplyr, ggplot2, glmnet, gridExtra, igraph, jtools, rstanarm, rstantools, utils
