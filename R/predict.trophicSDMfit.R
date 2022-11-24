@@ -26,7 +26,7 @@
 #' m = trophicSDM(Y, X, G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
-#'# We can now evaluate species probabilities of presence for the enviromental conditions c(0.5, 0.5)
+#'# We can now evaluate species probabilities of presence for the environmental conditions c(0.5, 0.5)
 #' predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 #' # Obtain 50 draws from the posterior predictive distribution of species (pred_samples = 50)
 #' # using predicted presence-absences of species to predict their predators (prob.cov = TRUE)

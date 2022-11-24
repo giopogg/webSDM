@@ -25,7 +25,7 @@ env.formula = "~ X_1 + X_2"
 # (set iter = 1000 to obtain reliable results)
 m = trophicSDM(Y, X, G, env.formula, 
                family = binomial(link = "logit"), penal = NULL, 
-               mode = "prey", method = "stan_glm")
+               mode = "prey", method = "glm")
 \donttest{
 plotG_inferred(m)
 }

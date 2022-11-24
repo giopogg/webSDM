@@ -18,14 +18,11 @@
 #' m = trophicSDM(Y, X, G, env.formula, iter = 50,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
-#' # Plot all species
-#' \donttest{
-#' plot(m)
-#' }
 #' # Plot just the first three species
 #' \donttest{
 #' plot(m, species = c("Y1","Y2","Y3"))
 #' }
+#' # If species = NULL (default), all species are plotted.
 #' @method plot trophicSDMfit
 #' @export
 

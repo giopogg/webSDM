@@ -8,7 +8,7 @@ This is a resubmission. After the manual check by the CRAN's team, I:
 * Set the print call in trophicSDM.R within if (verbose) as suggested
 * Reset to user's par() after changing it
 * Ensured that I do not use more than two cores in examples, vignettes, etc.
-* Precompiled vignette to reduce check time
+* Precompiled vignette to reduce check time below 10minutes
 * Replaced \dontrun with \donttest in documentation
 * Remove "this package" and fixed a typo in package description
 
@@ -26,6 +26,10 @@ This is a resubmission. After the manual check by the CRAN's team, I:
   
   However, the word 'Trophic' (i.e., relating to feeding and nutrition) is not misspelled and is a common word in ecology.  Poggiato, Thuiller and Andréoletti are the names of the authors of the methodological paper describing the method implemented in the package.
   
-Found the following (possibly) invalid DOIs:    DOI: 10.22541/au.166853394.45823739/v1      From: DESCRIPTION      Status: Not Found      Message: 404
+Found the following (possibly) invalid DOIs:
+    DOI: 10.22541/au.166853394.45823739/v1
+      From: DESCRIPTION
+      Status: Not Found
+      Message: 404
   
   The DOI is valid.

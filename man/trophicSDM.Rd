@@ -97,12 +97,11 @@ print(m)
 # Access local models (e.g. species "Y5")
 m$model$Y5
 coef(m$model$Y5)
-\donttest{
-plot(m$model$Y5)
-}
+# The fitted model can be plotted with `plot(m)`
 # Fit a sparse model in the Bayesian framework with the horshoe prior
+# Increase the number of iterations to obtain reliable results.
 \donttest{
-m = trophicSDM(Y,X,G, env.formula, 
+m = trophicSDM(Y,X,G, env.formula, iter = 50,
                family = binomial(link = "logit"), penal = "horshoe", 
                mode = "prey", method = "stan_glm")
 }

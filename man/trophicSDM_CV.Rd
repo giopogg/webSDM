@@ -48,22 +48,23 @@ Once the CV predicted values are obtained, their quality can be evaluated with \
 data(Y, X, G)
 # define abiotic part of the model
 env.formula = "~ X_1 + X_2"
-# Run the model with bottom-up control using stan_glm as fitting method and no penalisation
+# Run the model with bottom-up control using glm as fitting method and no penalisation
 # (set iter = 1000 to obtain reliable results)
-m = trophicSDM(Y, X, G, env.formula, iter = 50,
+\donttest{
+m = trophicSDM(Y, X, G, env.formula, iter = 50, 
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "stan_glm")
+
 # Run a 3-fold (K=3) cross validation. Predictions is done using presence-absences of preys
 # (prob.cov = FALSE, see ?predict.trophicSDM) with 50 draws from the posterior distribution
 # (pred_samples = 50)
-\donttest{
 CV = trophicSDM_CV(m, K = 3, prob.cov = FALSE, pred_samples = 10, run.parallel = FALSE)
 # Use predicted values to evaluate model goodness of fit in cross validation
 Ypred = CV$meanPred[,colnames(Y)]
 
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 }
-# Now using glm, K = 2 and by specifying the partition of site
+# Now with K = 2 and by specifying the partition of site
 m = trophicSDM(Y, X, G, env.formula, iter = 50,
                family = binomial(link = "logit"), penal = NULL, 
                mode = "prey", method = "glm")

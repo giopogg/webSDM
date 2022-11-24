@@ -30,10 +30,7 @@
 #' Ypred = Ypred[,colnames(Y)]
 #' evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 #' 
-#' # Note that this is equivalent to:
-#' \donttest{
-#' evaluateModelFit(m)
-#' }
+#' # Note that this is equivalent to `evaluateModelFit(m)`
 #' # If we fitted the model using "glm"
 #' m = trophicSDM(Y, X, G, env.formula, iter = 50,
 #'                family = binomial(link = "logit"), penal = NULL, 

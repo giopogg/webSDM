@@ -139,7 +139,7 @@
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span>, <span class="va">env.formula</span>, iter <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.1, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.06, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -148,9 +148,15 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.09, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.08, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
@@ -178,49 +184,43 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-in"><span><span class="co"># We can now evaluate species probabilities of presence for the enviromental conditions c(0.5, 0.5)</span></span></span>
+<span class="r-in"><span><span class="co"># We can now evaluate species probabilities of presence for the environmental conditions c(0.5, 0.5)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, Xnew <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6139626 0.6126291 0.6244598 0.6296531 0.6215553 0.6395745 0.6264118</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]    [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6305591 0.6231231 0.637365</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6021741 0.6166401 0.6215901 0.6615329 0.6256334 0.6167084 0.6241686</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,8]      [,9]     [,10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.632722 0.6486056 0.6203342</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6745199 0.6998723 0.7011472 0.6764539 0.7187225 0.6591985 0.6875535</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]     [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6708376 0.693942 0.6756415</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7037196 0.7119249 0.6912996 0.7078865 0.7221709 0.6627068 0.6789118</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6674429 0.6884778 0.6643962</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6985167 0.7044109 0.7188899 0.7241176 0.6801385 0.7292344 0.7023162</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7330913 0.7234575 0.7172685</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7159476 0.6935254 0.7131702 0.7222019 0.7406068 0.7252899 0.7308049</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]     [,9]     [,10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7143916 0.743095 0.6846016</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]     [,7]     [,8]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.1243559 0.6657941 0.4642074 0.4474516 0.6910168 0.4574588 0.434372 0.471256</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4568902 0.4201837</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]     [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2412507 0.502413 0.4811976 0.1646004 0.1021781 0.4860902 0.6596991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6613936 0.4913729 0.1124932</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]     [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4794998 0.5958238 0.4798144 0.4784886 0.5146017 0.476649 0.4455447</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5864141 0.5045569 0.4484144 0.4857809 0.4757177 0.4785936 0.5116045</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4538495 0.4761796 0.5085548</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5390667 0.4934983 0.4656029</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]     [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5459729 0.7595873 0.6076364 0.5804157 0.8227772 0.6187119 0.642449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]     [,4]      [,5]      [,6]      [,7]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7269354 0.6034408 0.6286209 0.615194 0.6203829 0.5161181 0.7176923</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6588293 0.5909254 0.5512529</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7969789 0.6266184 0.6235587</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Obtain 50 draws from the posterior predictive distribution of species (pred_samples = 50)</span></span></span>
 <span class="r-in"><span><span class="co"># using predicted presence-absences of species to predict their predators (prob.cov = TRUE)</span></span></span>
