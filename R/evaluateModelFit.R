@@ -103,7 +103,7 @@ evaluateModelFit = function(tSDM, Ynew = NULL, Ypredicted = NULL){
   if(tSDM$model.call$family$family == "binomial"){
     auc = tss = vector(length = S)
 
-    eval = mclapply(1:S,function(x){
+    eval = lapply(1:S,function(x){
       eval = dismo::evaluate(p = Ypredicted[which(Ynew[,colnames(Ypredicted)[x]]==1),x],
                              a = Ypredicted[which(Ynew[,colnames(Ypredicted)[x]]==0),x] )
 

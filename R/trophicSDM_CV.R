@@ -47,7 +47,6 @@
 #'                    pred_samples = 10, run.parallel = FALSE)
 #' Ypred = CV$meanPred[,colnames(Y)]
 #' evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
-
 #' @export
 trophicSDM_CV = function(tSDM, K, partition = NULL, prob.cov = FALSE,
                          pred_samples = NULL,
@@ -121,21 +120,6 @@ trophicSDM_CV = function(tSDM, K, partition = NULL, prob.cov = FALSE,
   colnames( meanPred ) = colnames(Pred975) = colnames(Pred025) = names(pred_K)
   }
 
-
-  # Compute Joint TSS and AUC
-  # if(tSDM$model.call$family$family == "binomial"){
-  # auc = tss = vector(length = S)
-  #
-  # eval = mclapply(1:S,function(x){
-  #   eval = dismo::evaluate(p = meanPred[which(tSDM$data$Y[,colnames(meanPred)[x]]==1),x],
-  #                          a = meanPred[which(tSDM$data$Y[,colnames(meanPred)[x]]==0),x] )
-  #
-  #   data.frame(auc = eval@auc, tss = max(eval@TPR+eval@TNR-1))
-  # })
-  #
-  # CVmetrics = do.call(rbind,eval)
-  # CVmetrics$species = colnames(meanPred)
-  # }
 
   list(meanPred = meanPred, Pred975 = Pred975, Pred025 = Pred025, partition = partition)
 

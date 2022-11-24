@@ -98,10 +98,10 @@ print(m)
 m$model$Y5
 coef(m$model$Y5)
 # The fitted model can be plotted with `plot(m)`
+
 # Fit a sparse model in the Bayesian framework with the horshoe prior
-# Increase the number of iterations to obtain reliable results.
 \donttest{
-m = trophicSDM(Y,X,G, env.formula, iter = 50,
+m = trophicSDM(Y,X,G, env.formula, 
                family = binomial(link = "logit"), penal = "horshoe", 
                mode = "prey", method = "stan_glm")
 }
@@ -116,7 +116,7 @@ m = trophicSDM(Y,X,G, env.formula,
                mode = "prey", method = "glm")
 
 #### Composite variables
-
+# See vignette 'Composite variables' for a complete introduction to the use of composite variables
 # Model species as a function of a quadratic polynomial of prey richness
 m = trophicSDM(Y,X,G, env.formula, 
                family = binomial(link = "logit"), penal = NULL, 
@@ -125,7 +125,7 @@ m = trophicSDM(Y,X,G, env.formula,
 m$form.all
 # Notice that for predators that feed on a single prey (with presence-absence data),
 # their richness and the square of their richness is exactly the same variable
-# In this case, trophicSDM() remove the redundant variable but prints a warning message
+# In this case, `trophicSDM()` removes the redundant variable but prints a warning message
 
 # Model species as a function of a dummy variable saying whether they have at leaste one prey
 m = trophicSDM(Y,X,G, env.formula, 
