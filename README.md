@@ -19,24 +19,11 @@ our package.
 ## Installing the R package
 
 ``` r
-library(devtools)
-## Le chargement a nécessité le package : usethis
 # Run to install webSDM
-install_github("giopogg/webSDM")
-## Skipping install of 'webSDM' from a github remote, the SHA1 (ac0a38e0) has not changed since last install.
-##   Use `force = TRUE` to force installation
+install.packages('webSDM', repos = "http://cran.us.r-project.org")
 library(webSDM)
-## Registered S3 method overwritten by 'GGally':
-##   method from   
-##   +.gg   ggplot2
 library(ggplot2)
 library(rstanarm)
-## Le chargement a nécessité le package : Rcpp
-## This is rstanarm version 2.21.3
-## - See https://mc-stan.org/rstanarm/articles/priors for changes to default priors!
-## - Default priors may change, so it's safest to specify priors, even if equivalent to the defaults.
-## - For execution on a local, multicore CPU with excess RAM we recommend calling
-##   options(mc.cores = parallel::detectCores())
 ```
 
 ## Fit a trophic SDM to data
@@ -101,45 +88,45 @@ with the function `coef`.
 coef(m, standardise = T, level = 0.9)
 ## $Y1
 ##               estimate         5%        95%
-## (Intercept)  0.3611008  0.3611008  0.3611008
-## X_1         -0.2017994 -0.2635303 -0.1462718
-## X_2          0.2574111  0.2002638  0.3160109
+## (Intercept)  0.3514629  0.3514629  0.3514629
+## X_1         -0.2050461 -0.2624913 -0.1434217
+## X_2          0.2583535  0.1880717  0.3243192
 ## 
 ## $Y2
 ##                estimate         5%         95%
-## (Intercept) -0.27266453 -0.2726645 -0.27266453
-## X_1          0.38453921  0.3197835  0.44708813
-## X_2         -0.07511756 -0.1370468 -0.01154298
+## (Intercept) -0.26333785 -0.2633379 -0.26333785
+## X_1          0.38374002  0.3204648  0.44929939
+## X_2         -0.07353416 -0.1351845 -0.01728826
 ## 
 ## $Y3
 ##               estimate         5%        95%
-## (Intercept) -0.6012845 -0.6012845 -0.6012845
-## X_1          0.2657625  0.2051166  0.3416602
-## X_2          0.1968746  0.1398637  0.2662955
+## (Intercept) -0.5961960 -0.5961960 -0.5961960
+## X_1          0.2653885  0.1937417  0.3316067
+## X_2          0.1941391  0.1390859  0.2638279
 ## 
 ## $Y5
-##               estimate          5%         95%
-## (Intercept) -0.6161529 -0.61615287 -0.61615287
-## X_1          0.2004465  0.13341527  0.26638533
-## X_2         -0.3079627 -0.37020467 -0.24150146
-## Y1           0.4405148  0.36783901  0.51000132
-## Y2          -0.0235910 -0.08555366  0.03422148
-## Y3          -0.2090331 -0.26525033 -0.15437886
+##                estimate         5%         95%
+## (Intercept) -0.62790520 -0.6279052 -0.62790520
+## X_1          0.20019487  0.1435994  0.26529229
+## X_2         -0.30477269 -0.3739897 -0.23557154
+## Y1           0.44240213  0.3687266  0.51312909
+## Y2          -0.02242559 -0.0812028  0.03648082
+## Y3          -0.21020276 -0.2675577 -0.15362370
 ## 
 ## $Y4
-##                estimate         5%        95%
-## (Intercept)  0.78636965  0.7863697  0.7863697
-## X_1         -0.17165422 -0.2333396 -0.1068042
-## X_2         -0.01173355 -0.0709376  0.0465938
-## Y3          -0.07646308 -0.1335219 -0.0203567
+##                estimate          5%         95%
+## (Intercept)  0.80558501  0.80558501  0.80558501
+## X_1         -0.17581208 -0.23168000 -0.12303921
+## X_2         -0.01073562 -0.07240602  0.04189239
+## Y3          -0.07673387 -0.13193644 -0.02066851
 ## 
 ## $Y6
 ##                estimate          5%         95%
-## (Intercept)  1.32355972  1.32355972  1.32355972
-## X_1         -0.03406930 -0.08847628  0.02425854
-## X_2          0.08715050  0.03048236  0.14694041
-## Y3          -0.23999395 -0.30474987 -0.17188008
-## Y5          -0.09962868 -0.16450221 -0.03954318
+## (Intercept)  1.31001064  1.31001064  1.31001064
+## X_1         -0.03239493 -0.09603774  0.02658241
+## X_2          0.09313652  0.02605054  0.15121886
+## Y3          -0.23958152 -0.31303595 -0.17474514
+## Y5          -0.09861646 -0.15543557 -0.04420347
 ```
 
 We can visualise the biotic coefficients with the function
@@ -205,19 +192,19 @@ Ypred = do.call(cbind,
 Ypred = Ypred[,colnames(Y)]
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 ##         auc       tss species
-## 1 0.6733744 0.2769949      Y1
-## 2 0.7050628 0.3100426      Y2
-## 3 0.6691045 0.2793124      Y3
-## 4 0.5983462 0.1745371      Y4
-## 5 0.6179529 0.2144599      Y5
-## 6 0.5595635 0.1052858      Y6
+## 1 0.6733022 0.2839559      Y1
+## 2 0.7048779 0.3146418      Y2
+## 3 0.6689458 0.2766919      Y3
+## 4 0.5991423 0.1666800      Y4
+## 5 0.6199538 0.2386297      Y5
+## 6 0.5521534 0.1098732      Y6
 
 m$log.lik
-## [1] -3638.838
+## [1] -3638.872
 m$AIC
-## [1] 7337.675
+## [1] 7337.745
 loo(m)
-## [1] -3651.288
+## [1] -3651.321
 ```
 
 We can also evaluate the quality of model predictions using K-fold
@@ -239,12 +226,12 @@ environmental conditions X_1 = 0.5 and X_2 = 0.5.
 Pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), fullPost = F)
 t(do.call(cbind, Pred))
 ##    predictions.mean predictions.q025 predictions.q975
-## Y1 0.6295833        0.6010029        0.6594481       
-## Y2 0.6849252        0.6579238        0.7127961       
-## Y3 0.7149874        0.6936391        0.7430782       
-## Y5 0.3856535        0.08875424       0.7080559       
-## Y4 0.4974779        0.4371872        0.5717659       
-## Y6 0.6641026        0.5164383        0.837267
+## Y1 0.6298634        0.608501         0.6580875       
+## Y2 0.6832979        0.6567695        0.7126683       
+## Y3 0.7138466        0.6944241        0.7311651       
+## Y5 0.3993768        0.09184073       0.7454946       
+## Y4 0.4900083        0.4453173        0.5820847       
+## Y6 0.6404433        0.4779544        0.8323953
 ```
 
 We can also obtain an estimation of the fundamental niche, that
@@ -293,7 +280,15 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
-
+## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+## Running the chains for more iterations may help. See
+## https://mc-stan.org/misc/warnings.html#tail-ess
+## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+## Running the chains for more iterations may help. See
+## https://mc-stan.org/misc/warnings.html#bulk-ess
+## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+## Running the chains for more iterations may help. See
+## https://mc-stan.org/misc/warnings.html#tail-ess
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
@@ -301,11 +296,9 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
-
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
 ## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-
+## https://mc-stan.org/misc/warnings.html#tail-ess
 ## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 ## Running the chains for more iterations may help. See
 ## https://mc-stan.org/misc/warnings.html#bulk-ess
