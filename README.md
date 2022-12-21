@@ -88,45 +88,45 @@ with the function `coef`.
 coef(m, standardise = T, level = 0.9)
 ## $Y1
 ##               estimate         5%        95%
-## (Intercept)  0.3514629  0.3514629  0.3514629
-## X_1         -0.2050461 -0.2624913 -0.1434217
-## X_2          0.2583535  0.1880717  0.3243192
+## (Intercept)  0.3475526  0.3475526  0.3475526
+## X_1         -0.2009638 -0.2632488 -0.1446234
+## X_2          0.2585566  0.1934955  0.3192463
 ## 
 ## $Y2
 ##                estimate         5%         95%
-## (Intercept) -0.26333785 -0.2633379 -0.26333785
-## X_1          0.38374002  0.3204648  0.44929939
-## X_2         -0.07353416 -0.1351845 -0.01728826
+## (Intercept) -0.25840889 -0.2584089 -0.25840889
+## X_1          0.38338523  0.3217044  0.44840152
+## X_2         -0.07590404 -0.1331136 -0.02143486
 ## 
 ## $Y3
 ##               estimate         5%        95%
-## (Intercept) -0.5961960 -0.5961960 -0.5961960
-## X_1          0.2653885  0.1937417  0.3316067
-## X_2          0.1941391  0.1390859  0.2638279
+## (Intercept) -0.6131422 -0.6131422 -0.6131422
+## X_1          0.2678163  0.2049716  0.3316497
+## X_2          0.1959962  0.1304534  0.2667688
 ## 
 ## $Y5
-##                estimate         5%         95%
-## (Intercept) -0.62790520 -0.6279052 -0.62790520
-## X_1          0.20019487  0.1435994  0.26529229
-## X_2         -0.30477269 -0.3739897 -0.23557154
-## Y1           0.44240213  0.3687266  0.51312909
-## Y2          -0.02242559 -0.0812028  0.03648082
-## Y3          -0.21020276 -0.2675577 -0.15362370
+##                estimate          5%         95%
+## (Intercept) -0.60887640 -0.60887640 -0.60887640
+## X_1          0.20226902  0.13688919  0.26445533
+## X_2         -0.30719639 -0.36633457 -0.24113583
+## Y1           0.44107544  0.37239328  0.50833208
+## Y2          -0.02521752 -0.08470379  0.03257408
+## Y3          -0.20786330 -0.26715917 -0.14850745
 ## 
 ## $Y4
 ##                estimate          5%         95%
-## (Intercept)  0.80558501  0.80558501  0.80558501
-## X_1         -0.17581208 -0.23168000 -0.12303921
-## X_2         -0.01073562 -0.07240602  0.04189239
-## Y3          -0.07673387 -0.13193644 -0.02066851
+## (Intercept)  0.78354528  0.78354528  0.78354528
+## X_1         -0.17449487 -0.22787550 -0.11480076
+## X_2         -0.01111425 -0.07165551  0.04516293
+## Y3          -0.07563451 -0.13088922 -0.01919380
 ## 
 ## $Y6
 ##                estimate          5%         95%
-## (Intercept)  1.31001064  1.31001064  1.31001064
-## X_1         -0.03239493 -0.09603774  0.02658241
-## X_2          0.09313652  0.02605054  0.15121886
-## Y3          -0.23958152 -0.31303595 -0.17474514
-## Y5          -0.09861646 -0.15543557 -0.04420347
+## (Intercept)  1.33375272  1.33375272  1.33375272
+## X_1         -0.03631624 -0.09686909  0.02993860
+## X_2          0.08569472  0.02941836  0.14677667
+## Y3          -0.24180669 -0.29984779 -0.17718661
+## Y5          -0.10172193 -0.16300415 -0.04541945
 ```
 
 We can visualise the biotic coefficients with the function
@@ -192,19 +192,19 @@ Ypred = do.call(cbind,
 Ypred = Ypred[,colnames(Y)]
 evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred)
 ##         auc       tss species
-## 1 0.6733022 0.2839559      Y1
-## 2 0.7048779 0.3146418      Y2
-## 3 0.6689458 0.2766919      Y3
-## 4 0.5991423 0.1666800      Y4
-## 5 0.6199538 0.2386297      Y5
-## 6 0.5521534 0.1098732      Y6
+## 1 0.6732428 0.2776740      Y1
+## 2 0.7047877 0.3131087      Y2
+## 3 0.6690612 0.2793124      Y3
+## 4 0.5985382 0.1766574      Y4
+## 5 0.6121942 0.1979403      Y5
+## 6 0.5592781 0.1074632      Y6
 
 m$log.lik
-## [1] -3638.872
+## [1] -3638.963
 m$AIC
-## [1] 7337.745
+## [1] 7337.927
 loo(m)
-## [1] -3651.321
+## [1] -3651.522
 ```
 
 We can also evaluate the quality of model predictions using K-fold
@@ -226,12 +226,12 @@ environmental conditions X_1 = 0.5 and X_2 = 0.5.
 Pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), fullPost = F)
 t(do.call(cbind, Pred))
 ##    predictions.mean predictions.q025 predictions.q975
-## Y1 0.6298634        0.608501         0.6580875       
-## Y2 0.6832979        0.6567695        0.7126683       
-## Y3 0.7138466        0.6944241        0.7311651       
-## Y5 0.3993768        0.09184073       0.7454946       
-## Y4 0.4900083        0.4453173        0.5820847       
-## Y6 0.6404433        0.4779544        0.8323953
+## Y1 0.6349063        0.6027953        0.664655        
+## Y2 0.68883          0.6706062        0.7136599       
+## Y3 0.7196283        0.6963811        0.7456787       
+## Y5 0.3966708        0.09034863       0.7058777       
+## Y4 0.4887261        0.4434229        0.5765817       
+## Y6 0.6243699        0.5044867        0.8205877
 ```
 
 We can also obtain an estimation of the fundamental niche, that
@@ -260,10 +260,14 @@ framework, with adaptations when necessary (e.g. coefficients are
 significant or not depending on the p-values instead of the credible
 interval). However, error propagation is not available and we can only
 obtain one prediction for each species and site, instead of multiple
-samples in the Bayesian case. ### Penalisation We can infer a sparse
-model by specifying `penal = "horshoe"` if we set `method = "stan_glm"`
-(i.e. in the Bayesian framework), or `penal = "elasticnet"` if we set
-`method = "glm"` (i.e. in the frequentist framework).
+samples in the Bayesian case.
+
+### Penalisation
+
+We can infer a sparse model by specifying `penal = "horshoe"` if we set
+`method = "stan_glm"` (i.e. in the Bayesian framework), or
+`penal = "elasticnet"` if we set `method = "glm"` (i.e. in the
+frequentist framework).
 
 ``` r
 m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
@@ -273,38 +277,6 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
 m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                family = binomial(link = "logit"),
                mode = "prey", method = "stan_glm", penal = "horshoe")
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#tail-ess
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#tail-ess
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#tail-ess
-## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#bulk-ess
-## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-## Running the chains for more iterations may help. See
-## https://mc-stan.org/misc/warnings.html#tail-ess
 ```
 
 ### Composite variables

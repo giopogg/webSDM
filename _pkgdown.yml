@@ -62,7 +62,6 @@ reference:
   contents:
   - "global"
   - "buildFormula"
-  - "compute_TL_laplacian"
   - "webSDM"
 development:
   mode: auto

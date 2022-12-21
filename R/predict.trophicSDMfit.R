@@ -82,13 +82,16 @@ predict.trophicSDMfit = function(object, Xnew = NULL, prob.cov = FALSE,
   
   # Sort species
   sp.prediction = as.list(vector(length=vcount(G)))
-
-  if(mode=="prey"){
-    sortedV = V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=T)]
+  
+  if(mode == "prey"){
+    #sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=T)]
+    sortedV = topological.sort(G, mode = "in")
   }else{
-    sortedV = V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=F)]
+    #sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=F)]
+    sortedV = topological.sort(G, mode = "out")
+    
   }
-
+  
   names(sp.prediction) = sortedV$name
 
   ############################################################

@@ -110,7 +110,7 @@
 #' 
 #' @importFrom parallel mclapply detectCores
 #' @importFrom bayesplot rhat neff_ratio
-#' @importFrom  igraph is_igraph V decompose vcount
+#' @importFrom  igraph is_igraph V decompose vcount topological.sort
 #' @export
 
 trophicSDM = function(Y, X, G,
@@ -161,9 +161,12 @@ trophicSDM = function(Y, X, G,
   # Laplacian sorting of the graph (component by component)
 
   if(mode == "prey"){
-    sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=T)]
+    #sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=T)]
+    sortedV = topological.sort(G, mode = "in")
   }else{
-    sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=F)]
+    #sortedV = igraph::V(G)[order(unlist(lapply(igraph::decompose(G), compute_TL_laplacian)), decreasing=F)]
+    sortedV = topological.sort(G, mode = "out")
+    
   }
 
   # initialize empty lists of models

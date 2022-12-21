@@ -132,9 +132,10 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                mode = "prey", method = "glm")
 ```
 All the above-mentioned functions are also available in the frequentist framework, with adaptations when necessary (e.g. coefficients are significant or not depending on the p-values instead of the credible interval). However, error propagation is not available and we can only obtain one prediction for each species and site, instead of multiple samples in the Bayesian case.
+
 ### Penalisation
 We can infer a sparse model by specifying `penal = "horshoe"` if we set `method = "stan_glm"` (i.e. in the Bayesian framework), or `penal = "elasticnet"` if we set `method = "glm"` (i.e. in the frequentist framework).
-```{r}
+```{r, warning = FALSE, results = 'hide', message = FALSE, echo= TRUE}
 m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                family = binomial(link = "logit"),
                mode = "prey", method = "glm", penal = "elasticnet")
@@ -143,6 +144,7 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                family = binomial(link = "logit"),
                mode = "prey", method = "stan_glm", penal = "horshoe")
 ```
+
 ### Composite variables
 We can include composite variables using the arguments `sp.formula` and `sp.partition`. We refer to the vignette 'Composite variable' for an exhaustive description of these arguments and how to use them to obtain any kind of model specification. For example, we can model species as a function of of their prey richness.
 ```{r}
@@ -152,5 +154,6 @@ m = trophicSDM(Y = Y, X = X, G = G, env.formula = "~ X_1 + X_2",
                mode = "prey", method = "glm")
 m$form.all
 ```
+
 ## Author
 This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The framework implemented in this package is described in: "Integrating trophic food webs in species distribution models improves ecological niche estimation and prediction" Poggiato Giovanni, Jérémy Andréoletti, Laura J. Pollock and Wilfried Thuiller. In preparation.
