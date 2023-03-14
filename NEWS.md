@@ -1,3 +1,8 @@
+
+# webSDM 1.1-3
+* Fix rhat function masking warning
+* Fix loo S3 method warning
+
 # webSDM 1.1-2
 * Replaced compute_TL_laplacian() with igraph::topological.sort
 

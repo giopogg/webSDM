@@ -1,5 +1,15 @@
 
+
 ## Resubmission
+This is a resubmission. In this new version I have removed the compute_TL function and I now rely on topological.sort from igraph. I have also fixed some minor bugs.
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 note
+
+## Previous submissions
+
+### Resubmission
 This is a resubmission. After the manual check by the CRAN's team, I:
 
 * Added a reference in the DESCRIPTION according to the suggested syntax.
@@ -12,7 +22,7 @@ This is a resubmission. After the manual check by the CRAN's team, I:
 * Replaced \dontrun with \donttest in documentation
 * Remove "this package" and fixed a typo in package description
 
-## R CMD check results
+### R CMD check results
 
 0 errors | 0 warnings | 1 note
 

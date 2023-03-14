@@ -4,10 +4,12 @@
 \alias{loo.trophicSDMfit}
 \title{Computes an approximation of loo for the whole model}
 \usage{
-\method{loo}{trophicSDMfit}(tSDM)
+\method{loo}{trophicSDMfit}(x, ...)
 }
 \arguments{
-\item{tSDM}{A trophicSDMfit object obtained with trophicSDM()}
+\item{x}{A trophicSDMfit object obtained with trophicSDM()}
+
+\item{...}{additional arguments}
 }
 \value{
 The value of the loo for the whole model

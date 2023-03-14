@@ -1,7 +1,8 @@
 #' Computes an approximation of loo for the whole model
 #'
 #' Only works if method = 'stan_glm'. The global loo is computed by summing the loo of all the local models (since the likelihood factorises, the log-likelihood can be summed)This is an implementation of the methods described in Vehtari, Gelman, and Gabry (2017) and Vehtari, Simpson, Gelman, Yao, and Gabry (2019).
-#' @param tSDM A trophicSDMfit object obtained with trophicSDM()
+#' @param x A trophicSDMfit object obtained with trophicSDM()
+#' @param ... 	additional arguments
 #' @return The value of the loo for the whole model
 #' @author Giovanni Poggiato
 #' @importFrom brms loo log_lik
@@ -17,8 +18,10 @@
 #' \donttest{brms::loo(m)}
 #' @method loo trophicSDMfit
 #' @export
-loo.trophicSDMfit = function(tSDM){
+loo.trophicSDMfit = function(x, ...){
 
+  tSDM = x
+  
   if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM needs to be a trophicSDMfit object")
 
   if(tSDM$model.call$method != "stan_glm") stop("loo is available only for stan_glm method")
