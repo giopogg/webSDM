@@ -1,5 +1,5 @@
 #' Plots the regression coefficients of a local model
-#' 
+#'
 #' Plots the regression coefficients of a local SDMfit model
 #' @param x A SDMfit object, typically obtained with trophicSDM() and available in the field $model of a trophicSDMfit object
 #' @param level the confidence level of the confidence intervals
@@ -13,14 +13,13 @@
 #' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 #' # (set iter = 1000 to obtain reliable results)
 #' m = trophicSDM(Y, X, G, env.formula, iter = 50,
-#'                family = binomial(link = "logit"), penal = NULL, 
+#'                family = binomial(link = "logit"), penal = NULL,
 #'                mode = "prey", method = "stan_glm")
 #' # Plot species Y6
 #' \donttest{
 #' plot(m$model$Y6)
 #' }
 #' @import ggplot2
-#' @import brms
 #' @import broom.mixed
 #' @importFrom jtools plot_summs
 #' @importFrom gridExtra grid.arrange
@@ -31,7 +30,7 @@
 plot.SDMfit = function(x, level = 0.95,...){
 
   SDM = x
-  
+
   if(!inherits(SDM, "SDMfit")) stop("SDM is not an object of class SDMfit" )
 
   if(SDM$method == "glm"){
