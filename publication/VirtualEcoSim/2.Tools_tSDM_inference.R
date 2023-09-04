@@ -1054,8 +1054,6 @@ trophicSDM = function(Y,X,G,formulas=NULL,sp.formula=NULL,sp.partition=NULL,pena
 # other parameters: see trophicSDM
 
 
-# nice stuff about formulas https://www.datacamp.com/community/tutorials/r-formula-tutorial
-
 SDMfit=function(focal,Y,X,G,formula.foc,sp.formula,sp.partition,method="bayesglm",family=NULL,penal=NULL,fitPreds=FALSE,iter=1000,chains=2,verbose=T){
   
   # for the particular case of the stan_glm model with "coeff.signs" constraint
