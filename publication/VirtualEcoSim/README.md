@@ -25,9 +25,9 @@ This produces the file 'Parameter_set_full.txt' that is available in this GitHub
    Creates the files summary_bin_realised.rds, summary_fund.rds that contain the summary of these evaluation metrics for each simulation setting 	
 
 5: Analyse the evaluation metrics across all simulation settings and repetitions by running 5.Sensitivity_analysis.R	\
-   This is the last necessary step of the workflow. It creates the final plots summ_bin_real_all.pdf, summ_fund_all.pdf and widthCI.pdf (corresponding to figures S2, S3 and S4)  \	
+   This is the last necessary step of the workflow. It creates the final plots summ_bin_real_all.pdf, summ_fund_all.pdf and widthCI.pdf (corresponding to figures S2, S3 and S4) 
    and the tables all_summ_bin_real, regress_bin_real, all_summ_fund, regress_fund corresponding to tables S1, S2, S3, S4.	
 
 6: Create figures 4 and 5 by running 6.Final_figures.R		
 
-Finally, note that scripts and results for the 'Ricker' and 'GLV_Kbasal' theoretical models are available in the folder 'Other_theo_models'. \
+Finally, note that scripts and results for the 'Ricker' and 'GLV_Kbasal' theoretical models are available in the folder 'Other_theo_models'.
