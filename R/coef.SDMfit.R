@@ -17,7 +17,7 @@
 #' # define abiotic part of the model
 #' env.formula = "~ X_1 + X_2"
 #' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
-#' m = trophicSDM(Y,X,G, env.formula, 
+#' m = trophicSDM(Y,X,G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
 #' # unstandardised regression coefficients
