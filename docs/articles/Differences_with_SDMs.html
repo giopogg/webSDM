@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">webSDM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1-4</span>
       </span>
     </div>
 
@@ -81,7 +81,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Subtle and obvious differences between SDM and trophic SDM</h1>
+      <h1 data-toc-skip>Subtle and obvious differences between SDM and
+trophic SDM</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/giopogg/webSDM/blob/HEAD/vignettes/Differences_with_SDMs.Rmd" class="external-link"><code>vignettes/Differences_with_SDMs.Rmd</code></a></small>
@@ -94,45 +95,106 @@
 <div class="section level2">
 <h2 id="compare-trophic-and-classical-sdms-difference-and-equalities">Compare trophic and classical SDMs: difference and equalities<a class="anchor" aria-label="anchor" href="#compare-trophic-and-classical-sdms-difference-and-equalities"></a>
 </h2>
-<p>Here, we present the differences between a classic SDM and our trophic SDM, starting from the simplest case when these two approaches coincide to more realistic cases where they do not.</p>
+<p>Here, we present the differences between a classic SDM and our
+trophic SDM, starting from the simplest case when these two approaches
+coincide to more realistic cases where they do not.</p>
 <div class="section level3">
 <h3 id="the-simplest-case">The simplest case<a class="anchor" aria-label="anchor" href="#the-simplest-case"></a>
 </h3>
-<p>Let’s consider a very simple case with one environmental covariate <span class="math inline">\(x\)</span>, and two species <span class="math inline">\(y_A\)</span> and <span class="math inline">\(y_B\)</span>. We assume species <span class="math inline">\(y_A\)</span> to be basal and species <span class="math inline">\(y_B\)</span> to feed on <span class="math inline">\(y_A\)</span>. This leads to the following directed acyclic graph that resumes the dependencies across variables, assuming bottom-up control.</p>
+<p>Let’s consider a very simple case with one environmental covariate
+<span class="math inline">\(x\)</span>, and two species <span class="math inline">\(y_A\)</span> and <span class="math inline">\(y_B\)</span>. We assume species <span class="math inline">\(y_A\)</span> to be basal and species <span class="math inline">\(y_B\)</span> to feed on <span class="math inline">\(y_A\)</span>. This leads to the following directed
+acyclic graph that resumes the dependencies across variables, assuming
+bottom-up control.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org" class="external-link">igraph</a></span><span class="op">)</span></span>
-<span><span class="va">G</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_edgelist.html" class="external-link">graph_from_edgelist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"x"</span>,<span class="st">"A"</span><span class="op">)</span>, to <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span></span>
+<span><span class="va">G</span><span class="op">=</span><span class="fu"><a href="https://r.igraph.org/reference/graph_from_edgelist.html" class="external-link">graph_from_edgelist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"x"</span>,<span class="st">"A"</span><span class="op">)</span>,</span>
+<span>                                           to <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="fig/igraph-1.png" alt=""><p class="caption">plot of chunk igraph</p>
+<div class="float">
+<img src="fig/igraph-1.png" alt="plot of chunk igraph"><div class="figcaption">plot of chunk igraph</div>
 </div>
-<p>We now assume that data on species distributions are continuous observable entities (e.g. basal area, biomass), that we can model with a linear regression. We name <span class="math inline">\(y_{iA}\)</span> and <span class="math inline">\(y_{iB}\)</span> the observations of species <span class="math inline">\(y_A\)</span> and <span class="math inline">\(y_B\)</span>, respectively, and we assume that the environment has a quadratic effect on both species. Therefore, using classical SDMs, model equations are:<br><span class="math display">\[
+<p>We now assume that data on species distributions are continuous
+observable entities (e.g. basal area, biomass), that we can model with a
+linear regression. We name <span class="math inline">\(y_{iA}\)</span>
+and <span class="math inline">\(y_{iB}\)</span> the observations of
+species <span class="math inline">\(y_A\)</span> and <span class="math inline">\(y_B\)</span> at site <span class="math inline">\(i\)</span>, respectively, and we assume that the
+environment has a quadratic effect on both species. Therefore, using
+classical SDMs, model equations are:<br><span class="math display">\[
 \begin{aligned}
-y_{iA} &amp;= \beta^{SDM}_{0A} + \beta^{SDM}_{1A} x_i + \beta^{SDM}_{2A}x_i^2 + \epsilon_{iA}, \ \ \epsilon_{iA} \sim N(0, \sigma_A^{SDM}) \\
-y_{iB} &amp;= \beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2 + \epsilon_{iB}, \ \ \epsilon_{iB} \sim N(0, \sigma_B^{SDM})
+y_{iA} &amp;= \beta^{SDM}_{0A} + \beta^{SDM}_{1A} x_i +
+\beta^{SDM}_{2A}x_i^2 + \epsilon_{iA}, \ \ \epsilon_{iA} \sim N(0,
+\sigma_A^{SDM}) \\
+y_{iB} &amp;= \beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i +
+\beta^{SDM}_{2B}x_i^2 + \epsilon_{iB}, \ \ \epsilon_{iB} \sim N(0,
+\sigma_B^{SDM})
 \end{aligned}
 \]</span></p>
 <p>Instead, our trophic model includes a dependence of <span class="math inline">\(y_B\)</span> on its prey <span class="math inline">\(y_A\)</span>:<br><span class="math display">\[
 \begin{aligned}
-y_{iA} &amp;= \beta^{tSDM}_{0A} + \beta^{tSDM}_{1A} x_i + \beta^{tSDM}_{2A}x_i^2 + \epsilon_{iA}, \ \ \epsilon_{iA} \sim N(0, \sigma_A^{tSDM}) \\
-y_{iB} &amp;= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha y_A + \epsilon_{iB}, \ \ \epsilon_{iB} \sim N(0, \sigma_B^{tSDM})
+y_{iA} &amp;= \beta^{tSDM}_{0A} + \beta^{tSDM}_{1A} x_i +
+\beta^{tSDM}_{2A}x_i^2 + \epsilon_{iA}, \ \ \epsilon_{iA} \sim N(0,
+\sigma_A^{tSDM}) \\
+y_{iB} &amp;= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i +
+\beta^{tSDM}_{2B}x_i^2 + \alpha y_{iA} + \epsilon_{iB}, \ \
+\epsilon_{iB} \sim N(0, \sigma_B^{tSDM})
 \end{aligned}
 \]</span></p>
-<p>We hereafter focus on the expectation of the models (corresponding to the predicted values), focusing in particular on species <span class="math inline">\(y_B\)</span> for which the two models are different. For SDMs:<br><span class="math display">\[E[y_{iB} | \ x_i] = \beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2 \]</span> For trophic SDM, we need to condition on a value of <span class="math inline">\(y_{iA}\)</span>. We here choose to condition on the expected value of <span class="math inline">\(y_{iA}\)</span>, which corresponds to using predictions from <span class="math inline">\(y_A\)</span> to predict <span class="math inline">\(y_B\)</span> (please not that in this linear model, with Gaussian data and a linear interaction between prey and predator, we have that <span class="math inline">\(E_A[E_B[y_B | \ y_A]] = E_B[y_B | \ E[y_A]]\)</span>, which is not necessarily true in other cases).<br>
-We thus have:<br><span class="math display">\[E[y_{iB} | \ x_i, E[y_{iA}] ] = \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha E[y_{iA}] \]</span> We can rewrite the expected value of <span class="math inline">\(y_B\)</span> only as a function of the environment <span class="math inline">\(x\)</span> only. <span class="math display">\[
+<p>We hereafter focus on the expectation of the models (corresponding to
+the predicted values), focusing in particular on species <span class="math inline">\(y_B\)</span> for which the two models are
+different. For SDMs:<br><span class="math display">\[E[y_{iB} | \ x_i] = \beta^{SDM}_{0B} +
+\beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2 \]</span> For trophic SDM,
+we need to condition on a value of <span class="math inline">\(y_{iA}\)</span>. We here choose to condition on
+the expected value of <span class="math inline">\(y_{iA}\)</span>, which
+corresponds to using predictions from <span class="math inline">\(y_A\)</span> to predict <span class="math inline">\(y_B\)</span>. In a linear model, with Gaussian
+data and a linear interaction between prey and predator, we have that
+<span class="math inline">\(E_A[E_B[y_B | \ y_A]] = E_B[y_B | \
+E[y_A]]\)</span> (which is not necessarily true in other cases).<br>
+We thus have:<br><span class="math display">\[E[y_{iB} | \ x_i, E[y_{iA}] ] =
+\beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 +
+\alpha E[y_{iA}] \]</span> We can rewrite the expected value of <span class="math inline">\(y_B\)</span> only as a function of the environment
+<span class="math inline">\(x\)</span> only. <span class="math display">\[
 \begin{aligned}
-E[y_{iB} | \ x_i, E[y_{iA}] ] &amp;= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha (\beta^{tSDM}_{0A} + \beta^{tSDM}_{1A} x_i + \beta^{tSDM}_{2A}x_i^2 ) \\
-&amp; = \beta^{tSDM}_{0B} + \alpha \beta^{tSDM}_{0A} + ( \beta^{tSDM}_{1B} + \alpha \beta^{tSDM}_{1A}) x_i + (\beta^{tSDM}_{2B} + \alpha \beta^{tSDM}_{2A}) x_i^2 \\
+E[y_{iB} | \ x_i, E[y_{iA}] ] &amp;= \beta^{tSDM}_{0B} +
+\beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha
+(\beta^{tSDM}_{0A} + \beta^{tSDM}_{1A} x_i + \beta^{tSDM}_{2A}x_i^2 ) \\
+&amp; = \beta^{tSDM}_{0B} + \alpha \beta^{tSDM}_{0A} + (
+\beta^{tSDM}_{1B} + \alpha \beta^{tSDM}_{1A}) x_i + (\beta^{tSDM}_{2B} +
+\alpha \beta^{tSDM}_{2A}) x_i^2 \\
 &amp;=  \beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2
 \end{aligned}
 \]</span></p>
-<p>In this very simple case of a linear regression model with a linear interactions between the predator and the preys, the estimation of the regression coefficients is such that <span class="math display">\[\beta^{SDM}_{.B} = \beta^{tSDM}_{.B} + \alpha \beta^{tSDM}_{.A} \]</span> As a consequence the models estimate the same realised niche, and predictions from trophic and classical SDMs coincide.<br>
-However, our trophic model allows a separation of the direct effect of the environment on <span class="math inline">\(y_B\)</span> (i.e. the fundamental niche of <span class="math inline">\(y_B\)</span>) from its indirect effect due to the effect of <span class="math inline">\(y_A\)</span> on <span class="math inline">\(y_B\)</span>. In other words, using the jargon of structural equation models, <span class="math inline">\(\beta^{tSDM}_{1B}\)</span> and <span class="math inline">\(\beta^{tSDM}_{2B}\)</span> are the direct effects of the environment on species <span class="math inline">\(y_B\)</span> (i.e. its fundamental niche), the terms <span class="math inline">\(\alpha \beta^{tSDM}_{1A}\)</span> and <span class="math inline">\(\alpha \beta^{tSDM}_{2A}\)</span> are the indirect effect of the environment on species <span class="math inline">\(y_B\)</span>. The sum of these two effects, <span class="math inline">\(\beta^{tSDM}_{1B} + \alpha \beta^{tSDM}_{1A}\)</span> and <span class="math inline">\(\beta^{tSDM}_{2B} + \alpha \beta^{tSDM}_{2A}\)</span> corresponds to the total effect of the environment on <span class="math inline">\(y_B\)</span>, i.e. the realised niche of <span class="math inline">\(y_B\)</span>. In this very particular case, SDM can correctly estimate the total effect (the realised niche), but cannot separate the direct and indirect effect of the environment on <span class="math inline">\(y_B\)</span> and thus they do not correctly estimate the fundamental niche.</p>
+<p>In this very simple case of a linear regression model with a linear
+interactions between the predator and the preys, the estimation of the
+regression coefficients is such that <span class="math display">\[\beta^{SDM}_{.B} = \beta^{tSDM}_{.B} + \alpha
+\beta^{tSDM}_{.A} \]</span> As a consequence the models estimate the
+same realised niche, and predictions from trophic and classical SDMs
+coincide.<br>
+However, our trophic model allows a separation of the direct effect of
+the environment on <span class="math inline">\(y_B\)</span> (i.e., the
+potential niche of <span class="math inline">\(y_B\)</span>) from its
+indirect effect due to the effect of <span class="math inline">\(y_A\)</span> on <span class="math inline">\(y_B\)</span>. In other words, using the jargon of
+structural equation models, <span class="math inline">\(\beta^{tSDM}_{1B}\)</span> and <span class="math inline">\(\beta^{tSDM}_{2B}\)</span> are the direct effects
+of the environment on species <span class="math inline">\(y_B\)</span>
+(i.e., its potential niche), the terms <span class="math inline">\(\alpha \beta^{tSDM}_{1A}\)</span> and <span class="math inline">\(\alpha \beta^{tSDM}_{2A}\)</span> are the indirect
+effect of the environment on species <span class="math inline">\(y_B\)</span>. The sum of these two effects, <span class="math inline">\(\beta^{tSDM}_{1B} + \alpha
+\beta^{tSDM}_{1A}\)</span> and <span class="math inline">\(\beta^{tSDM}_{2B} + \alpha
+\beta^{tSDM}_{2A}\)</span> corresponds to the total effect of the
+environment on <span class="math inline">\(y_B\)</span>, i.e., the
+realised niche of <span class="math inline">\(y_B\)</span>. In this very
+particular case, SDM can correctly estimate the total effect (the
+realised niche), but cannot separate the direct and indirect effect of
+the environment on <span class="math inline">\(y_B\)</span> and thus
+they do not correctly estimate the potential niche.</p>
 <div class="section level4">
 <h4 id="simulation">Simulation<a class="anchor" aria-label="anchor" href="#simulation"></a>
 </h4>
-<p>We hereafter present a short example confirming the analytic derivation of these results.</p>
-<p>First, we simulate species distribution data accordingly to the directed acyclic graph presented above. Therefore, the environment has a quadratic effect on species <span class="math inline">\(y_A\)</span> and species <span class="math inline">\(y_B\)</span>, with a linear effect of <span class="math inline">\(y_A\)</span> on <span class="math inline">\(y_B\)</span>.</p>
+<p>We hereafter present a short example confirming the analytical
+derivation of these results.</p>
+<p>First, we simulate species distribution data accordingly to the
+directed acyclic graph presented above. Therefore, the environment has a
+quadratic effect on species <span class="math inline">\(y_A\)</span> and
+species <span class="math inline">\(y_B\)</span>, with a linear effect
+of <span class="math inline">\(y_A\)</span> on <span class="math inline">\(y_B\)</span>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1712</span><span class="op">)</span></span>
 <span><span class="co"># Create the environmental gradient</span></span>
@@ -144,11 +206,11 @@ However, our trophic model allows a separation of the direct effect of the envir
 <span></span>
 <span><span class="va">oldpar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and potential niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="fig/simGauss-1.png" alt=""><p class="caption">plot of chunk simGauss</p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B potential niche"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="fig/simGauss-1.png" alt="plot of chunk simGauss"><div class="figcaption">plot of chunk simGauss</div>
 </div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -164,7 +226,8 @@ However, our trophic model allows a separation of the direct effect of the envir
 <span><span class="va">m_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">B</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="va">A</span><span class="op">)</span></span>
 <span><span class="co">## classic SDM</span></span>
 <span><span class="va">m_SDM</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">B</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>We can now test the relationships between the coefficients of SDM and trophic SDM.</p>
+<p>We can now test the relationships between the coefficients of SDM and
+trophic SDM.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show the equality of coefficients</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_SDM</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_trophic</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_trophic</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_A</span><span class="op">)</span><span class="op">)</span></span>
@@ -172,24 +235,33 @@ However, our trophic model allows a separation of the direct effect of the envir
 <span></span>
 <span><span class="co"># Prediction coincide</span></span>
 <span><span class="va">pred_SDM</span> <span class="op">=</span> <span class="va">m_SDM</span><span class="op">$</span><span class="va">fitted.values</span></span>
-<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>, newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>,</span>
+<span>                       newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">pred_SDM</span>, <span class="va">pred_trophic</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>The coefficient of classic SDM for species <span class="math inline">\(y_B\)</span> are equal to the environmental coefficients of trophic SDM for species <span class="math inline">\(y_B\)</span> plus the indirect effect of the environment on species <span class="math inline">\(y_B\)</span> (given by the product of the biotic term and the environmental coefficients of species <span class="math inline">\(y_A\)</span>). As a consequence, the predictions of both models coincide when the predicted value of species <span class="math inline">\(y_A\)</span> is used to predict <span class="math inline">\(y_B\)</span>. However, unlike the traditional SDM, our trophic model allows to retrieve the correct fundamental niche of species 𝑦𝐵</p>
+<p>The coefficient of classic SDM for species <span class="math inline">\(y_B\)</span> are equal to the environmental
+coefficients of trophic SDM for species <span class="math inline">\(y_B\)</span> plus the indirect effect of the
+environment on species <span class="math inline">\(y_B\)</span> (given
+by the product of the biotic term and the environmental coefficients of
+species <span class="math inline">\(y_A\)</span>). As a consequence, the
+predictions of both models coincide when the predicted value of species
+<span class="math inline">\(y_A\)</span> is used to predict <span class="math inline">\(y_B\)</span>. However, unlike the traditional SDM,
+our trophic model allows to retrieve the correct potential niche of
+species <span class="math inline">\(y_B\)</span></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Fundamental niche infered by SDM </span></span>
+<code class="sourceCode R"><span><span class="co"># Potential niche infered by SDM </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">m_SDM</span><span class="op">$</span><span class="va">fitted.values</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">65</span>, <span class="fl">120</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"B"</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">"Fundamental niche of yB"</span><span class="op">)</span></span>
+<span>     main <span class="op">=</span> <span class="st">"Potential niche of yB"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">X</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">X</span>, <span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_trophic</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span><span class="op">]</span>, col <span class="op">=</span><span class="st">"red"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">X</span>,  <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, col <span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">120</span>, legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Fundamental niche inferred by SDM"</span>,</span>
-<span>                           <span class="st">"Fundamental niche inferred by trophic SDM"</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">120</span>, legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Potential niche inferred by SDM"</span>,</span>
+<span>                           <span class="st">"Potential niche inferred by trophic SDM"</span>,</span>
 <span>                           <span class="st">"True fundamenta niche"</span><span class="op">)</span>, pch <span class="op">=</span><span class="fl">1</span>,</span>
 <span>       col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>,<span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="fig/fundamental-1.png" alt=""><p class="caption">plot of chunk fundamental</p>
+<div class="float">
+<img src="fig/potential-1.png" alt="plot of chunk potential"><div class="figcaption">plot of chunk potential</div>
 </div>
 </div>
 </div>
@@ -197,44 +269,82 @@ However, our trophic model allows a separation of the direct effect of the envir
 <div class="section level2">
 <h2 id="does-this-always-hold">Does this always hold?<a class="anchor" aria-label="anchor" href="#does-this-always-hold"></a>
 </h2>
-<p>We showed that SDM and trophic SDM estimate the same realized niche, and thus lead to the same predictions, when all the following conditions hold:<br>
-- The relationship between predator and prey is linear<br>
-- Species distribution are continuous abundances<br>
-- The statistical model employed is a linear regression - The selected environmental variables are the same for prey and predators<br>
-However, as soon as at least one of the previous conditions does not hold, the estimations of the realised niche (and so model prediction) differ. We hereafter show that releasing just one of these constraints at a time is enough to obtain predictions from trophic SDM that are different, and better, than classical SDMs. Therefore, the example presented above is a very particular case that is useful to understand model similarities, but that rarely occurs in application.</p>
+<p>We showed that SDM and trophic SDM estimate the same realized niche,
+and thus lead to the same predictions, when all the following conditions
+hold:</p>
+<ul>
+<li>The relationship between predator and prey is linear<br>
+</li>
+<li>Species distribution are continuous abundances<br>
+</li>
+<li>The statistical model employed is a linear regression<br>
+</li>
+<li>The selected environmental variables are the same for prey and
+predators</li>
+</ul>
+<p>However, as soon as at least one of these conditions does not hold,
+the estimations of the realized niche (and so model prediction) differ.
+We hereafter show that releasing just one of these constraints at a time
+is enough to obtain predictions from trophic SDM that are different, and
+better, than classical SDMs. Therefore, the example presented above is a
+very particular case that is useful to understand model similarities,
+but that rarely occurs in application.</p>
 <div class="section level3">
 <h3 id="non-linear-relationship-between-prey-and-predator">Non-linear relationship between prey and predator<a class="anchor" aria-label="anchor" href="#non-linear-relationship-between-prey-and-predator"></a>
 </h3>
-<p>We hereafter release the conditions on the linearity of the relationship between <span class="math inline">\(y_B\)</span> and <span class="math inline">\(y_A\)</span>. Indeed, we now consider that species <span class="math inline">\(y_B\)</span> has a quadratic response to <span class="math inline">\(y_A\)</span>. The classic SDM does not change, as we model species as a function of the environment only. Instead, the trophic model for species <span class="math inline">\(y_B\)</span> becomes:<br><span class="math display">\[y_{iB}= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha y_A^2 + \epsilon_{iB}, \ \ \epsilon_{iB} \sim N(0, \sigma_B^{tSDM})\]</span> Predictions between trophic SDM and SDM are now different, since: <span class="math display">\[
+<p>We hereafter release the conditions on the linearity of the
+relationship between <span class="math inline">\(y_B\)</span> and <span class="math inline">\(y_A\)</span>. Indeed, we now consider that species
+<span class="math inline">\(y_B\)</span> has a quadratic response to
+<span class="math inline">\(y_A\)</span>. The classic SDM does not
+change, as we model species as a function of the environment only.
+Instead, the trophic model for species <span class="math inline">\(y_B\)</span> becomes:<br><span class="math display">\[y_{iB}= \beta^{tSDM}_{0B} +
+\beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha y_{iA}^2 +
+\epsilon_{iB}, \ \ \epsilon_{iB} \sim N(0, \sigma_B^{tSDM})\]</span>
+Predictions between trophic SDM and SDM are now different, since: <span class="math display">\[
 \begin{aligned}
-E[y_{iB} | \ x_i, E[y_{iA}] ] &amp;= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha (\beta^{tSDM}_{0A} + \beta^{tSDM}_{1A} x_i + \beta^{tSDM}_{2A}x_i^2 )^2 \\
-&amp; = \beta^{tSDM}_{0B} + \alpha(\beta^{tSDM}_{0A})^2+ (\beta^{tSDM}_{1B} + 2\alpha\beta^{tSDM}_{0A}\beta^{tSDM}_{1A}) x_i \\
-&amp; \ \ \ \ + (\beta^{tSDM}_{2B} + \alpha (2\beta^{tSDM}_{0A}\beta^{tSDM}_{2A} + (\beta^{tSDM}_{1A})^2))x_i^2 + 2\alpha\beta^{tSDM}_{1A}\beta^{tSDM}_{2A} x_i^3 + \alpha(\beta^{tSDM}_{2A})^2x_i^4 \\
-&amp;\neq \beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2
+E[y_{iB} | \ x_i, E[y_{iA}] ] &amp;= \beta^{tSDM}_{0B} +
+\beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha
+(\beta^{tSDM}_{0A} + \beta^{tSDM}_{1A} x_i + \beta^{tSDM}_{2A}x_i^2 )^2
+\\
+&amp; = \beta^{tSDM}_{0B} + \alpha(\beta^{tSDM}_{0A})^2+
+(\beta^{tSDM}_{1B} + 2\alpha\beta^{tSDM}_{0A}\beta^{tSDM}_{1A}) x_i \\
+&amp; \ \ \ \ + (\beta^{tSDM}_{2B} + \alpha
+(2\beta^{tSDM}_{0A}\beta^{tSDM}_{2A} + (\beta^{tSDM}_{1A})^2))x_i^2 +
+2\alpha\beta^{tSDM}_{1A}\beta^{tSDM}_{2A} x_i^3 +
+\alpha(\beta^{tSDM}_{2A})^2x_i^4 \\
+&amp;\neq \beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i +
+\beta^{SDM}_{2B}x_i^2
 \end{aligned}
 \]</span></p>
-<p>In order to correctly infer the realised niche, classic SDMs should be specified with a polynomial of degree 4. As soon as we add multiple environmental variables and link between species, classic SDM should be specified with extremely complex formula, which is unfeasible for real application.</p>
+<p>In order to correctly infer the realised niche, classic SDMs should
+be specified with a polynomial of degree 4. As soon as we add multiple
+environmental variables and link between species, classic SDM should be
+specified with extremely complex formula, which is unfeasible for real
+application.</p>
 <div class="section level4">
 <h4 id="simulation-1">Simulation<a class="anchor" aria-label="anchor" href="#simulation-1"></a>
 </h4>
-<p>We provide a simple example to demonstrate the analytic computations with a simulation. We use the same example of above, but we now simulate a quadratic relationship of <span class="math inline">\(y_B\)</span> with respect to <span class="math inline">\(y_A\)</span>.</p>
+<p>We provide a simple example to demonstrate the analytical
+computations with a simulation. We use the same example of above, but we
+now simulate a quadratic relationship of <span class="math inline">\(y_B\)</span> with respect to <span class="math inline">\(y_A\)</span>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">B</span> <span class="op">=</span> <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span><span class="op">*</span><span class="va">A</span><span class="op">^</span><span class="fl">2</span>  <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">oldpar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and potential niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="fig/simQuadr-1.png" alt=""><p class="caption">plot of chunk simQuadr</p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B potential niche"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="fig/simQuadr-1.png" alt="plot of chunk simQuadr"><div class="figcaption">plot of chunk simQuadr</div>
 </div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="va">oldpar</span><span class="op">$</span><span class="va">mfrow</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Fit a trophic SDM</span></span>
 <span><span class="va">m_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">B</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">A</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>We now compare the regression coefficients and predictions from the two models</p>
+<p>We now compare the regression coefficients and predictions from the
+two models</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show the equality of coefficients</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_SDM</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_trophic</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_trophic</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_A</span><span class="op">)</span><span class="op">)</span></span>
@@ -242,7 +352,8 @@ E[y_{iB} | \ x_i, E[y_{iA}] ] &amp;= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i +
 <span></span>
 <span><span class="co"># Prediction are now different</span></span>
 <span><span class="va">pred_SDM</span> <span class="op">=</span> <span class="va">m_SDM</span><span class="op">$</span><span class="va">fitted.values</span></span>
-<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>, newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>,</span>
+<span>                       newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">pred_SDM</span>, <span class="va">pred_trophic</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Mean relative difference: 53.61947"</span></span>
@@ -252,29 +363,48 @@ E[y_{iB} | \ x_i, E[y_{iA}] ] &amp;= \beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i +
 <span><span class="co">#&gt; [1] 0.8339402</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">B</span>, <span class="va">pred_trophic</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
 <span><span class="co">#&gt; [1] 0.9605349</span></span></code></pre></div>
-<p>The relationship between the coefficients of the two models does not hold anymore more, and predictions are now different, with trophic SDM reaching a far better predictive accuracy than classic SDM for species <span class="math inline">\(y_B\)</span> (R2 of 0.83 and 0.96 respectively).</p>
+<p>The relationship between the coefficients of the two models does not
+hold anymore more, and predictions are now different, with trophic SDM
+reaching a far better predictive accuracy than classic SDM for species
+<span class="math inline">\(y_B\)</span> (R2 of 0.83 and 0.96
+respectively).</p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="non-continuous-observable-entities-presence-absence-counts">Non-continuous observable entities (presence-absence, counts)<a class="anchor" aria-label="anchor" href="#non-continuous-observable-entities-presence-absence-counts"></a>
 </h3>
-<p>Let’s now consider here the case of presence-absences (i.e. binary data), without modifying the other two conditions. Therefore, we use a (generalized) linear model like logistic regression, and we model a linear relationship (at the link level) between predator and prey. Thus, for SDM we have:<br><span class="math display">\[
+<p>Let’s now consider here the case of presence-absences (i.e., binary
+data), without modifying the other two conditions. Therefore, we use a
+(generalized) linear model like logistic regression, and we model a
+linear relationship (at the link level) between predator and prey. Thus,
+for SDM we have:<br><span class="math display">\[
 \begin{aligned}
-p(y_{iA}= 1) &amp;= \text{logit}^{-1}(\beta^{SDM}_{0A} + \beta^{SDM}_{1A} x_i + \beta^{SDM}_{2A}x_i^2) \\
-p(y_{iB} = 1) &amp;= \text{logit}^{-1}(\beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2)
+p(y_{iA}= 1) &amp;= \text{logit}^{-1}(\beta^{SDM}_{0A} +
+\beta^{SDM}_{1A} x_i + \beta^{SDM}_{2A}x_i^2) \\
+p(y_{iB} = 1) &amp;= \text{logit}^{-1}(\beta^{SDM}_{0B} +
+\beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2)
 \end{aligned}
 \]</span><br>
-Instead, our trophic model includes a dependence of <span class="math inline">\(y_B\)</span> on its prey <span class="math inline">\(y_A\)</span>:<br><span class="math display">\[p(y_{iB} = 1) = \text{logit}^{-1} (\beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha y_A)\]</span> The equality between the models does not hold anymore due to the non linearity of the logit function. Indeed: <span class="math display">\[
+Instead, our trophic model includes a dependence of <span class="math inline">\(y_B\)</span> on its prey <span class="math inline">\(y_A\)</span>:<br><span class="math display">\[p(y_{iB} = 1) = \text{logit}^{-1}
+(\beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 +
+\alpha y_A)\]</span> The equality between the models does not hold
+anymore due to the non linearity of the logit function. Indeed: <span class="math display">\[
 \begin{aligned}
-E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
-&amp;= \text{logit}^{-1}(\beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i + \beta^{tSDM}_{2B}x_i^2 + \alpha \text{logit}^{-1}(\beta^{tSDM}_{0A} + \beta^{tSDM}_{1A} x_i + \beta^{tSDM}_{2A}x_i^2))\\
-&amp;\neq \beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i + \beta^{SDM}_{2B}x_i^2
+E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} =
+1)) \\
+&amp;= \text{logit}^{-1}(\beta^{tSDM}_{0B} + \beta^{tSDM}_{1B} x_i +
+\beta^{tSDM}_{2B}x_i^2 + \alpha \text{logit}^{-1}(\beta^{tSDM}_{0A} +
+\beta^{tSDM}_{1A} x_i + \beta^{tSDM}_{2A}x_i^2))\\
+&amp;\neq \text{logit}^{-1}(\beta^{SDM}_{0B} + \beta^{SDM}_{1B} x_i +
+\beta^{SDM}_{2B}x_i^2)
 \end{aligned}
 \]</span></p>
 <div class="section level4">
 <h4 id="simulations">Simulations<a class="anchor" aria-label="anchor" href="#simulations"></a>
 </h4>
-<p>We now confirm this analytic derivation with a simple example. The code is very similar to the previous one, but we now generate binary data from a logistic model.</p>
+<p>We now confirm this analytical derivation with a simple example. The
+code is very similar to the previous one, but we now generate binary
+data from a logistic model.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate the link layer basal species</span></span>
 <span><span class="va">V_A</span><span class="op">=</span> <span class="fl">3</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span> <span class="fl">2</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span></span>
@@ -289,11 +419,11 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <span></span>
 <span><span class="va">oldpar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">prob_A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">prob_A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and potential niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">prob_B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span> <span class="op">+</span><span class="fl">1</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="fig/simlogi-1.png" alt=""><p class="caption">plot of chunk simlogi</p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span> <span class="op">+</span><span class="fl">1</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"Species B potential niche"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="fig/simlogi-1.png" alt="plot of chunk simlogi"><div class="figcaption">plot of chunk simlogi</div>
 </div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -304,38 +434,48 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <span><span class="va">m_A</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">A</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># For species B, the two models are different:</span></span>
+<span><span class="va">m_SDM</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">B</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">m_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">B</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="va">A</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>We now test the relationships between model coefficients and whether the equality of model predictions still holds</p>
+<p>We now test the relationships between model coefficients and whether
+the equality of model predictions still holds</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Equality of the coefficient does not hold anymore</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_SDM</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_trophic</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_trophic</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m_A</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Mean relative difference: 1.098046"</span></span>
+<span><span class="co">#&gt; [1] "Mean relative difference: 2.305022"</span></span>
 <span></span>
 <span><span class="co"># Predictions do not coincide anymore</span></span>
 <span><span class="va">pred_SDM</span> <span class="op">=</span> <span class="va">m_SDM</span><span class="op">$</span><span class="va">fitted.values</span></span>
-<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>, newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>,</span>
+<span>                       newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">pred_SDM</span>, <span class="va">pred_trophic</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Mean relative difference: 0.9825526"</span></span>
+<span><span class="co">#&gt; [1] "Mean relative difference: 2.915665"</span></span>
 <span></span>
 <span><span class="co"># Predictions are improved by trophic SDM</span></span>
 <span></span>
 <span><span class="co">## AUC of species B for SDM</span></span>
 <span><span class="fu">dismo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dismo/man/evaluate.html" class="external-link">evaluate</a></span><span class="op">(</span>p <span class="op">=</span> <span class="va">pred_SDM</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">B</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>                a <span class="op">=</span> <span class="va">pred_SDM</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">B</span><span class="op">==</span><span class="fl">0</span><span class="op">)</span><span class="op">]</span> <span class="op">)</span><span class="op">@</span><span class="va">auc</span></span>
-<span><span class="co">#&gt; [1] 0.6533333</span></span>
+<span><span class="co">#&gt; [1] 0.8408333</span></span>
 <span></span>
 <span><span class="co">## AUC of species B for trophic SDM</span></span>
 <span><span class="fu">dismo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dismo/man/evaluate.html" class="external-link">evaluate</a></span><span class="op">(</span>p <span class="op">=</span> <span class="va">pred_trophic</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">B</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>                a <span class="op">=</span> <span class="va">pred_trophic</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">B</span><span class="op">==</span><span class="fl">0</span><span class="op">)</span><span class="op">]</span> <span class="op">)</span><span class="op">@</span><span class="va">auc</span></span>
 <span><span class="co">#&gt; [1] 0.8529167</span></span></code></pre></div>
-<p>The relationship between the coefficients of the two models does not hold anymore more, and predictions are now different, with trophic SDM that largely improve classic SDM (AUC of species <span class="math inline">\(y_B\)</span> goes from 0.65 to 0.85).</p>
+<p>The relationship between the coefficients of the two models does not
+hold anymore more, and predictions are now different, with trophic SDM
+that slightly improve classic SDM (AUC of species <span class="math inline">\(y_B\)</span> goes from 0.84 to 0.85).</p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="non-linear-statistical-model">Non-linear statistical model<a class="anchor" aria-label="anchor" href="#non-linear-statistical-model"></a>
 </h3>
-<p>We finally show how using a non-linear statistical model leads to different predictions from classical SDMs and a trophic SDM with the example of a random forest. Since we cannot provide any analytic derivation for random forest, we simply provide an example. Data are simulated exactly as in the very first examples (continuous observable entities).</p>
+<p>We finally show how using a non-linear statistical model leads to
+different predictions between classical SDMs and a trophic SDM with the
+example of a random forest. Since we cannot provide any analytical
+derivation for random forest, we simply provide an example. Data are
+simulated exactly as in the very first examples (continuous observable
+entities).</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simulate data for the basal species A </span></span>
 <span><span class="va">A</span> <span class="op">=</span> <span class="fl">3</span><span class="op">*</span><span class="va">X</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
@@ -344,11 +484,11 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <span></span>
 <span><span class="va">oldpar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and fundamental niche"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">A</span>, main <span class="op">=</span> <span class="st">"Species A realised \n and potential niche"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>,<span class="va">B</span>, main <span class="op">=</span> <span class="st">"Species B realised niche"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B fundamental niche"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="fig/simRF-1.png" alt=""><p class="caption">plot of chunk simRF</p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span><span class="op">*</span><span class="va">X</span> <span class="op">-</span><span class="fl">3</span><span class="op">*</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span>, main <span class="op">=</span> <span class="st">"Species B potential niche"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="fig/simRF-1.png" alt="plot of chunk simRF"><div class="figcaption">plot of chunk simRF</div>
 </div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -356,6 +496,8 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <p>We infer statistical models with random forest</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/" class="external-link">randomForest</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; randomForest 4.7-1.1</span></span>
+<span><span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span></span>
 <span></span>
 <span><span class="co"># Species A</span></span>
 <span><span class="va">m_A</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">A</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">X</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -368,7 +510,8 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Prediction are now different</span></span>
 <span><span class="va">pred_SDM</span> <span class="op">=</span> <span class="va">m_SDM</span><span class="op">$</span><span class="va">predicted</span></span>
-<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>, newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">pred_trophic</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m_trophic</span>,</span>
+<span>                       newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, A <span class="op">=</span> <span class="va">m_A</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">pred_SDM</span>, <span class="va">pred_trophic</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Mean relative difference: 0.08021014"</span></span>
@@ -378,7 +521,8 @@ E[y_{iB} | \  x_i, E[y_{iA}] ] &amp;= p(y_{iB} = 1 | \ x_i, p(y_{iA} = 1)) \\
 <span><span class="co">#&gt; [1] 0.8075415</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">B</span>, <span class="va">pred_trophic</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
 <span><span class="co">#&gt; [1] 0.8670482</span></span></code></pre></div>
-<p>Predictions from the model are different, and trophic SDM has a larger R2 than classical SDMs.</p>
+<p>Predictions from the model are different, and trophic SDM has a
+larger R2 than classical SDMs (0.86 versus 0.80).</p>
 </div>
 </div>
   </div>

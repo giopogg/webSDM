@@ -29,14 +29,15 @@ webSDM implements the trophic SDM model described in Poggiato et al., "Integrati
 
 ## 'webSDM' map
 
-# <img src="man/figures/FigurePackage.png" align="center" width="900px"/>
+# <img src="man/figures/FigurePackage.png" align="center" width="600px"/>
 
 
 ## Installing the R package
 
 ```{r, warning = FALSE, results = 'hide', message = FALSE, echo= TRUE}
 # Run to install webSDM
-install.packages('webSDM', repos = "http://cran.us.r-project.org")
+#install.packages('webSDM', repos = "http://cran.us.r-project.org")
+devtools::install_github("giopogg/webSDM")
 library(webSDM)
 library(ggplot2)
 library(rstanarm)

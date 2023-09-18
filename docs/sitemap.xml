@@ -10,10 +10,10 @@
     <loc>https://giopogg.github.io/webSDM/articles/Differences_with_SDMs.html</loc>
   </url>
   <url>
-    <loc>https://giopogg.github.io/webSDM/articles/Introduction.html</loc>
+    <loc>https://giopogg.github.io/webSDM/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://giopogg.github.io/webSDM/articles/index.html</loc>
+    <loc>https://giopogg.github.io/webSDM/articles/Introduction.html</loc>
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/authors.html</loc>
@@ -23,18 +23,6 @@
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://giopogg.github.io/webSDM/reference/G.html</loc>
-  </url>
-  <url>
-    <loc>https://giopogg.github.io/webSDM/reference/SDMfit.html</loc>
-  </url>
-  <url>
-    <loc>https://giopogg.github.io/webSDM/reference/X.html</loc>
-  </url>
-  <url>
-    <loc>https://giopogg.github.io/webSDM/reference/Y.html</loc>
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/reference/buildFormula.html</loc>
@@ -53,6 +41,9 @@
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/reference/evaluateModelFit.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/webSDM/reference/G.html</loc>
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/reference/global.html</loc>
@@ -85,10 +76,16 @@
     <loc>https://giopogg.github.io/webSDM/reference/predictFundamental.html</loc>
   </url>
   <url>
+    <loc>https://giopogg.github.io/webSDM/reference/predictPotential.html</loc>
+  </url>
+  <url>
     <loc>https://giopogg.github.io/webSDM/reference/print.SDMfit.html</loc>
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/reference/print.trophicSDMfit.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/webSDM/reference/SDMfit.html</loc>
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/reference/summary.SDMfit.html</loc>
@@ -104,5 +101,11 @@
   </url>
   <url>
     <loc>https://giopogg.github.io/webSDM/reference/webSDM.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/webSDM/reference/X.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/webSDM/reference/Y.html</loc>
   </url>
 </urlset>
