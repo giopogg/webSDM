@@ -1,10 +1,6 @@
-#' webSDM.
-#'
-#' Package to fit a trophic Species Distribution Model, analyse it and predict. See Poggiato et al. In prep.
-#'
-#' @docType package
-#'
-#'
-#' @name webSDM
-#' 
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
 NULL

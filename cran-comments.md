@@ -9,6 +9,16 @@ This is a resubmission. In this new version I have removed the compute_TL functi
 
 ## Previous submissions
 
+
+### Resubmission
+This is a resubmission. In this new version I have changed the syntax of the webSDM-package.R file and I removed any reference to the fundamental niche (now potential niche). I have also fixed some minor bugs.
+
+#### R CMD check results
+
+0 errors | 0 warnings | 0 note
+
+
+
 ### Resubmission
 This is a resubmission. After the manual check by the CRAN's team, I:
 
@@ -22,7 +32,7 @@ This is a resubmission. After the manual check by the CRAN's team, I:
 * Replaced \dontrun with \donttest in documentation
 * Remove "this package" and fixed a typo in package description
 
-### R CMD check results
+#### R CMD check results
 
 0 errors | 0 warnings | 1 note
 

@@ -1,5 +1,9 @@
 
 # webSDM 1.1-3
+* Change predictFundamental to predictPotential
+* Change webSDM-package syntax
+
+# webSDM 1.1-3
 * Fix rhat function masking warning
 * Fix loo S3 method warning
 

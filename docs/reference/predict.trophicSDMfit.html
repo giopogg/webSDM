@@ -136,10 +136,10 @@
 <span class="r-in"><span><span class="va">env.formula</span> <span class="op">=</span> <span class="st">"~ X_1 + X_2"</span></span></span>
 <span class="r-in"><span><span class="co"># Run the model with bottom-up control using stan_glm as fitting method and no penalisation</span></span></span>
 <span class="r-in"><span><span class="co"># (set iter = 1000 to obtain reliable results)</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span>, <span class="va">env.formula</span>, iter <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span>, <span class="va">env.formula</span>, iter <span class="op">=</span> <span class="fl">50</span>,</span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.07, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.17, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -148,7 +148,7 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.05, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.13, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -157,13 +157,8 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.08, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Markov chains did not converge! Do not analyze results!</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.17, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -172,7 +167,8 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.07, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Markov chains did not converge! Do not analyze results!</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.11, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -181,7 +177,17 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Markov chains did not converge! Do not analyze results!</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.09, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.4, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -193,49 +199,37 @@
 <span class="r-in"><span><span class="co"># We can now evaluate species probabilities of presence for the environmental conditions c(0.5, 0.5)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, Xnew <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X_1 <span class="op">=</span> <span class="fl">0.5</span>, X_2 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6433643 0.6289127 0.6229442 0.6425353 0.6425781 0.6464394 0.6516225</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6157162 0.6375789 0.6486013</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]    [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6342476 0.6130067 0.6300371 0.6267161 0.61897</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6648545 0.6990385 0.6861933 0.6928485 0.6902785 0.6961276 0.6957976</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6723987 0.6899549 0.6806233</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]   [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7003627 0.6984545 0.6918214 0.6995717 0.6724</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]      [,2]      [,3]      [,4]      [,5]      [,6]     [,7]      [,8]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.717376 0.7468965 0.6826338 0.7201437 0.7367538 0.7088742 0.708083 0.7163786</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7219316 0.7138172</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7337134 0.7330132 0.7024801 0.7401973 0.7138056</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5031179 0.5595085 0.5052153 0.4839695 0.5580288 0.4693576 0.5268459</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]     [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5394606 0.4313078 0.4762301</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4696927 0.4569712 0.5162909 0.5171987 0.5415792</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]     [,2]     [,3]      [,4]      [,5]      [,6]      [,7]      [,8]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4685345 0.302852 0.464359 0.1135841 0.7221714 0.1204563 0.7151343 0.7472314</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,9]      [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4650403 0.09879275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]     [,2]      [,3]      [,4]      [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4487304 0.459831 0.6697429 0.7431611 0.7218115</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6096161 0.8505295 0.6287242 0.5628045 0.8279738 0.6011121 0.8289222</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,8]      [,9]    [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.8278223 0.5552032 0.517108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]      [,2]      [,3]     [,4]      [,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5863913 0.6555618 0.8184787 0.699581 0.7512535</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="co"># Obtain 50 draws from the posterior predictive distribution of species (pred_samples = 50)</span></span></span>
+<span class="r-in"><span><span class="co"># Obtain 50 draws from the posterior predictive distribution of species (pred_samples = 10)</span></span></span>
 <span class="r-in"><span><span class="co"># using predicted presence-absences of species to predict their predators (prob.cov = TRUE)</span></span></span>
 <span class="r-in"><span><span class="co"># Since we don't specify Xnew, the function sets Xnew = X by default</span></span></span>
-<span class="r-in"><span><span class="va">Ypred</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, fullPost <span class="op">=</span> <span class="cn">TRUE</span>, pred_samples <span class="op">=</span> <span class="fl">50</span>, prob.cov <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Ypred</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, fullPost <span class="op">=</span> <span class="cn">TRUE</span>, pred_samples <span class="op">=</span> <span class="fl">10</span>, prob.cov <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># We can ask the function to only give back posterior mean and 95% credible intervals with</span></span></span>
 <span class="r-in"><span><span class="co"># fullPost = F</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">Ypred</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, fullPost <span class="op">=</span> <span class="cn">TRUE</span>, pred_samples <span class="op">=</span> <span class="fl">50</span>, prob.cov <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Ypred</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">m</span>, fullPost <span class="op">=</span> <span class="cn">TRUE</span>, pred_samples <span class="op">=</span> <span class="fl">30</span>, prob.cov <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># If we fit the model using in a frequentist  way (e.g. glm)</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">G</span>, <span class="va">env.formula</span>, </span></span>

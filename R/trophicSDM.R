@@ -49,7 +49,7 @@
 #' env.formula = "~ X_1 + X_2"
 #' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 #' # Increase the number of iterations to obtain reliable results.
-#' m = trophicSDM(Y,X,G, env.formula, iter = 100,
+#' m = trophicSDM(Y,X,G, env.formula, iter = 50,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
 #' print(m)

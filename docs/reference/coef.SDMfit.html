@@ -109,27 +109,70 @@
 <span class="r-in"><span><span class="co"># define abiotic part of the model</span></span></span>
 <span class="r-in"><span><span class="va">env.formula</span> <span class="op">=</span> <span class="st">"~ X_1 + X_2"</span></span></span>
 <span class="r-in"><span><span class="co"># Run the model with bottom-up control using stan_glm as fitting method and no penalisation</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, iter <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>               family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, penal <span class="op">=</span> <span class="cn">NULL</span>, </span></span>
 <span class="r-in"><span>               mode <span class="op">=</span> <span class="st">"prey"</span>, method <span class="op">=</span> <span class="st">"stan_glm"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.08, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.11, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Markov chains did not converge! Do not analyze results!</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-in"><span><span class="co"># unstandardised regression coefficients</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean       2.5%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6089777 -1.1524319 -0.2019496</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.4799747  0.8928289  2.0695708</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2724622 -2.8885570 -1.7703558</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9525795  1.6205269  2.2897292</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1055890 -0.4200103  0.2101701</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9736576 -1.3131510 -0.6579386</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6743124 -1.0562452 -0.2737307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.5182934  1.0874567  2.1320034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2938187 -2.8007750 -1.7227278</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9517173  1.5950009  2.2873426</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1098928 -0.3848388  0.2257214</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9786615 -1.3116767 -0.6278177</span>
 <span class="r-in"><span><span class="co">#standardised regression coefficients with 90% credible intervals</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">Y5</span>, standardised <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   mean         5%        95%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6089777 -1.0351513 -0.2454657</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.4799747  0.9791619  1.9746505</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2724622 -2.7825190 -1.8455700</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9525795  1.6701759  2.2467489</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1055890 -0.3818979  0.1656809</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9736576 -1.2609097 -0.7089397</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6743124 -1.0129102 -0.3116744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_1          1.5182934  1.1547903  2.0125129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X_2         -2.2938187 -2.7686953 -1.7931208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y1           1.9517173  1.7109364  2.2393996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y2          -0.1098928 -0.3302223  0.1515621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y3          -0.9786615 -1.2808845 -0.6795918</span>
 <span class="r-in"><span><span class="co"># Run the same model using glm as fitting method</span></span></span>
 <span class="r-in"><span><span class="co"># (set iter = 1000 to obtain reliable results)</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="trophicSDM.html">trophicSDM</a></span><span class="op">(</span><span class="va">Y</span>,<span class="va">X</span>,<span class="va">G</span>, <span class="va">env.formula</span>, </span></span>
