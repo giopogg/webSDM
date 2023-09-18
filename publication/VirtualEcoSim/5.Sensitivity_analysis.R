@@ -139,7 +139,7 @@ ggsave(p, file = paste0(fig, "/summ_bin_real_all.pdf"), width = 8, height = 13)
 
 all_summ_bin_real
 
-### Fundamental niche
+### Potential niche
 
 metrics = c("wasserstein", "calibration")
 
@@ -263,7 +263,7 @@ for(k in 1:length(metrics)){
 }
 
 
-## Fundamental niche predictions
+## Potential niche predictions
 
 regress_fund = data.frame()
 

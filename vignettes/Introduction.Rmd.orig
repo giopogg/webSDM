@@ -36,7 +36,7 @@ set.seed(1234)
 
 
 ## Simulate data
-For illustrative purposes, we use simulated data for which we know the parameter values. We thus simulate a trophic interaction network and species distribution for six species, whose names are ordered accordingly to their trophic level (Y1 being basal and Y6 being at the highest trophic position). We simulate data with a stronger dependence on the abiotic variables for species in lower trophic levels, and increasing dependence on the biotic terms (i.e., their preys) for species with a higher trophic level. We will then use trophic SDM and see if the model can retrieve this simulate process and the species fundamental niches.
+For illustrative purposes, we use simulated data for which we know the parameter values. We thus simulate a trophic interaction network and species distribution for six species, whose names are ordered accordingly to their trophic level (Y1 being basal and Y6 being at the highest trophic position). We simulate data with a stronger dependence on the abiotic variables for species in lower trophic levels, and increasing dependence on the biotic terms (i.e., their preys) for species with a higher trophic level. We will then use trophic SDM and see if the model can retrieve this simulate process and the species potential niches.
 
 ### Create trophic interaction network
 We first create the trophic interaction network. The network needs to be a directed acyclic graph (DAG), with arrows pointing from predator to prey. We thus simulate an interaction network such that species only have prey in a lower trophic position.
@@ -143,7 +143,7 @@ m$form.all
 ## Analyse a fitted trophicSDM
 The field `$model` contains all the the single species glm (i.e., all the local models). `$data` and `trophicSDM` contains informations on the data and choices to fit the model respectively. `$form.all` contains the formula used to fit each glm (i.e., both abiotic and biotic terms). `$coef` contains the inferred regression coefficients of the glm for all species. `$AIC` and `$log.lik` are respectively the AIC and log-likelihood of the fitted trophic SDM. Finally, in the Bayesian framework, the field `$mcmc.diag` contains the convergence diagnostic metrics of the MCMC chains for each species.
 
-In this vignette, we first ensure that the MCMC chains correctly converged. Then, we analyse the inferred model, by focusing in particular on the effect of the biotic versus abiotic terms. We then analyse the predictive performances of the model (comparing it to environment-only SDM) and use it to predict the species fundamental niches. 
+In this vignette, we first ensure that the MCMC chains correctly converged. Then, we analyse the inferred model, by focusing in particular on the effect of the biotic versus abiotic terms. We then analyse the predictive performances of the model (comparing it to environment-only SDM) and use it to predict the species potential niches. 
 
 ### MCMC convergence
 First, we can have a look at effective sample size to total sample size and of the potential scale reduction factor (aka 'R hat') for each species. Each line corresponds to a given parameter.
@@ -350,10 +350,10 @@ mean(metrics_classic$tss)
 The increase in mean AUC and TSS is even higher in 3-fold cross-validation than on the fitted data. As we simulated the data with a strong biotic signal, trophic SDM proves to be a better tool than classic SDM.
 
 
-## Fundamental niche
-We also implemented a function to predict species fundamental niches, defined as the probability of presence of species along the environmental gradient when the biotic constrain is realised, i.e., when all its prey are set to present (vice-versa, when modeling species top-down, when the predator are absent). We here compute the probability of presence of species at environmental conditions X_1= 0.5, X_2 = 0.5 when the preys are available.
-```{r fundamental-niche}
-preds = predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
+## Potential niche
+We also implemented a function to predict species potential niches, defined as the probability of presence of species along the environmental gradient when the biotic constrain is realised, i.e., when all its prey are set to present (vice-versa, when modeling species top-down, when the predator are absent). We here compute the probability of presence of species at environmental conditions X_1= 0.5, X_2 = 0.5 when the preys are available.
+```{r potential-niche}
+preds = predictPotential(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 # Take the posterior mean
 lapply(preds,mean)
 ```

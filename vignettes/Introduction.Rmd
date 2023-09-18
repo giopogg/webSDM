@@ -30,7 +30,7 @@ set.seed(1234)
 
 
 ## Simulate data
-For illustrative purposes, we use simulated data for which we know the parameter values. We thus simulate a trophic interaction network and species distribution for six species, whose names are ordered accordingly to their trophic level (Y1 being basal and Y6 being at the highest trophic position). We simulate data with a stronger dependence on the abiotic variables for species in lower trophic levels, and increasing dependence on the biotic terms (i.e., their preys) for species with a higher trophic level. We will then use trophic SDM and see if the model can retrieve this simulate process and the species fundamental niches.
+For illustrative purposes, we use simulated data for which we know the parameter values. We thus simulate a trophic interaction network and species distribution for six species, whose names are ordered accordingly to their trophic level (Y1 being basal and Y6 being at the highest trophic position). We simulate data with a stronger dependence on the abiotic variables for species in lower trophic levels, and increasing dependence on the biotic terms (i.e., their preys) for species with a higher trophic level. We will then use trophic SDM and see if the model can retrieve this simulate process and the species potential niches.
 
 ### Create trophic interaction network
 We first create the trophic interaction network. The network needs to be a directed acyclic graph (DAG), with arrows pointing from predator to prey. We thus simulate an interaction network such that species only have prey in a lower trophic position.
@@ -176,7 +176,7 @@ m$form.all
 ## Analyse a fitted trophicSDM
 The field `$model` contains all the the single species glm (i.e., all the local models). `$data` and `trophicSDM` contains informations on the data and choices to fit the model respectively. `$form.all` contains the formula used to fit each glm (i.e., both abiotic and biotic terms). `$coef` contains the inferred regression coefficients of the glm for all species. `$AIC` and `$log.lik` are respectively the AIC and log-likelihood of the fitted trophic SDM. Finally, in the Bayesian framework, the field `$mcmc.diag` contains the convergence diagnostic metrics of the MCMC chains for each species.
 
-In this vignette, we first ensure that the MCMC chains correctly converged. Then, we analyse the inferred model, by focusing in particular on the effect of the biotic versus abiotic terms. We then analyse the predictive performances of the model (comparing it to environment-only SDM) and use it to predict the species fundamental niches. 
+In this vignette, we first ensure that the MCMC chains correctly converged. Then, we analyse the inferred model, by focusing in particular on the effect of the biotic versus abiotic terms. We then analyse the predictive performances of the model (comparing it to environment-only SDM) and use it to predict the species potential niches. 
 
 ### MCMC convergence
 First, we can have a look at effective sample size to total sample size and of the potential scale reduction factor (aka 'R hat') for each species. Each line corresponds to a given parameter.
@@ -248,20 +248,20 @@ coef(m, level = 0.9)
 #> 
 #> $Y5
 #>                   mean          5%        95%
-#> (Intercept)  0.5543470 -0.78446747  2.0315709
-#> I(X_1^2)     0.9714739  0.01583068  1.9503350
-#> I(X_2^2)    -1.4183446 -2.61590362 -0.2213468
-#> Y1           2.9289062  0.28313833  6.4031659
-#> Y3           4.6412922  1.98733697  7.6986728
-#> Y4           2.0493295  0.68591358  3.5493089
+#> (Intercept)  0.5422551 -0.76409358  2.0854414
+#> I(X_1^2)     0.9843555  0.02913223  2.0103196
+#> I(X_2^2)    -1.4438633 -2.74833106 -0.2571721
+#> Y1           3.0216650  0.36971766  6.3588373
+#> Y3           4.4991171  2.06335620  7.4694324
+#> Y4           1.9616552  0.64162409  3.4955833
 #> 
 #> $Y6
-#>                   mean         5%       95%
-#> (Intercept) -0.2653839 -2.0546623 1.7166369
-#> I(X_1^2)     0.1022363 -0.8775113 0.9815609
-#> I(X_2^2)    -0.2503882 -1.2390232 0.8521640
-#> Y3           3.8033136  1.3748090 6.6390156
-#> Y5           3.6530362  1.9951208 5.4587375
+#>                    mean         5%       95%
+#> (Intercept) -0.18963593 -2.0485881 1.5794885
+#> I(X_1^2)     0.06055848 -0.9455691 0.9899717
+#> I(X_2^2)    -0.18911690 -1.2013288 0.8962215
+#> Y3           3.62070445  1.1223913 6.5666245
+#> Y5           3.69026866  2.1993395 5.4164494
 ```
 
 Notice that regression coefficients are directly available in the field `$coef` of an object trophicSDMfit (with `level = 0.95`). As we previously hinted, we see that the estimate of the regression coefficients of the environmental part get closer and closer to zero with credible interval that often overlap zero (implying they are not significant with a confidence level of 10%) for species with a higher trophic level. In order to be able to correctly quantify the effect of the different predictors across species (i.e., their relative importance), we need to standardise the regression coefficients (see Grace et al. 2018). To do so, we need to set `standardise = TRUE`. 
@@ -299,20 +299,20 @@ coef(m, level = 0.9, standardise = T)
 #> 
 #> $Y5
 #>               estimate           5%         95%
-#> (Intercept)  0.5543470  0.554346969  0.55434697
-#> I(X_1^2)     0.2802264  0.004566439  0.56258369
-#> I(X_2^2)    -0.4236835 -0.781414685 -0.06612002
-#> Y1           0.4598741  0.044456182  1.00537537
-#> Y3           0.6369546  0.272735138  1.05653878
-#> Y4           0.1881906  0.062987653  0.32593412
+#> (Intercept)  0.5422551  0.542255094  0.54225509
+#> I(X_1^2)     0.2863784  0.008475438  0.58486205
+#> I(X_2^2)    -0.4350071 -0.828017071 -0.07748081
+#> Y1           0.4785091  0.058548274  1.00698178
+#> Y3           0.6227408  0.285597372  1.03387396
+#> Y4           0.1816850  0.059426083  0.32375471
 #> 
 #> $Y6
-#>                estimate          5%        95%
-#> (Intercept) -0.26538390 -0.26538390 -0.2653839
-#> I(X_1^2)     0.03710176 -0.31845069  0.3562105
-#> I(X_2^2)    -0.09409905 -0.46564058  0.3202540
-#> Y3           0.65666409  0.23736872  1.1462645
-#> Y5           0.17503112  0.09559397  0.2615493
+#>                estimate         5%        95%
+#> (Intercept) -0.18963593 -0.1896359 -0.1896359
+#> I(X_1^2)     0.02223722 -0.3472152  0.3635200
+#> I(X_2^2)    -0.07191471 -0.4568244  0.3408025
+#> Y3           0.63254324  0.1960837  1.1472005
+#> Y5           0.17891028  0.1066276  0.2625983
 ```
 
 This results confirms the previous analysis. We can analyse the relative importance of different group of variables with the function `computeVariableImportance`. This function can take as input the definition of groups of variables in the argument `groups` (by default, with `groups = NULL`, each explanatory variable is a different group). The variable importance of groups of variables is computed as the standardised regression coefficients summed across variable of the same group.  
@@ -364,12 +364,12 @@ plot(SDM)
 
 # The regression coefficients
 coef(SDM, level = 0.9, standardise = T)
-#>                estimate          5%        95%
-#> (Intercept) -0.26538390 -0.26538390 -0.2653839
-#> I(X_1^2)     0.03710176 -0.31845069  0.3562105
-#> I(X_2^2)    -0.09409905 -0.46564058  0.3202540
-#> Y3           0.65666409  0.23736872  1.1462645
-#> Y5           0.17503112  0.09559397  0.2615493
+#>                estimate         5%        95%
+#> (Intercept) -0.18963593 -0.1896359 -0.1896359
+#> I(X_1^2)     0.02223722 -0.3472152  0.3635200
+#> I(X_2^2)    -0.07191471 -0.4568244  0.3408025
+#> Y3           0.63254324  0.1960837  1.1472005
+#> Y5           0.17891028  0.1066276  0.2625983
 ```
 
 We can also predict the probability of presence of species Y6 at a site with X_1 = 0.5, X_2 = 0.5, assuming its preys to be present present.
@@ -379,7 +379,7 @@ preds = predict(SDM, newdata = data.frame(X_1 = 0.5, X_2 = 0.5, Y3 = 1, Y5 = 1))
 
 # Posterior mean of the probability of presence
 mean(preds$predictions.prob)
-#> [1] 0.9979847
+#> [1] 0.9983807
 ```
 
 We see that the species has a high probability of presence in this environmental conditions when its prey are present.
@@ -437,14 +437,14 @@ We first compare model AIC and an approximation of the leave-one-out cross-valid
 ```r
 
 m$AIC
-#> [1] 1455.721
+#> [1] 1455.775
 m_classic$AIC
 #> [1] 1584.531
 
 
 loo(m)
-#> Warning: Found 1 observation(s) with a pareto_k > 0.7. We recommend calling 'loo' again with argument 'k_threshold = 0.7' in order to calculate the ELPD without the assumption that these observations are negligible. This will refit the model 1 times to compute the ELPDs for the problematic observations directly.
-#> [1] -707.6043
+#> Warning: Found 6 observation(s) with a pareto_k > 0.7. We recommend calling 'loo' again with argument 'k_threshold = 0.7' in order to calculate the ELPD without the assumption that these observations are negligible. This will refit the model 6 times to compute the ELPDs for the problematic observations directly.
+#> [1] -707.626
 loo(m_classic)
 #> [1] -777.2048
 ```
@@ -476,15 +476,15 @@ metrics_classic = evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred_classic)
 
 # Mean AUC
 mean(metrics$auc)
-#> [1] 0.8084933
+#> [1] 0.7937958
 mean(metrics_classic$auc)
-#> [1] 0.7980231
+#> [1] 0.8031646
 
 # Mean TSS
 mean(metrics$tss)
-#> [1] 0.5446994
+#> [1] 0.5325318
 mean(metrics_classic$tss)
-#> [1] 0.5234593
+#> [1] 0.5312451
 ```
 
 On the training dataset models have similar performances, with our trophic model that slightly improves SDM's TSS.
@@ -525,44 +525,34 @@ metrics_classic = evaluateModelFit(m, Ynew = Y, Ypredicted = Ypred_classic)
 
 # Mean AUC
 mean(metrics$auc)
-#> [1] 0.697824
+#> [1] 0.6999403
 mean(metrics_classic$auc)
-#> [1] 0.6669216
+#> [1] 0.668446
 
 # Mean TSS
 mean(metrics$tss)
-#> [1] 0.4223416
+#> [1] 0.4260548
 mean(metrics_classic$tss)
-#> [1] 0.3722708
+#> [1] 0.3773521
 ```
 
 The increase in mean AUC and TSS is even higher in 3-fold cross-validation than on the fitted data. As we simulated the data with a strong biotic signal, trophic SDM proves to be a better tool than classic SDM.
 
 
-## Fundamental niche
-We also implemented a function to predict species fundamental niches, defined as the probability of presence of species along the environmental gradient when the biotic constrain is realised, i.e., when all its prey are set to present (vice-versa, when modeling species top-down, when the predator are absent). We here compute the probability of presence of species at environmental conditions X_1= 0.5, X_2 = 0.5 when the preys are available.
+## Potential niche
+We also implemented a function to predict species potential niches, defined as the probability of presence of species along the environmental gradient when the biotic constrain is realised, i.e., when all its prey are set to present (vice-versa, when modeling species top-down, when the predator are absent). We here compute the probability of presence of species at environmental conditions X_1= 0.5, X_2 = 0.5 when the preys are available.
 
 ```r
-preds = predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
+preds = predictPotential(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
+#> Error in predictPotential(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5)): could not find function "predictPotential"
 # Take the posterior mean
 lapply(preds,mean)
-#> $Y1
-#> [1] 0.7512132
+#> Warning in mean.default(X[[i]], ...): l'argomento non è numerico o logico: si restituisce NA
+#> $predictions.prob
+#> [1] 0.9983807
 #> 
-#> $Y2
-#> [1] 0.835708
-#> 
-#> $Y3
-#> [1] 0.9535799
-#> 
-#> $Y4
-#> [1] 0.9859788
-#> 
-#> $Y5
-#> [1] 0.9998674
-#> 
-#> $Y6
-#> [1] 0.9984503
+#> $predictions.bin
+#> [1] NA
 ```
 
 ## Author

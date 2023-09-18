@@ -143,7 +143,7 @@ runGRSimulation = function(S = S, L = L, p = p, niche_breadthGR = niche_breadthG
   }
   
   
-  #Abundance-> only needed to compute the fundamental niche
+  #Abundance-> only needed to compute the potential niche
   glv.finalAbundances.abioticGR <- lapply(glv.finalStates.abioticGR, function(final_state){
     # Set NA values to 0 (computation errors due to too small values)
     final_state$final_state_AB[is.na(final_state$final_state_AB)] <- 0
@@ -163,7 +163,7 @@ runGRSimulation = function(S = S, L = L, p = p, niche_breadthGR = niche_breadthG
   
   
   ###################################################################################################################
-  ####################### Fundamental niche
+  ####################### Potential niche
   ############################################################################################
   
   ###################################################################################################################

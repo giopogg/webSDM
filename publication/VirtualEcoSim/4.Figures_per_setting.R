@@ -192,7 +192,7 @@ for(j in all_sett){
 
 
 #########################################################################################
-######### Fundamental niche
+######### Potential niche
 
 metrics = c("wasserstein", "calibration", "wass_growth_rate", "dist_niche_opt")
 

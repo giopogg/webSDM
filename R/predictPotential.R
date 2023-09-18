@@ -1,6 +1,6 @@
-#' Predicts species fundamental niche
+#' Predicts species potential niche
 #' 
-#' Computes predicted values of the fundamental niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
+#' Computes predicted values of the potential niches of species from the fitted trophicSDMfit model at environmental conditions specified by \code{Xnew}. Predictions are obtained by setting preys to present when mode = "prey" or setting predators to absent when mode = "predator".
 #' @param tSDM A trophicSDMfit object obtained with trophicSDM()
 #' @param Xnew a matrix specifying the environmental covariates for the predictions to be made. If NULL (default), predictions are done on the training dataset (e.g. by setting Xnew = tSDM$data$X).
 #' @param pred_samples Number of samples to draw from species posterior predictive distribution when method = "stan_glm". If NULL, set by the default to the number of iterations/10.
@@ -20,18 +20,18 @@
 #' m = trophicSDM(Y, X, G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
-#' # Obtain 100 draws from the posterior predictive distribution of species fundamental niche
+#' # Obtain 100 draws from the posterior predictive distribution of species potential niche
 #' # (pred_samples = 50)
 #' # Since we don't specify Xnew, the function sets Xnew = X by default
-#' Ypred = predictFundamental(m, fullPost = TRUE, pred_samples = 50)
+#' Ypred = predictPotential(m, fullPost = TRUE, pred_samples = 50)
 #' # We can ask the function to only give back posterior mean and 95% credible intervals with
 #' # fullPost = FALSE
 #' \donttest{
-#' Ypred = predictFundamental(m, fullPost = FALSE, pred_samples = 50)
+#' Ypred = predictPotential(m, fullPost = FALSE, pred_samples = 50)
 #' }
 #' #' We can now evaluate species probabilities of presence for the enviromental
 #' # conditions c(0.5, 0.5)
-#' predictFundamental(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), pred_samples = 50)
+#' predictPotential(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), pred_samples = 50)
 #' 
 #' # If we fit the model using in a frequentist  way (e.g. glm)
 #' m = trophicSDM(Y, X, G, env.formula, 
@@ -40,9 +40,9 @@
 #' # We are obliged to set pred_samples = 1 
 #' # (this is done by default if pred_samples is not provided)
 #' # In the frequentist case, fullPost is useless.
-#' Ypred = predictFundamental(m, pred_samples = 1)
+#' Ypred = predictPotential(m, pred_samples = 1)
 
-predictFundamental = function(tSDM, Xnew = NULL, pred_samples = NULL,
+predictPotential = function(tSDM, Xnew = NULL, pred_samples = NULL,
                               verbose = FALSE, fullPost = TRUE){
 
   if(!inherits(tSDM, "trophicSDMfit")) stop("tSDM is not an object of class trophicSDMfit" )

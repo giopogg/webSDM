@@ -328,7 +328,7 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
   
   
   ###################################################################################################
-  ### Load fundamental niches
+  ### Load potential niches
   
   if (file.exists(paste0(simPath, "glv.fundNicheTh.abioticGR.csv"))){
     SIMlist$fundNiche <- read.csv2(paste0(simPath, "glv.fundNicheTh.abioticGR.csv"), row.names=1)
@@ -336,8 +336,8 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
     SIMlist$fundNiche <- SIMlist$fundNiche[,spNewNames]
   }
   
-  # Compute the fundamental niche for tSDM 
-  # The fundamental niche for SDM = realised niche!
+  # Compute the potential niche for tSDM 
+  # The potential niche for SDM = realised niche!
   
   intercept = T
   
@@ -367,10 +367,10 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
   
   
   
-  ### Compute CV fundamental & realized for both prob and bin and SDM
+  ### Compute CV potential & realized for both prob and bin and SDM
   
   
-  # CV tSDM predictions prob & fundamental niche (notice fund niche does not depend on prob)
+  # CV tSDM predictions prob & potential niche (notice fund niche does not depend on prob)
   probCV = tSDM_CV_SIMUL(mod = SIMlist$m_stan, K = 5, fundNiche = T, prob.cov = T, iter = SIMlist$m_stan$iter,
                          pred_samples = pred_samples, error_prop_sample = error_prop_sample,
                          fitPreds = F,run.parallel = F, verbose = F, nEnv = nEnv, envCV = F,
@@ -409,7 +409,7 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
   nameOrder = cumsum(table(spNewNames)[spNewNames])[paste0("Y", 1:S)]  # table to alternate between name ordering
   
   
-  ## Plots the predicted versus observed niches. Both realised and fundamental. 
+  ## Plots the predicted versus observed niches. Both realised and potential. 
   
   print(paste0("### plot ", 1, " ### \n"))
   
@@ -436,8 +436,8 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
     
     
     try(plotDistributions(SIMlist, CV = F, RN = F, prob.cov = F,
-                          plotprey = T, plotpred = FALSE, main = "Fundamental",
-                          filename=paste0(figPath,"Fundamental.pdf"), ggplot.palette = T,
+                          plotprey = T, plotpred = FALSE, main = "Potential",
+                          filename=paste0(figPath,"Potential.pdf"), ggplot.palette = T,
                           intercept = intercept, nbMerge = nbMerge, community = community,
                           K = K, nameOrder = nameOrder, spNames = spNames,
                           IntMat = IntMat, strengthBI = strengthBI))
@@ -449,7 +449,7 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
   #####################################################################################################################
   ######## Compute goodness of fit metrics:
   # waic, R2, calibration, wasserstein, TSS, AUC, 
-  # for both fundamental and realised niche and for both tSDM
+  # for both Potential and realised niche and for both tSDM
   
   
   #### Realised
@@ -627,7 +627,7 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
   
   SIMlist$eval.realised = eval.table
   
-  ########## Fundamental niche metrics
+  ########## Potential niche metrics
   
   #tSDM
   calibration = apply(sapply(spNewNames, function(name){
@@ -746,7 +746,7 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
          width=10,height=15, dpi = 150, units = "in")
   
   
-  ######## Fundamental 
+  ######## Potential 
   ###### All together
   eval.table = SIMlist$eval.fund
   
@@ -758,7 +758,7 @@ runTrophicSDMAnalysis = function(S, L, p, niche_breadthGR, nEnv,
                         type = c("#404040","#FFFFFF","#A0A0A0"),
                         breaks = c("bin","prob"))
   
-  ggsave(filename=paste0(figPath,"Fundamental_All_metrics.pdf"),
+  ggsave(filename=paste0(figPath,"Potential_All_metrics.pdf"),
          width=10,height=15, dpi = 150, units = "in")
   
   
@@ -785,7 +785,7 @@ plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=F
   
   nEnv = nrow(SIM$X)/(nRep*nbMerge)
   envs = SIM$X[1:nEnv, ifelse(intercept, -1, -(K+1))]
-  if(is.null(SIM$fundNiche) & !RN) stop("No theoretical fundamental niche available")
+  if(is.null(SIM$fundNiche) & !RN) stop("No theoretical Potential niche available")
   
   proba = list()
   
@@ -813,7 +813,7 @@ plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=F
       proba$est.97 = SIM$pFundCV.qsup.stan
       
     }
-    #SDMs (realised or fundamental niche is the same!)
+    #SDMs (realised or Potential niche is the same!)
     proba$SDM.pred = SIM$SDM.pCV.mean.stan
     proba$SDM.est.02 = SIM$SDM.pCV.qinf.stan
     proba$SDM.est.97 = SIM$SDM.pCV.qsup.stan
@@ -843,7 +843,7 @@ plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=F
       proba$est.97 = SIM$pFund.qsup.stan
       
     }
-    #SDMs (realised or fundamental niche is the same!)
+    #SDMs (realised or Potential niche is the same!)
     proba$SDM.pred = SIM$SDM.p.mean.stan
     proba$SDM.est.02 = SIM$SDM.p.qinf.stan
     proba$SDM.est.97 = SIM$SDM.p.qsup.stan
@@ -1525,7 +1525,7 @@ SDMpredict=function(m,focal=focal,newdata,pred_samples,binary.resp,prob.cov){
 
 
 
-# Cross validation function. Computes prediction from the model in K-fold CV and, if asked, also computes predictions of the fundamental niche
+# Cross validation function. Computes prediction from the model in K-fold CV and, if asked, also computes predictions of the Potential niche
 # INPUT:
 # m: the fitted model
 # K: the number of folds. can be NULL if index is specified

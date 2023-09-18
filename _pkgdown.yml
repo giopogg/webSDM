@@ -39,7 +39,7 @@ reference:
   - "predict.trophicSDMfit"
   - "trophicSDM_CV"
   - "evaluateModelFit"
-  - "predictFundamental"
+  - "predictPotential"
   - "loo.trophicSDMfit"
 - title: Functions to analyse and manipulate local models (i.e. single-species SDMs)
   desc: |

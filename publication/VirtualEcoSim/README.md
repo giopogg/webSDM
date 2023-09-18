@@ -1,7 +1,7 @@
 # trophicSDM
 These codes reproduce exactly the same results published in the paper.
 
-Given the huge amount of data produced by these codes, we chose to store online only the summary tables containing SDMs and trophic SDMs perfomances in inferring the realised and fundamental niches, for all species, parameter settings and repetitions. \
+Given the huge amount of data produced by these codes, we chose to store online only the summary tables containing SDMs and trophic SDMs perfomances in inferring the realised and potential niches, for all species, parameter settings and repetitions. \
 These tables are 'fund_list.rds', 'bin_realised_list.rds' and 'CI_width.rds', they are available in this GitHub directory, and correspond to the output of the step 3 ('3.Merge_all_sim.RData'). 
 
 In order to reproduce the data, the following steps should be followed (step 0 to 3 can be skipped by loading the above-mentioned directories):

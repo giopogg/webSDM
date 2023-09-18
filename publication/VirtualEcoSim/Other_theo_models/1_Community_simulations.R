@@ -190,7 +190,7 @@ glv.finalStates.abioticGR.merged <- do.call(rbind, glv.finalStates.abioticGR.mer
 # save
 write.csv2(glv.finalStates.abioticGR.merged, paste0(simPath,"glv_finalStates_abioticGR.csv"))
     
-#Abundance-> only needed to compute the fundamental niche
+#Abundance-> only needed to compute the potential niche
 glv.finalAbundances.abioticGR <- lapply(glv.finalStates.abioticGR, function(final_state){
         # Set NA values to 0 (computation errors due to too small values)
         final_state$final_state_AB[is.na(final_state$final_state_AB)] <- 0
@@ -246,7 +246,7 @@ glv.finalStates.abioticKbasal.merged <- do.call(rbind, glv.finalStates.abioticKb
 write.csv2(glv.finalStates.abioticKbasal.merged, paste0(simPath,"glv_finalStates_abioticKbasal.csv"))
     
     
-#Abundance-> only needed to compute the fundamental niche
+#Abundance-> only needed to compute the potential niche
 glv.finalAbundances.abioticKbasal <- lapply(glv.finalStates.abioticKbasal, function(final_state){
         # Set NA values to 0 (computation errors due to too small values)
         final_state$final_state_AB[is.na(final_state$final_state_AB)] <- 0
@@ -304,7 +304,7 @@ ricker.finalStates.abioticKbasal.merged <- do.call(rbind, ricker.finalStates.abi
 
 write.csv2(ricker.finalStates.abioticKbasal.merged, paste0(simPath,"ricker_finalStates_abioticKbasal.csv"))
     
-#Abundance-> only needed to compute the fundamental niche
+#Abundance-> only needed to compute the potential niche
 ricker.finalAbundances.abioticKbasal <- lapply(ricker.finalStates.abioticKbasal, function(final_state){
         # Set NA values to 0 (computation errors due to too small values)
         final_state$final_state_AB[is.na(final_state$final_state_AB)] <- 0
@@ -320,7 +320,7 @@ write.csv2(ricker.meanAbundances.abioticKbasal, paste0(simPath,"ricker.meanAbund
 
 
 ###################################################################################################################
-####################### Fundamental niche
+####################### potential niche
 ############################################################################################
 
 ###################################################################################################################

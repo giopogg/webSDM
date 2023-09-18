@@ -69,7 +69,7 @@ p = ggplot(data = tab_temp_gather) + geom_boxplot(aes(x = model,
 ggsave(p, file = paste0(fig, "/AUC_realised.pdf"), height = 15, width = 10)
 
 
-### Fundamental niche
+### Potential niche
 
 fund_list = readRDS(file=paste0(data_raw,"fund_list.rds"))
 

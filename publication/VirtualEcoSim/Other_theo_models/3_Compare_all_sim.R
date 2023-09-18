@@ -210,7 +210,7 @@ for(j in methods){
 }
 
 #########################################################################################
-######### Fundamental niche
+######### Potential niche
 
 methods = unique(fund_list$method)
 

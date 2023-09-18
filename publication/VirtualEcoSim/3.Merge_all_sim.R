@@ -85,7 +85,7 @@ for(i in dirs){ # load files
         
       }
       
-      #Evaluation metrics for fundamental niche
+      #Evaluation metrics for potential niche
       if(!is.null(SIMlist$eval.fund)){
         
         fund_list = rbind(fund_list,

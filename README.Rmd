@@ -1,7 +1,7 @@
 ---
 title: "R package 'webSDM'"
 author: "Giovanni Poggiato"
-date: "09/11/22"
+date: "18/09/23"
 # output: 
 #   slidy_presentation: 
 #     fig_height: 8
@@ -26,6 +26,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # webSDM - including known trophic interactions in SDM
 
 webSDM implements the trophic SDM model described in Poggiato et al., "Integrating trophic food webs in species distribution models improves ecological niche estimation and prediction". Trophic SDM integrate a known trophic interaction network in SDM, thus providing more realistic and ecologically sound predictions. We here after present a quick introduction to some of the feature of the package, but we refer to the vignettes and the help functions for a more complete documentation of our package.
+
+## 'webSDM' map
+
+# <img src="man/figures/FigurePackage.png" align="center" width="900px"/>
+
 
 ## Installing the R package
 
@@ -119,9 +124,9 @@ Pred = predict(m, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5), fullPost = F)
 t(do.call(cbind, Pred))
 ```
 
-We can also obtain an estimation of the fundamental niche, that corresponds, in the bottom-up approach, to the probability of presence of a species given that its preys are present. We can for example compute the probability of presence of species for the environmental conditions X_1 = 0.5 and X_2 = 0.5 assuming all their preys to be present.
+We can also obtain an estimation of the potential niche, that corresponds, in the bottom-up approach, to the probability of presence of a species given that its preys are present. We can for example compute the probability of presence of species for the environmental conditions X_1 = 0.5 and X_2 = 0.5 assuming all their preys to be present.
 ```{r}
-Ypred = predictFundamental(m, fullPost = FALSE, pred_samples = 100, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
+Ypred = predictPotential(m, fullPost = FALSE, pred_samples = 100, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 ```
 
 ### Frequentist approach

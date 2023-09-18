@@ -10,7 +10,7 @@
 #' env.formula = "~ X_1 + X_2"
 #' # Run the model with bottom-up control using stan_glm as fitting method and no penalisation
 #' # (set iter = 1000 to obtain reliable results)
-#' m = trophicSDM(Y, X, G, env.formula, 
+#' m = trophicSDM(Y, X, G, env.formula, iter = 100,
 #'                family = binomial(link = "logit"), penal = NULL, 
 #'                mode = "prey", method = "stan_glm")
 #' summary(m)
@@ -36,7 +36,7 @@ summary.trophicSDMfit = function(object,  ...){
     cat("    $coef \n")
     cat("* Useful S3 methods\n")
     cat("    print(), coef(), plot(), predict(), evaluateModelFit() \n")
-    cat("    predictFundamental(), plotG(), plotG_inferred(), computeVariableImportance() \n")
+    cat("    predictPotential(), plotG(), plotG_inferred(), computeVariableImportance() \n")
     cat("* Local models (i.e. single species SDM) can be accessed through \n")
     cat("    $model\n")
     

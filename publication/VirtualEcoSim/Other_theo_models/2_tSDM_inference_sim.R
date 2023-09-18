@@ -517,7 +517,7 @@ SIMlist = lapply(SIMlist, function(SIM){SIM[!grepl("m_glm|m_bayes|SDM_glm|SDM_ba
 
 
 ###################################################################################################
-### Load fundamental niches
+### Load potential niches
 
 if ("glvGR" %in% simMethods & file.exists(paste0(simPath, "glv.fundNicheTh.abioticGR.csv"))){
   SIMlist$GLV_abioticGR$fundNiche <- read.csv2(paste0(simPath, "glv.fundNicheTh.abioticGR.csv"), row.names=1)
@@ -538,8 +538,8 @@ if ("rickerKbasal" %in% simMethods & file.exists(paste0(simPath, "ricker.fundNic
 }
 
 
-# Compute the fundamental niche for tSDM 
-# The fundamental niche for SDM = realised niche!
+# Compute the potential niche for tSDM 
+# The potential niche for SDM = realised niche!
 for(i in 1:length(SIMlist)){
   
   SIM=SIMlist[[i]]
@@ -569,13 +569,13 @@ for(i in 1:length(SIMlist)){
 }
   
 
-### Compute CV fundamental & realized for both prob and bin and SDM
+### Compute CV potential & realized for both prob and bin and SDM
 for(i in 1:length(SIMlist)){
   
   SIM=SIMlist[[i]]
   print(names(SIMlist[i]))
   
-  # CV tSDM predictions prob & fundamental niche (notice fund niche does not depend on prob)
+  # CV tSDM predictions prob & potential niche (notice fund niche does not depend on prob)
   probCV = tSDM_CV_SIMUL(mod = SIM$m_stan, K = 5, fundNiche = T, prob.cov = T, iter = SIM$m_stan$iter,
                         pred_samples = pred_samples, error_prop_sample = error_prop_sample,
                         fitPreds=F,run.parallel=F, verbose = F, nEnv = nEnv, envCV = F)
@@ -613,7 +613,7 @@ for(i in 1:length(SIMlist)){
 nameOrder = cumsum(table(spNewNames)[spNewNames])[paste0("Y", 1:S)]  # table to alternate between name ordering
 
 
-## Plots the predicted versus observed niches. Both realised and fundamental. 
+## Plots the predicted versus observed niches. Both realised and potential. 
 for(i in 1:length(SIMlist)){
   
   if(!dir.exists(paste0(figPath,names(SIMlist)[i]))) dir.create(paste0(figPath,names(SIMlist)[i]))
@@ -668,7 +668,7 @@ for(i in 1:length(SIMlist)){
 #####################################################################################################################
 ######## Compute goodness of fit metrics:
 # waic, R2, calibration, wasserstein, TSS, AUC, 
-# for both fundamental and realised niche and for both tSDM
+# for both potential and realised niche and for both tSDM
 
 
 #### Realised
@@ -889,7 +889,7 @@ for(i in 1:length(SIMlist)){
 
 
 
-# Fundamental niche metrics
+# potential niche metrics
 knownFundNiche = sapply(SIMlist, function(X)"fundNiche" %in% names(X))
 
 for(i in which(knownFundNiche)){
@@ -1162,7 +1162,7 @@ for(i in 1:length(SIMlist)){
 }
   
 
-######## Fundamental 
+######## potential 
 
 for(i in 1:length(SIMlist)){
   

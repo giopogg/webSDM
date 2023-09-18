@@ -234,7 +234,7 @@ t(do.call(cbind, Pred))
 ## Y6 0.6243699        0.5044867        0.8205877
 ```
 
-We can also obtain an estimation of the fundamental niche, that
+We can also obtain an estimation of the potential niche, that
 corresponds, in the bottom-up approach, to the probability of presence
 of a species given that its preys are present. We can for example
 compute the probability of presence of species for the environmental
@@ -242,7 +242,7 @@ conditions X_1 = 0.5 and X_2 = 0.5 assuming all their preys to be
 present.
 
 ``` r
-Ypred = predictFundamental(m, fullPost = FALSE, pred_samples = 100, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
+Ypred = predictPotential(m, fullPost = FALSE, pred_samples = 100, Xnew = data.frame(X_1 = 0.5, X_2 = 0.5))
 ```
 
 ### Frequentist approach

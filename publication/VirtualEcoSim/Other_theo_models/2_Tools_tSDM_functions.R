@@ -16,7 +16,7 @@ plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=F
   
   nEnv = nrow(SIM$X)/(nRep*nbMerge)
   envs = SIM$X[1:nEnv, ifelse(intercept, -1, -(K+1))]
-  if(is.null(SIM$fundNiche) & !RN) stop("No theoretical fundamental niche available")
+  if(is.null(SIM$fundNiche) & !RN) stop("No theoretical potential niche available")
   
   proba = list()
 
@@ -44,7 +44,7 @@ plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=F
       proba$est.97 = SIM$pFundCV.qsup.stan
       
     }
-    #SDMs (realised or fundamental niche is the same!)
+    #SDMs (realised or potential niche is the same!)
       proba$SDM.pred = SIM$SDM.pCV.mean.stan
       proba$SDM.est.02 = SIM$SDM.pCV.qinf.stan
       proba$SDM.est.97 = SIM$SDM.pCV.qsup.stan
@@ -74,7 +74,7 @@ plotDistributions <- function (SIM, CV=T, prob.cov=T, plotprey=FALSE, plotpred=F
       proba$est.97 = SIM$pFund.qsup.stan
       
     }
-    #SDMs (realised or fundamental niche is the same!)
+    #SDMs (realised or potential niche is the same!)
     proba$SDM.pred = SIM$SDM.p.mean.stan
     proba$SDM.est.02 = SIM$SDM.p.qinf.stan
     proba$SDM.est.97 = SIM$SDM.p.qsup.stan
@@ -737,7 +737,7 @@ SDMpredict=function(m,focal=focal,newdata,pred_samples,binary.resp,prob.cov){
 
 
 
-# Cross validation function. Computes prediction from the model in K-fold CV and, if asked, also computes predictions of the fundamental niche
+# Cross validation function. Computes prediction from the model in K-fold CV and, if asked, also computes predictions of the potential niche
 # INPUT:
 # m: the fitted model
 # K: the number of folds. can be NULL if index is specified
