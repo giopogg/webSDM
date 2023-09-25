@@ -1,5 +1,5 @@
 
-# webSDM 1.1-3
+# webSDM 1.1-4
 * Change predictFundamental to predictPotential
 * Change webSDM-package syntax
 

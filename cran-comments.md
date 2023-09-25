@@ -1,7 +1,9 @@
 
 
 ## Resubmission
-This is a resubmission. In this new version I have removed the compute_TL function and I now rely on topological.sort from igraph. I have also fixed some minor bugs.
+
+This is a resubmission. In this new version I have changed the syntax of the webSDM-package.R file and I removed any reference to the fundamental niche (now potential niche). I have also fixed some minor bugs.
+
 
 ## R CMD check results
 
@@ -11,7 +13,7 @@ This is a resubmission. In this new version I have removed the compute_TL functi
 
 
 ### Resubmission
-This is a resubmission. In this new version I have changed the syntax of the webSDM-package.R file and I removed any reference to the fundamental niche (now potential niche). I have also fixed some minor bugs.
+This is a resubmission. In this new version I have removed the compute_TL function and I now rely on topological.sort from igraph. I have also fixed some minor bugs.
 
 #### R CMD check results
 
