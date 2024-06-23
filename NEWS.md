@@ -1,3 +1,5 @@
+# webSDM 1.1-5
+* Correct bug about Orcid codes
 
 # webSDM 1.1-4
 * Change predictFundamental to predictPotential

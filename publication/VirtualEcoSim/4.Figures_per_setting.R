@@ -6,7 +6,7 @@
 
 # !!! Only the working directory should be specified to run the script
 
-# By running this script, it will create subfolders in the "/SimulationOutputs/Fig_all", each containing the summary figures for a given parameter setting
+# By running this, the script will create subfolders in the "/SimulationOutputs/Fig_all", each containing the summary figures for a given parameter setting
 # and it creates the files summary_bin_realised, summary_fund, fund_list and CI_width in "/SimulationOutputs", containing sumary metrics for every parameter settings (across the 100 repetitions)
 
 ############################################################

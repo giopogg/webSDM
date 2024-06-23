@@ -1,6 +1,6 @@
 Package: webSDM
 Title: Including Known Interactions in Species Distribution Models
-Version: 1.1-4
+Version: 1.1-5
 Description: A collection of tools to fit and work with trophic Species Distribution Models. Trophic Species Distribution Models combine knowledge of trophic interactions with Bayesian structural equation models that model each species as a function of its prey (or predators) and environmental conditions. It exploits the topological ordering of the known trophic interaction network to predict species distribution in space and/or time, where the prey (or predator) distribution is unavailable. The method implemented by the package is described in Poggiato, Andréoletti, Pollock and Thuiller (2022) <doi:10.22541/au.166853394.45823739/v1>.
 License: GPL-3
 Encoding: UTF-8
@@ -8,10 +8,8 @@ Imports: GGally, abind, bayesplot, brms, broom.mixed, dismo, dplyr, ggplot2, glm
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Authors@R: 
-    c(person("Giovanni", "Poggiato",, "giov.poggiato@gmail.com", role = c("aut","cre","cph"),
-           comment = c(ORCID = "0000-0003-1957-9764")),
-      person("Jérémy", "Andréoletti", role = c("aut"),
-           comment = c(ORCID = "0000-0003-1957-9764")))
+    c(person("Giovanni", "Poggiato",, "giov.poggiato@gmail.com", role = c("aut","cre","cph")),
+      person("Jérémy", "Andréoletti", role = c("aut")))
 URL: https://github.com/giopogg/webSDM, https://giopogg.github.io/webSDM/
 BugReports: https://github.com/giopogg/webSDM/issues
 Suggests: 

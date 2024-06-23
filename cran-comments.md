@@ -1,24 +1,26 @@
 
 
-## Resubmission
 
-This is a resubmission. In this new version I have changed the syntax of the webSDM-package.R file and I removed any reference to the fundamental niche (now potential niche). I have also fixed some minor bugs.
-
-
+This is a resubmission. In this new version I fixed bugs about ORCID numbers in the DESCRIPTION file.
 ## R CMD check results
 
 0 errors | 0 warnings | 0 note
 
 ## Previous submissions
 
+#### Resubmission
 
-### Resubmission
+This is a resubmission. In this new version I have changed the syntax of the webSDM-package.R file and I removed any reference to the fundamental niche (now potential niche). I have also fixed some minor bugs.
+#### R CMD check results
+
+0 errors | 0 warnings | 0 note
+
+#### Resubmission
 This is a resubmission. In this new version I have removed the compute_TL function and I now rely on topological.sort from igraph. I have also fixed some minor bugs.
 
 #### R CMD check results
 
 0 errors | 0 warnings | 0 note
-
 
 
 ### Resubmission
