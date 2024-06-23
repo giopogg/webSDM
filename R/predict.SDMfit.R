@@ -7,10 +7,8 @@
 #' @param prob.cov Only for presence-absence data. If set to FALSE, it gives back also predicted presence-absences (which is then used by trophicSDM.predict to predict the predators).
 #' @param ... 	additional arguments
 #' @return A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites. If prob.cov = TRUE, it returns a list containing:
-#' \itemize{
-#' \item{predictions.prob}{Predicted probabilities of presence}
-#' \item{predictions.prob}{Predicted presence-absences}
-#' }
+#' * `predictions.prob`: Predicted probabilities of presence.
+#' * `predictions.bin`: Predicted probabilities of presence.
 #' @author Giovanni Poggiato and Jérémy Andréoletti
 #' @examples
 #' data(Y, X, G)
