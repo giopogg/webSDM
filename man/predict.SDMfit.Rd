@@ -20,8 +20,8 @@
 \value{
 A list containing for each species the predicted value at each sites. If method = "stan_glm", then each element of the list is a sites x pred_samples matrix containing the posterior predictive distribution of the species at each sites. If prob.cov = TRUE, it returns a list containing:
 \itemize{
-\item{predictions.prob}{Predicted probabilities of presence}
-\item{predictions.prob}{Predicted presence-absences}
+\item \code{predictions.prob}: Predicted probabilities of presence.
+\item \code{predictions.bin}: Predicted probabilities of presence.
 }
 }
 \description{

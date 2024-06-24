@@ -18,11 +18,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Giovanni Poggiato \email{giov.poggiato@gmail.com} (\href{https://orcid.org/0000-0003-1957-9764}{ORCID}) [copyright holder]
+\strong{Maintainer}: Giovanni Poggiato \email{giov.poggiato@gmail.com} [copyright holder]
 
 Authors:
 \itemize{
-  \item Jérémy Andréoletti (\href{https://orcid.org/0000-0003-1957-9764}{ORCID})
+  \item Jérémy Andréoletti
 }
 
 }
